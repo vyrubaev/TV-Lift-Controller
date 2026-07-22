@@ -14441,6 +14441,12 @@
 		(uuid "25835339-4000-4748-b756-d163b5c85807")
 	)
 	(junction
+		(at 137.16 187.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "263ae418-fa18-44f6-86a5-1de56f2a6288")
+	)
+	(junction
 		(at 166.37 154.94)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -15370,7 +15376,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 187.96) (xy 147.32 187.96)
+			(xy 137.16 187.96) (xy 158.75 187.96)
 		)
 		(stroke
 			(width 0)
@@ -15560,7 +15566,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 187.96) (xy 158.75 191.77)
+			(xy 137.16 187.96) (xy 137.16 190.5)
 		)
 		(stroke
 			(width 0)
@@ -15787,16 +15793,6 @@
 			(type default)
 		)
 		(uuid "57fd68e2-5802-43e9-b9fe-96d7de334e08")
-	)
-	(wire
-		(pts
-			(xy 152.4 187.96) (xy 147.32 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "57fdadaf-1113-4af6-99f8-c07f9d522a50")
 	)
 	(wire
 		(pts
@@ -17087,16 +17083,6 @@
 			(type default)
 		)
 		(uuid "f5761026-3a6b-496a-b4ec-476c9739a5de")
-	)
-	(wire
-		(pts
-			(xy 152.4 187.96) (xy 158.75 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f78e7e73-5e9f-4f2b-9760-20f9ceea4f24")
 	)
 	(wire
 		(pts
@@ -21842,7 +21828,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "59907559-6056-4695-b8bc-54f05bf52234")
-		(property "Reference" "LED_GREEN_F3_POWER1"
+		(property "Reference" "LED1"
 			(at 168.148 180.086 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21853,7 +21839,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "LED_GREEN_F3"
 			(at 173.99 184.658 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21886,8 +21872,8 @@
 				)
 			)
 		)
-		(property "Description" ""
-			(at 171.45 184.15 0)
+		(property "Description" "LED_GREEN_F3_POWER"
+			(at 165.354 190.5 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -21905,7 +21891,7 @@
 		(instances
 			(project "controller_Tv_Lift"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "LED_GREEN_F3_POWER1")
+					(reference "LED1")
 					(unit 1)
 				)
 			)
@@ -22783,7 +22769,7 @@
 	(symbol
 		(lib_name "GND_15")
 		(lib_id "power:GND")
-		(at 158.75 191.77 0)
+		(at 137.16 190.5 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -22793,7 +22779,7 @@
 		(dnp no)
 		(uuid "6c090073-c821-47da-bf89-5e72219c2f1a")
 		(property "Reference" "#PWR028"
-			(at 158.75 198.12 0)
+			(at 137.16 196.85 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22804,7 +22790,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 155.702 191.77 0)
+			(at 134.112 190.5 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -22814,7 +22800,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 158.75 191.77 0)
+			(at 137.16 190.5 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22825,7 +22811,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 158.75 191.77 0)
+			(at 137.16 190.5 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22836,7 +22822,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 158.75 191.77 0)
+			(at 137.16 190.5 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -26561,7 +26547,7 @@
 			)
 		)
 		(property "Value" "150 uF 10V"
-			(at 159.004 189.484 0)
+			(at 159.004 178.562 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -28999,7 +28985,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "e32c98b8-b3a6-4476-9ea0-6f04b487ab13")
-		(property "Reference" "LED_RED_F3_ERROR1"
+		(property "Reference" "LED2"
 			(at 196.85 52.578 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29010,7 +28996,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "LED_ERROR"
+		(property "Value" "LED_RED_F3"
 			(at 205.74 43.688 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29043,7 +29029,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "LED_RED_F3_ERROR1"
 			(at 203.2 43.18 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29062,7 +29048,7 @@
 		(instances
 			(project "controller_Tv_Lift"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "LED_RED_F3_ERROR1")
+					(reference "LED2")
 					(unit 1)
 				)
 			)
@@ -29658,7 +29644,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "f9786c69-b41e-4d9a-9717-74db18fdf549")
-		(property "Reference" "D3"
+		(property "Reference" "LED3"
 			(at 281.686 29.7052 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29702,7 +29688,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "LED_Dual_Bidirectional_GREEN_BLUE"
 			(at 274.32 30.48 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29721,7 +29707,7 @@
 		(instances
 			(project "controller_Tv_Lift"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "D3")
+					(reference "LED3")
 					(unit 1)
 				)
 			)
