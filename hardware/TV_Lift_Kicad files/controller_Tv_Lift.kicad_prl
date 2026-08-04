@@ -1,6 +1,6 @@
 {
   "board": {
-    "active_layer": 2,
+    "active_layer": 0,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
@@ -46,7 +46,7 @@
       "board_outline_area",
       "ly_points"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdd2f",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdd2b",
     "zone_display_mode": 0
   },
   "git": {
@@ -119,8 +119,8 @@
   "project": {
     "files": [
       {
-        "name": "controller_Tv_Lift.kicad_pcb",
-        "open": false,
+        "name": "controller_Tv_Lift.kicad_sch",
+        "open": true,
         "window": {
           "display": 0,
           "maximized": true,
@@ -131,7 +131,7 @@
         }
       },
       {
-        "name": "controller_Tv_Lift.kicad_sch",
+        "name": "controller_Tv_Lift.kicad_pcb",
         "open": false,
         "window": {
           "display": 0,

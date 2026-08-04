@@ -783,7 +783,7 @@
         "uuid": "906b0219-e8e2-4a64-a5ea-d0350d472c53"
       }
     ],
-    "used_designators": "MOTOR_OUT2,M_ENCODER1,#PWR1-48,#PWR111-112,D1-4,D7-8,JP1,F1,SW4-5,C1-21,U1-11,J1-3,J5-11,j4,LED_RED_F3_ERROR1,LED_GREEN_F3_POWER1,Q1,R1-22,H1-4,L1,NT1-2",
+    "used_designators": "MOTOR_OUT2,M_ENCODER1,#PWR1-48,#PWR111-112,D1-4,D7-8,JP1,F1,U1-11,C1-21,SW4-5,J1-3,J5-11,j4,LED_RED_F3_ERROR1,LED_GREEN_F3_POWER1,Q1,R1-22,H1-4,L1,NT1-2",
     "variants": []
   },
   "sheets": [
