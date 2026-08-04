@@ -14597,6 +14597,12 @@
 		(uuid "a10572e4-43ec-4d40-bf30-5625a1696bfd")
 	)
 	(junction
+		(at 129.54 31.75)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a8c42fda-5bca-4cf3-8b94-c9ca99906613")
+	)
+	(junction
 		(at 147.32 167.64)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14703,12 +14709,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e87fd596-8fdc-43f3-a9de-44c9a10218e7")
-	)
-	(junction
-		(at 129.54 31.75)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ef70263c-5256-4847-a8b2-44b46db563c2")
 	)
 	(junction
 		(at 236.22 99.06)
@@ -15306,6 +15306,16 @@
 	)
 	(wire
 		(pts
+			(xy 138.43 21.59) (xy 138.43 19.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f31c7b4-8d08-4227-a816-7ac2ecd5058d")
+	)
+	(wire
+		(pts
 			(xy 144.78 44.45) (xy 146.05 44.45)
 		)
 		(stroke
@@ -15436,7 +15446,7 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 19.05) (xy 129.54 31.75)
+			(xy 129.54 21.59) (xy 129.54 31.75)
 		)
 		(stroke
 			(width 0)
@@ -15476,7 +15486,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 19.05) (xy 138.43 19.05)
+			(xy 137.16 21.59) (xy 138.43 21.59)
 		)
 		(stroke
 			(width 0)
@@ -15596,7 +15606,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 21.59) (xy 100.33 21.59)
+			(xy 119.38 21.59) (xy 100.33 21.59)
 		)
 		(stroke
 			(width 0)
@@ -16836,7 +16846,7 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 27.94) (xy 125.73 29.21)
+			(xy 119.38 27.94) (xy 119.38 29.21)
 		)
 		(stroke
 			(width 0)
@@ -18280,7 +18290,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "0cf1fe9b-7476-456d-a4e1-c86a2c5311c0")
 		(property "Reference" "U4"
 			(at 102.3494 24.13 0)
@@ -18294,7 +18303,7 @@
 			)
 		)
 		(property "Value" "ESP32-WROOM-32"
-			(at 102.3494 26.67 0)
+			(at 104.648 97.536 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18561,7 +18570,7 @@
 				)
 			)
 		)
-		(property "Value" "1N5822"
+		(property "Value" "80SQ045"
 			(at 82.8675 166.37 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19952,7 +19961,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 125.73 25.4 0)
+		(at 119.38 25.4 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -19962,7 +19971,7 @@
 		(dnp no)
 		(uuid "2c957d5d-decc-4702-a380-a782f30c048a")
 		(property "Reference" "C11"
-			(at 117.348 17.272 0)
+			(at 110.998 17.272 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -19973,7 +19982,7 @@
 			)
 		)
 		(property "Value" "0.1 uF 16V"
-			(at 114.046 19.812 0)
+			(at 107.696 19.812 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -19984,7 +19993,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 126.6952 29.21 0)
+			(at 120.3452 29.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19995,7 +20004,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 125.73 25.4 0)
+			(at 119.38 25.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20006,7 +20015,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 125.73 25.4 0)
+			(at 119.38 25.4 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -23867,7 +23876,7 @@
 	(symbol
 		(lib_name "GND_11")
 		(lib_id "power:GND")
-		(at 125.73 27.94 0)
+		(at 119.38 27.94 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -23877,7 +23886,7 @@
 		(dnp no)
 		(uuid "82927171-2b5b-471b-9663-fcc651a4db83")
 		(property "Reference" "#PWR025"
-			(at 125.73 34.29 0)
+			(at 119.38 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23888,7 +23897,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 123.444 28.194 0)
+			(at 117.094 28.194 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -23898,7 +23907,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 125.73 27.94 0)
+			(at 119.38 27.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23909,7 +23918,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 125.73 27.94 0)
+			(at 119.38 27.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23920,7 +23929,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 125.73 27.94 0)
+			(at 119.38 27.94 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27882,7 +27891,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 133.35 19.05 270)
+		(at 133.35 21.59 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -27893,16 +27902,6 @@
 		(fields_autoplaced yes)
 		(uuid "ca7c08ca-21f9-43c3-908c-e689ba690323")
 		(property "Reference" "R5"
-			(at 133.35 12.7 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "2.2k"
 			(at 133.35 15.24 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27912,8 +27911,18 @@
 				)
 			)
 		)
+		(property "Value" "2.2k"
+			(at 133.35 17.78 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 133.35 17.272 90)
+			(at 133.35 19.812 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27924,7 +27933,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 133.35 19.05 0)
+			(at 133.35 21.59 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27935,7 +27944,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 133.35 19.05 0)
+			(at 133.35 21.59 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
