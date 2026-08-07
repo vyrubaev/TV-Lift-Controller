@@ -123,11 +123,11 @@
         "open": true,
         "window": {
           "display": 0,
-          "maximized": true,
+          "maximized": false,
           "pos_x": 0,
-          "pos_y": 38,
+          "pos_y": 37,
           "size_x": 1470,
-          "size_y": 782
+          "size_y": 919
         }
       }
     ]

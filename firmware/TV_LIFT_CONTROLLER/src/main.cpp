@@ -1,18 +1,18 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "Logger/Logger.h"
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+Logger logger;
+
+void setup()
+{
+    logger.init();
+
+    logger.info("System started");
+    logger.warning("This is a warning");
+    logger.error("This is an error");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
 }
