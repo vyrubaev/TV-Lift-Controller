@@ -169,7 +169,7 @@
         "min_via_diameter": 0.4,
         "solder_mask_clearance": 0.0,
         "solder_mask_min_width": 0.0,
-        "solder_mask_to_copper_clearance": 0.0,
+        "solder_mask_to_copper_clearance": 0.005,
         "use_height_for_length_calcs": true
       },
       "teardrop_options": [
@@ -657,27 +657,15 @@
           "show": true
         },
         {
-          "group_by": true,
-          "label": "Value",
-          "name": "Value",
-          "show": true
-        },
-        {
-          "group_by": false,
-          "label": "Datasheet",
-          "name": "Datasheet",
-          "show": true
-        },
-        {
-          "group_by": false,
-          "label": "Footprint",
-          "name": "Footprint",
-          "show": true
-        },
-        {
           "group_by": false,
           "label": "Qty",
           "name": "${QUANTITY}",
+          "show": true
+        },
+        {
+          "group_by": true,
+          "label": "Value",
+          "name": "Value",
           "show": true
         },
         {
@@ -687,16 +675,28 @@
           "show": true
         },
         {
-          "group_by": false,
+          "group_by": true,
+          "label": "Exclude from BOM",
+          "name": "${EXCLUDE_FROM_BOM}",
+          "show": true
+        },
+        {
+          "group_by": true,
           "label": "Exclude from Board",
           "name": "${EXCLUDE_FROM_BOARD}",
-          "show": false
+          "show": true
+        },
+        {
+          "group_by": true,
+          "label": "Footprint",
+          "name": "Footprint",
+          "show": true
         },
         {
           "group_by": false,
-          "label": "Exclude from BOM",
-          "name": "${EXCLUDE_FROM_BOM}",
-          "show": false
+          "label": "Datasheet",
+          "name": "Datasheet",
+          "show": true
         },
         {
           "group_by": false,
@@ -725,7 +725,7 @@
       ],
       "filter_string": "",
       "group_symbols": true,
-      "include_excluded_from_bom": false,
+      "include_excluded_from_bom": true,
       "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
@@ -783,7 +783,7 @@
         "uuid": "906b0219-e8e2-4a64-a5ea-d0350d472c53"
       }
     ],
-    "used_designators": "MOTOR_OUT2,M_ENCODER1,#PWR1-48,#PWR111-112,D1-4,D7-8,JP1,F1,U1-11,C1-21,SW4-5,J1-3,J5-11,j4,LED_RED_F3_ERROR1,LED_GREEN_F3_POWER1,Q1,R1-22,H1-4,L1,NT1-2",
+    "used_designators": "NT1-2,L1,H1-4,R1-22,Q1-2,LED_GREEN_F3_POWER1,LED_RED_F3_ERROR1,j4,J1-3,J5-11,C1-21,SW4-5,U1-11,F1,JP1,D1-4,D7-8,#PWR1-48,#PWR111-112,M_ENCODER1,MOTOR_OUT2",
     "variants": []
   },
   "sheets": [
