@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include <stdint.h>
 
 namespace BoardConfig
 {
@@ -20,6 +20,9 @@ namespace BoardConfig
     constexpr uint8_t MOTOR1_PWM= 4;
     constexpr uint8_t MOTOR1_DIAG = 33;
     constexpr uint8_t MOTOR1_CURR_SENS = 32;
+
+    constexpr uint8_t MOTOR_DEFAULT_SPEED = 200;
+    
 
     // -------------------------
     // ENCODERS
