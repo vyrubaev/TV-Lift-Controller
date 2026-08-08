@@ -14749,6 +14749,12 @@
 		(uuid "4a9d8719-29c0-47d5-8089-a390f5b783e3")
 	)
 	(junction
+		(at 182.88 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "544a0327-7420-4901-a020-3d03d86f07eb")
+	)
+	(junction
 		(at 91.44 106.68)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14825,12 +14831,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8630fd08-87ce-4f9d-8a91-9bc71707a76e")
-	)
-	(junction
-		(at 182.88 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "89c8662f-247c-4009-9cb3-2cde481f51de")
 	)
 	(junction
 		(at 179.07 71.12)
@@ -15170,7 +15170,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 71.12) (xy 168.91 71.12)
+			(xy 158.75 71.12) (xy 168.91 71.12)
 		)
 		(stroke
 			(width 0)
@@ -15320,7 +15320,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 40.64) (xy 182.88 40.64)
+			(xy 167.64 40.64) (xy 182.88 40.64)
 		)
 		(stroke
 			(width 0)
@@ -15930,7 +15930,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 62.23) (xy 154.94 71.12)
+			(xy 158.75 62.23) (xy 158.75 71.12)
 		)
 		(stroke
 			(width 0)
@@ -16610,7 +16610,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 40.64) (xy 156.21 40.64)
+			(xy 158.75 40.64) (xy 160.02 40.64)
 		)
 		(stroke
 			(width 0)
@@ -16670,7 +16670,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 40.64) (xy 154.94 54.61)
+			(xy 158.75 40.64) (xy 158.75 54.61)
 		)
 		(stroke
 			(width 0)
@@ -17669,7 +17669,7 @@
 		(uuid "28b61bf0-7f83-4203-948b-c6fd215f961e")
 	)
 	(label "M1_LIMIT_UP"
-		(at 154.94 40.64 180)
+		(at 158.75 40.64 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -19215,7 +19215,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1 nF 16V"
+		(property "Value" "1 nF 50V"
 			(at 214.122 101.346 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20865,7 +20865,7 @@
 			)
 		)
 		(property "Description" "ENCODER"
-			(at 271.526 103.632 0)
+			(at 265.938 92.202 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -22735,7 +22735,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1 nF 16V"
+		(property "Value" "1 nF 50V"
 			(at 192.786 87.122 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25484,7 +25484,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 160.02 40.64 90)
+		(at 163.83 40.64 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -25495,7 +25495,7 @@
 		(fields_autoplaced yes)
 		(uuid "981c239a-1320-4924-8f71-c4a519150db4")
 		(property "Reference" "R9"
-			(at 160.02 34.29 90)
+			(at 163.83 34.29 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25505,7 +25505,7 @@
 			)
 		)
 		(property "Value" "100"
-			(at 160.02 36.83 90)
+			(at 163.83 36.83 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -25515,7 +25515,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
-			(at 160.02 42.418 90)
+			(at 163.83 42.418 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25526,7 +25526,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 40.64 0)
+			(at 163.83 40.64 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -25537,7 +25537,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 160.02 40.64 0)
+			(at 163.83 40.64 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27183,7 +27183,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 154.94 58.42 0)
+		(at 158.75 58.42 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -27193,7 +27193,7 @@
 		(dnp no)
 		(uuid "b2de5fd4-1850-4272-8dc7-063d85578dc4")
 		(property "Reference" "C14"
-			(at 158.75 57.1499 0)
+			(at 166.37 57.1499 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27203,8 +27203,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100 nF 16V"
-			(at 151.384 60.96 0)
+		(property "Value" "100 nF 50V"
+			(at 155.194 60.96 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -27215,7 +27215,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 155.9052 62.23 0)
+			(at 159.7152 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27226,7 +27226,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 154.94 58.42 0)
+			(at 158.75 58.42 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27237,7 +27237,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 154.94 58.42 0)
+			(at 158.75 58.42 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -29334,7 +29334,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100 nF 16V"
+		(property "Value" "100 nF 50V"
 			(at 165.608 61.214 0)
 			(show_name no)
 			(do_not_autoplace no)
