@@ -30,3 +30,9 @@ void Logger::error(const char* message)
     Serial.print("[ERROR] ");
     Serial.println(message);
 }
+
+void Logger::debug(const char* message)
+{
+    Serial.print("[DEBUG] ");
+    Serial.println(message);
+}
