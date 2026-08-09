@@ -37,7 +37,6 @@
       "grid",
       "footprints_front",
       "footprints_back",
-      "footprint_references",
       "tracks",
       "bitmaps",
       "pads",
@@ -46,7 +45,7 @@
       "board_outline_area",
       "ly_points"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdf6b",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdf3b",
     "zone_display_mode": 0
   },
   "git": {
@@ -120,14 +119,14 @@
     "files": [
       {
         "name": "controller_Tv_Lift.kicad_sch",
-        "open": true,
+        "open": false,
         "window": {
           "display": 0,
-          "maximized": false,
+          "maximized": true,
           "pos_x": 0,
-          "pos_y": 37,
+          "pos_y": 38,
           "size_x": 1470,
-          "size_y": 919
+          "size_y": 782
         }
       }
     ]

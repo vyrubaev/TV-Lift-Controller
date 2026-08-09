@@ -14773,7 +14773,7 @@
 		(uuid "5cb46939-89be-4121-be93-971cb274dcfb")
 	)
 	(junction
-		(at 100.33 21.59)
+		(at 100.33 20.32)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5df32c0d-71ac-42f0-a892-222903d78e41")
@@ -14899,6 +14899,12 @@
 		(uuid "af49e563-a1d2-451c-9171-947cbcace3f6")
 	)
 	(junction
+		(at 156.21 187.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b57127de-ceba-445d-a41a-fdcb271e0df7")
+	)
+	(junction
 		(at 228.6 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14927,6 +14933,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c91a8999-40e0-4048-b60c-d63b143cc94e")
+	)
+	(junction
+		(at 81.28 193.04)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ca30bf3a-ce10-4484-affb-bd65964b24a4")
 	)
 	(junction
 		(at 200.66 144.78)
@@ -15267,16 +15279,6 @@
 			(type default)
 		)
 		(uuid "13b8f3b6-afe1-4b24-916a-c27064cb469c")
-	)
-	(wire
-		(pts
-			(xy 100.33 20.32) (xy 100.33 21.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "13e711cc-6969-46fd-8997-7e25beae5793")
 	)
 	(wire
 		(pts
@@ -15640,7 +15642,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 187.96) (xy 158.75 187.96)
+			(xy 137.16 187.96) (xy 156.21 187.96)
 		)
 		(stroke
 			(width 0)
@@ -15690,7 +15692,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 22.86) (xy 81.28 21.59)
+			(xy 81.28 22.86) (xy 81.28 20.32)
 		)
 		(stroke
 			(width 0)
@@ -15880,7 +15882,7 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 21.59) (xy 100.33 21.59)
+			(xy 119.38 20.32) (xy 100.33 20.32)
 		)
 		(stroke
 			(width 0)
@@ -16020,7 +16022,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 21.59) (xy 100.33 21.59)
+			(xy 81.28 20.32) (xy 100.33 20.32)
 		)
 		(stroke
 			(width 0)
@@ -17010,6 +17012,26 @@
 	)
 	(wire
 		(pts
+			(xy 81.28 193.04) (xy 87.63 193.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b9691928-ca0d-4f23-ae25-74bebd149834")
+	)
+	(wire
+		(pts
+			(xy 119.38 20.32) (xy 119.38 21.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b9c4e53e-30f5-4f0d-a03e-5973e0de85f4")
+	)
+	(wire
+		(pts
 			(xy 71.12 193.04) (xy 76.2 193.04)
 		)
 		(stroke
@@ -17110,6 +17132,16 @@
 	)
 	(wire
 		(pts
+			(xy 156.21 187.96) (xy 158.75 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c9a74aa6-7bf0-466d-af26-48ee61aa81f3")
+	)
+	(wire
+		(pts
 			(xy 101.6 114.3) (xy 111.76 114.3)
 		)
 		(stroke
@@ -17130,7 +17162,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 21.59) (xy 100.33 26.67)
+			(xy 100.33 20.32) (xy 100.33 26.67)
 		)
 		(stroke
 			(width 0)
@@ -17410,7 +17442,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 193.04) (xy 87.63 193.04)
+			(xy 76.2 193.04) (xy 81.28 193.04)
 		)
 		(stroke
 			(width 0)
@@ -20414,7 +20446,7 @@
 		(dnp no)
 		(uuid "2c957d5d-decc-4702-a380-a782f30c048a")
 		(property "Reference" "C11"
-			(at 110.998 17.272 0)
+			(at 118.618 20.574 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20425,7 +20457,7 @@
 			)
 		)
 		(property "Value" "100 nF 16V"
-			(at 107.696 19.812 0)
+			(at 115.316 23.114 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -22241,6 +22273,84 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 81.28 193.04 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "5a12a786-f95b-4ce5-8edd-4b06400bcaa5")
+		(property "Reference" "TP5"
+			(at 79.502 195.072 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GNDPWR"
+			(at 77.978 187.96 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
+			(at 86.36 193.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 86.36 193.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 81.28 193.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "27824e02-fa38-453c-80df-4fb27dea24c3")
+		)
+		(instances
+			(project "controller_Tv_Lift"
+				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
+					(reference "TP5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Switch:SW_Push")
 		(at 62.23 31.75 0)
 		(unit 1)
@@ -22262,7 +22372,7 @@
 				)
 			)
 		)
-		(property "Value" "Reset"
+		(property "Value" "TS-1187A-BAB"
 			(at 62.23 26.67 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -22272,7 +22382,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+		(property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_XKB_TS-1187A"
 			(at 62.23 26.67 0)
 			(hide yes)
 			(show_name no)
@@ -22294,7 +22404,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" "RESET"
 			(at 62.23 31.75 0)
 			(hide yes)
 			(show_name no)
@@ -23442,7 +23552,7 @@
 				)
 			)
 		)
-		(property "Value" "STOP"
+		(property "Value" "TS-1187A-BAB"
 			(at 218.44 156.21 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23452,7 +23562,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+		(property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_XKB_TS-1187A"
 			(at 218.44 163.83 0)
 			(hide yes)
 			(show_name no)
@@ -23474,7 +23584,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" "STOP"
 			(at 218.44 158.75 0)
 			(hide yes)
 			(show_name no)
@@ -23523,7 +23633,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "UP"
+		(property "Value" "TS-1187A-BAB"
 			(at 186.69 138.4299 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -23534,7 +23644,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+		(property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_XKB_TS-1187A"
 			(at 180.34 137.16 0)
 			(hide yes)
 			(show_name no)
@@ -23556,7 +23666,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" "UP"
 			(at 185.42 137.16 0)
 			(hide yes)
 			(show_name no)
@@ -23735,6 +23845,84 @@
 			(project "controller_Tv_Lift"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "JP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 156.21 187.96 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "79e5eef4-7e6b-4719-9115-e97b5900426f")
+		(property "Reference" "TP4"
+			(at 154.432 189.992 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Signal GND"
+			(at 149.86 191.516 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
+			(at 161.29 187.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 161.29 187.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 156.21 187.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b4b71ec4-bf4c-457a-83b3-b195faa1487b")
+		)
+		(instances
+			(project "controller_Tv_Lift"
+				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
+					(reference "TP4")
 					(unit 1)
 				)
 			)
@@ -24311,7 +24499,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 117.094 28.194 0)
+			(at 122.428 27.686 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -24948,7 +25136,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "DOWN"
+		(property "Value" "TS-1187A-BAB"
 			(at 191.77 151.1299 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24959,7 +25147,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+		(property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_XKB_TS-1187A"
 			(at 185.42 149.86 0)
 			(hide yes)
 			(show_name no)
@@ -24981,7 +25169,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" "DOWN"
 			(at 190.5 149.86 0)
 			(hide yes)
 			(show_name no)

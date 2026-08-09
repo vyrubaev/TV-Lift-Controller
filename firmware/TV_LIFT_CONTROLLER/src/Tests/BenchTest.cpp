@@ -1,63 +1,47 @@
 #include "BenchTest.h"
 
-
-#include "../Drivers/Motor.h"
 #include "../Logger/Logger.h"
-
-
-Motor motor;
 
 
 void BenchTest::init()
 {
-    motor.init();
+    m_inputs.init();
 
-    Logger::info("Bench test started");
+    Logger::info("Input test initialized");
 }
-
 
 
 void BenchTest::run()
 {
-
-    Logger::info("FORWARD");
-
-    motor.setSpeed(255);
-    Logger::debug("Motor speed set to 255");
-
-    motor.forward();
-
-    if(motor.getState() == MotorState::FORWARD)
-{
-    Logger::debug("State check: FORWARD");
-}
-
-    delay(3000);
+    m_inputs.update();
 
 
-
-    Logger::info("STOP");
-
-    motor.stop();
-
-    delay(1000);
+    if (m_inputs.forwardTriggered())
+    {
+        Logger::debug("FORWARD triggered");
+    }
 
 
+    if (m_inputs.reverseTriggered())
+    {
+        Logger::debug("REVERSE triggered");
+    }
 
-    Logger::info("REVERSE");
 
-    motor.setSpeed(20);
-    Logger::debug("Motor speed set to 20");
-    
-    motor.reverse();
+    if (m_inputs.stopTriggered())
+    {
+        Logger::debug("STOP triggered");
+    }
 
-    delay(3000);
 
-    Logger::info("STOP");
+    if (m_inputs.forwardLimit())
+    {
+        Logger::debug("FORWARD LIMIT active");
+    }
 
-    motor.stop();
-    
 
-    delay(1000);
-
-}
+    if (m_inputs.reverseLimit())
+    {
+        Logger::debug("REVERSE LIMIT active");
+    }
+} 
