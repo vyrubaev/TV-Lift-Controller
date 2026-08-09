@@ -9,6 +9,6 @@ constexpr bool IS_MASTER = true;
 
 constexpr uint8_t NODE_ID = 1;
 
-constexpr uint8_t MOTOR_SPEED = 200;
+constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
 
 }

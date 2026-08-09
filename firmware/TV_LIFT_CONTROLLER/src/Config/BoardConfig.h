@@ -21,7 +21,7 @@ namespace BoardConfig
     constexpr uint8_t MOTOR1_DIAG = 33;
     constexpr uint8_t MOTOR1_CURR_SENS = 32;
 
-    constexpr uint8_t MOTOR_DEFAULT_SPEED = 200;
+    constexpr uint8_t MOTOR_DEFAULT_SPEED = 180; // range 0-255
     
 
     // -------------------------
