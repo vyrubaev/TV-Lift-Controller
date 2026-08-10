@@ -37,6 +37,7 @@
       "grid",
       "footprints_front",
       "footprints_back",
+      "footprint_references",
       "tracks",
       "bitmaps",
       "pads",
@@ -45,7 +46,7 @@
       "board_outline_area",
       "ly_points"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdf3b",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdf2f",
     "zone_display_mode": 0
   },
   "git": {
