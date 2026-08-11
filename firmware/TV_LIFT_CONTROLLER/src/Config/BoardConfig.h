@@ -17,7 +17,7 @@ namespace BoardConfig
 
     constexpr uint8_t MOTOR1_INA = 16;
     constexpr uint8_t MOTOR1_INB = 17;
-    constexpr uint8_t MOTOR1_PWM= 12;
+    constexpr uint8_t MOTOR1_PWM= 12; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
     constexpr uint8_t MOTOR1_DIAG = 33;
     constexpr uint8_t MOTOR1_CURR_SENS = 32;
 
@@ -53,11 +53,11 @@ namespace BoardConfig
     constexpr uint8_t UART_TX_PIN = 1;
     constexpr uint8_t UART_RX_PIN = 3;
 
-    constexpr uint8_t CAN_TX_PIN = 2;
+    constexpr uint8_t CAN_TX_PIN = 5; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
     constexpr uint8_t CAN_RX_PIN = 15; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
 
     constexpr uint8_t IR_RECEIVER = 14;
-    constexpr uint8_t IR_TRANSMITTER = 5;
+    constexpr uint8_t IR_TRANSMITTER = 2;
 
     // -------------------------
     // Ethernet

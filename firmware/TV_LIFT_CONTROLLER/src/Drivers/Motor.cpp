@@ -41,8 +41,6 @@ void Motor::reverse()
 
     stop();
 
-    delay(10);
-
     digitalWrite(
         BoardConfig::MOTOR1_INA,
         LOW);
@@ -68,8 +66,6 @@ void Motor::forward()
     }
 
     stop();
-
-    delay(10);
 
     digitalWrite(
         BoardConfig::MOTOR1_INB,
