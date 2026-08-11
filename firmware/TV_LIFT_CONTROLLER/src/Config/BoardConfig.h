@@ -17,7 +17,7 @@ namespace BoardConfig
 
     constexpr uint8_t MOTOR1_INA = 16;
     constexpr uint8_t MOTOR1_INB = 17;
-    constexpr uint8_t MOTOR1_PWM= 4;
+    constexpr uint8_t MOTOR1_PWM= 12;
     constexpr uint8_t MOTOR1_DIAG = 33;
     constexpr uint8_t MOTOR1_CURR_SENS = 32;
 
@@ -36,15 +36,15 @@ namespace BoardConfig
     // Dry contacts
     // -------------------------
 
-    constexpr uint8_t DRY_CONTACT_DOWN_PIN = 12; // warning: This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
-    constexpr uint8_t DRY_CONTACT_UP_PIN = 13;
+    constexpr uint8_t DRY_CONTACT_DOWN_PIN = 34; 
+    constexpr uint8_t DRY_CONTACT_UP_PIN = 35;
 
     // -------------------------
     // Limit switches
     // -------------------------
 
-    constexpr uint8_t LIMIT_SWITCH_DOWN_PIN = 35;
-    constexpr uint8_t LIMIT_SWITCH_UP_PIN = 34;
+    constexpr uint8_t LIMIT_SWITCH_DOWN_PIN = 13;
+    constexpr uint8_t LIMIT_SWITCH_UP_PIN = 4;
 
     // -------------------------
     // Communication
