@@ -46,7 +46,7 @@
       "board_outline_area",
       "ly_points"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdf2f",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdd2f",
     "zone_display_mode": 0
   },
   "git": {
@@ -128,6 +128,18 @@
           "pos_y": 38,
           "size_x": 1470,
           "size_y": 782
+        }
+      },
+      {
+        "name": "controller_Tv_Lift.kicad_pcb",
+        "open": false,
+        "window": {
+          "display": 0,
+          "maximized": true,
+          "pos_x": 95,
+          "pos_y": 98,
+          "size_x": 1280,
+          "size_y": 720
         }
       }
     ]
