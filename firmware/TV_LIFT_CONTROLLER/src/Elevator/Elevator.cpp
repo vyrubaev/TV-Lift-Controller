@@ -2,6 +2,7 @@
 
 #include "../Logger/Logger.h"
 
+#include "../Config/DeviceConfig.h"
 
 Elevator::Elevator()
 {
@@ -23,18 +24,58 @@ void Elevator::update()
 
 
     // -------------------------------------------------
-    // Аварийный STOP
+    //  STOP
     // -------------------------------------------------
 
     if (m_input.stopTriggered())
     {
         Logger::info("Elevator STOP");
 
+        m_limitRunOnDirection =
+            LimitRunOnDirection::NONE; // Команда STOP отменяет любой начатый добег.
+
         m_motor.stop();
 
         return;
     }
 
+    // -------------------------------------------------
+    // Добег после концевика
+    // -------------------------------------------------
+
+    if (m_limitRunOnDirection != LimitRunOnDirection::NONE)
+    {
+        const uint32_t now = millis();
+
+        uint32_t runOnTimeMs = 0;
+
+        if (
+            m_limitRunOnDirection ==
+            LimitRunOnDirection::FORWARD
+        )
+            {
+                runOnTimeMs =
+                    DeviceConfig::FORWARD_LIMIT_RUN_ON_MS;
+            }
+        else
+            {
+                runOnTimeMs =
+                    DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
+            }
+
+        if (now - m_limitRunOnStartMs >= runOnTimeMs)
+        {
+            Logger::info("Limit run-on completed");
+
+            m_motor.stop();
+
+            m_limitRunOnDirection =
+                LimitRunOnDirection::NONE;
+        }
+
+        // Пока выполняется добег, новые команды не принимаем.
+        return;
+    }
 
     // -------------------------------------------------
     // FORWARD LIMIT
@@ -46,10 +87,13 @@ void Elevator::update()
     )
     {
         Logger::warning(
-            "FORWARD limit reached"
-        );
+        "FORWARD limit reached; run-on started"
+    );
 
-        m_motor.stop();
+    m_limitRunOnDirection =
+        LimitRunOnDirection::FORWARD;
+
+        m_limitRunOnStartMs = millis();
 
         return;
     }
@@ -65,10 +109,13 @@ void Elevator::update()
     )
     {
         Logger::warning(
-            "REVERSE limit reached"
-        );
+        "REVERSE limit reached; run-on started"
+    );
 
-        m_motor.stop();
+    m_limitRunOnDirection =
+        LimitRunOnDirection::REVERSE;
+
+    m_limitRunOnStartMs = millis();
 
         return;
     }

@@ -22,6 +22,8 @@ public:
 
     void stop();
 
+    void IRAM_ATTR emergencyStopFromISR();
+
     MotorState getState();
 
     void setSpeed(uint8_t speed);

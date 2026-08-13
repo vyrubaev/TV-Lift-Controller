@@ -8,6 +8,8 @@
 
 #include "Logger/Logger.h" // тут он для тестов, в будущем будет удален
 
+#include <soc/gpio_struct.h>
+
 Motor::Motor()
     : m_speed(DeviceConfig::MOTOR_SPEED)
 {
@@ -85,10 +87,6 @@ void Motor::forward()
 
 void Motor::stop()
 {
-    if(m_state == MotorState::STOPPED)
-    {
-        return;
-    }
 
     ledcWrite(
         BoardConfig::MOTOR1_PWM,
@@ -106,6 +104,15 @@ void Motor::stop()
     
     Logger::debug("Motor stop");
 
+}
+
+void Motor::emergencyStopFromISR()
+{
+    constexpr uint32_t MOTOR_DIRECTION_MASK =
+        (1UL << BoardConfig::MOTOR1_INA) |
+        (1UL << BoardConfig::MOTOR1_INB);
+
+    GPIO.out_w1tc = MOTOR_DIRECTION_MASK;
 }
 
 MotorState Motor::getState()
