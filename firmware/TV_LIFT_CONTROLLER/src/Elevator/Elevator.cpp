@@ -22,6 +22,7 @@ void Elevator::init()
 void Elevator::update()
 {   
     m_input.update();
+    m_motor.update();
 
     // -------------------------------------------------
     //  EMERGENCY FAULT (Апаратный сбой мотора из ISR)

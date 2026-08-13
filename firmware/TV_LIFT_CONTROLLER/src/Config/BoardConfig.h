@@ -18,8 +18,8 @@ namespace BoardConfig
     constexpr uint8_t MOTOR1_INA = 16;
     constexpr uint8_t MOTOR1_INB = 17;
     constexpr uint8_t MOTOR1_PWM= 12; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
-    constexpr uint8_t MOTOR1_DIAG = 33;
-    constexpr uint8_t MOTOR1_CURR_SENS = 32;
+    constexpr uint8_t MOTOR1_DIAG = 33; // пин DIAG с драйвера мотора, который сигнализирует о неисправности драйвера
+    constexpr uint8_t MOTOR1_CURR_SENS = 32; //пин для измерения тока мотора с выхода драйвера мотора
 
     constexpr uint8_t MOTOR_DEFAULT_SPEED = 180; // range 0-255
     

@@ -47,9 +47,82 @@ void Motor::init()
         digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG),
         Motor::emergencyStopFromISR,
         FALLING
-);
+    );
 
+    // Настройка АЦП ESP32 для датчика тока
+    pinMode(BoardConfig::MOTOR1_CURR_SENS, INPUT);
+    analogReadResolution(12); // 12 бит (0..4095)
+
+}
+
+void Motor::update() {
+    // Если мотор движется, проверяем ток
+    if (m_state == MotorState::FORWARD || m_state == MotorState::REVERSE) {
+        checkOvercurrent();
+    }
+}
+
+float Motor::readCurrentSensor() { // Считываем ток с датчика тока через АЦП - необходимо уточнить при калибровке под конкретный мотор и драйвер
+    // Считываем АЦП (фильтрация усреднением из 5 измерений для стабильности)
+    uint32_t rawSum = 0;
+    for (int i = 0; i < 5; i++) {
+        rawSum += analogRead(BoardConfig::MOTOR1_CURR_SENS);
+    }
+    float rawAvg = rawSum / 5.0f; // Среднее значение АЦП
+
+    // Перевод из попугаев АЦП (0..4095) в Вольты (0..3.3V)
+    float voltage = (rawAvg / 4095.0f) * 3.3f;
+
+    // Перевод Вольт в Амперы с учетом смещения и чувствительности
+    float current = (voltage - DeviceConfig::CURRENT_SENSOR_OFFSET_V) / DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
     
+    return abs(current); // Возвращаем абсолютное значение тока
+}
+
+float Motor::getCurrentAmps() {
+    return readCurrentSensor();
+}
+
+void Motor::checkOvercurrent() {
+    float currentAmps = readCurrentSensor();
+
+    if (currentAmps >= DeviceConfig::maxMotorCurrentAmps) {
+        // Если это первое превышение — запоминаем время
+        if (m_overcurrentStartMs == 0) {
+            m_overcurrentStartMs = millis();
+        } 
+        // Если ток превышен непрерывно дольше лимита — ВЫЗЫВАЕМ АВАРИЮ
+        else if (millis() - m_overcurrentStartMs >= DeviceConfig::overcurrentTimeoutMs) {
+            stop();
+            m_state = MotorState::OVERCURRENT; // Устанавливаем состояние аварии по току
+            
+            // Включаем светодиод аварии на том же пине!
+            setFaultLED(true); 
+
+            Logger::error("CRITICAL: Overcurrent detected! Current: %.2f A\n", currentAmps);
+        }
+    } else {
+        // Ток упал ниже порога — сбрасываем таймер (пусковой ток успешно пройден)
+        m_overcurrentStartMs = 0;
+    }
+}
+
+void Motor::setFaultLED(bool enable) {
+    if (enable) {
+        // Переключаем пин на ВЫХОД и подаем LOW (зажигаем LED)
+        pinMode(BoardConfig::MOTOR1_DIAG, OUTPUT);
+        digitalWrite(BoardConfig::MOTOR1_DIAG, LOW);
+    } else {
+        // Возвращаем пин в режим ВХОДА для чтения аварий драйвера
+        pinMode(BoardConfig::MOTOR1_DIAG, INPUT_PULLUP);
+    }
+}
+
+void Motor::clearFault() { // не уверен что это нужно, но пусть будет для отладки
+    setFaultLED(false); // Гасим LED и переводим пин обратно в INPUT_PULLUP
+    m_state = MotorState::STOPPED;
+    m_overcurrentStartMs = 0;
+    Logger::info("OVERCURRENT cleared."); // не уверен что это нужно, но пусть будет для отладки
 }
 
 void Motor::reverse()
@@ -170,3 +243,4 @@ uint8_t Motor::getSpeed()
 {
     return m_speed;
 }
+
