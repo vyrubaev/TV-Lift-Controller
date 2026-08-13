@@ -86,10 +86,22 @@ void Elevator::update()
         m_motor.getState() == MotorState::FORWARD
     )
     {
+        if (DeviceConfig::FORWARD_LIMIT_RUN_ON_MS == 0)
+        {
+            Logger::warning(
+                "FORWARD limit reached; motor stopped"
+            );
+
+            m_motor.stop();
+
+            return;
+        }
+
         Logger::warning(
         "FORWARD limit reached; run-on started"
     );
-
+    
+    
     m_limitRunOnDirection =
         LimitRunOnDirection::FORWARD;
 
@@ -108,6 +120,17 @@ void Elevator::update()
         m_motor.getState() == MotorState::REVERSE
     )
     {
+        if (DeviceConfig::REVERSE_LIMIT_RUN_ON_MS == 0)
+        {
+            Logger::warning(
+                "REVERSE limit reached; motor stopped"
+            );
+
+            m_motor.stop();
+
+            return;
+        }
+        
         Logger::warning(
         "REVERSE limit reached; run-on started"
     );

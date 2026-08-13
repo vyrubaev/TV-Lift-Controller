@@ -113,6 +113,7 @@ void Motor::emergencyStopFromISR()
         (1UL << BoardConfig::MOTOR1_INB);
 
     GPIO.out_w1tc = MOTOR_DIRECTION_MASK;
+    
 }
 
 MotorState Motor::getState()
