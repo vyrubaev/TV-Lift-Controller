@@ -1,17 +1,16 @@
 #include "Motor.h"
-
 #include <Arduino.h>
-
 #include "../Config/BoardConfig.h"
-
 #include "../Config/DeviceConfig.h"
-
 #include "Logger/Logger.h" // тут он для тестов, в будущем будет удален
-
 #include <soc/gpio_struct.h>
 
+
+std::atomic<bool> Motor::s_isEmergency{false}; // Инициализация статического атомарного флага
+
 Motor::Motor()
-    : m_speed(DeviceConfig::MOTOR_SPEED)
+    : m_speed(DeviceConfig::MOTOR_SPEED),
+      m_state(MotorState::STOPPED)
 {
 }
 
@@ -32,6 +31,25 @@ void Motor::init()
         PWM_RESOLUTION);
 
     stop();
+
+    pinMode(
+        BoardConfig::MOTOR1_DIAG,
+        INPUT);
+
+
+    if (digitalRead(BoardConfig::MOTOR1_DIAG) == LOW) // Если пин DIAG уже в LOW при старте — значит мотор ушел в аварию
+    {
+        emergencyStopFromISR(); // Устанавливаем флаг аварии и останавливаем мотор
+    }
+    
+    // Настраиваем прерывание на пине DIAG для обработки аварийной остановки
+    attachInterrupt(
+        digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG),
+        Motor::emergencyStopFromISR,
+        FALLING
+);
+
+    
 }
 
 void Motor::reverse()
@@ -100,20 +118,40 @@ void Motor::stop()
         BoardConfig::MOTOR1_INB,
         LOW);
     
-    m_state = MotorState::STOPPED;  
+    // Если мотор ушел в аварию — фиксируем состояние EMERGENCY_STOP, иначе STOPPED
+    if (s_isEmergency.load(std::memory_order_relaxed))
+        {
+            m_state = MotorState::EMERGENCY_STOP;
+        }
+    else
+        {
+            m_state = MotorState::STOPPED;
+        } 
     
     Logger::debug("Motor stop");
 
 }
 
-void Motor::emergencyStopFromISR()
+void IRAM_ATTR Motor::emergencyStopFromISR()
 {
     constexpr uint32_t MOTOR_DIRECTION_MASK =
         (1UL << BoardConfig::MOTOR1_INA) |
         (1UL << BoardConfig::MOTOR1_INB);
 
     GPIO.out_w1tc = MOTOR_DIRECTION_MASK;
-    
+
+    s_isEmergency.store(true, std::memory_order_relaxed);    // 2. ФЛАГ: Уведомляем систему о событии
+
+}
+
+bool Motor::isEmergency() const
+{
+    return s_isEmergency.load(std::memory_order_relaxed);
+}
+
+void Motor::clearEmergency()
+{
+    s_isEmergency.store(false, std::memory_order_relaxed);
 }
 
 MotorState Motor::getState()

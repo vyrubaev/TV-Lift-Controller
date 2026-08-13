@@ -1,12 +1,14 @@
 #pragma once
 
 #include <Arduino.h>
+#include <atomic> // Для безопасного обмена флагами между ISR и main thread
 
 enum class MotorState
 {
     STOPPED,
     FORWARD,
-    REVERSE
+    REVERSE,
+    EMERGENCY_STOP
 };
 
 class Motor
@@ -21,8 +23,12 @@ public:
     void reverse();
 
     void stop();
+    
+    bool isEmergency() const; // Проверка, случалась ли авария
+    
+    void clearEmergency(); // Сброс флага аварии (если нужно восстановить работу)
 
-    void IRAM_ATTR emergencyStopFromISR();
+    IRAM_ATTR static void emergencyStopFromISR(); // Обработчик прерывания для аварийной остановки мотора
 
     MotorState getState();
 
@@ -39,5 +45,7 @@ private:
     uint8_t m_speed;
    
     MotorState m_state = MotorState::STOPPED;
+
+    static std::atomic<bool> s_isEmergency; // Флаг аварийной остановки, доступный из ISR
 
 };

@@ -18,9 +18,36 @@ void Elevator::init()
 }
 
 
+
 void Elevator::update()
-{
+{   
     m_input.update();
+
+    // -------------------------------------------------
+    //  EMERGENCY FAULT (Апаратный сбой мотора из ISR)
+    // -------------------------------------------------
+    if (m_motor.isEmergency())
+    {
+        // Проверяем: зафиксировал ли мотор аварию в своем состоянии?
+        if (m_motor.getState() != MotorState::EMERGENCY_STOP)
+        {
+            Logger::error("EMERGENCY FAULT: Motor driver reported error via DIAG pin!");
+
+            m_limitRunOnDirection = LimitRunOnDirection::NONE; // Отменяем добег
+            
+            m_motor.stop(); // Обнуляем ШИМ и переводим m_state в EMERGENCY_STOP
+        }
+
+        // Если пользователь пытается нажать движение во время ошибки — пишем предупреждение
+        if (m_input.forwardTriggered() || m_input.reverseTriggered())
+        {
+            Logger::warning("Command rejected: Motor driver is in FAULT state!");
+        }
+
+        // Блокируем обработку кнопок и движение
+        return;
+    }
+
 
 
     // -------------------------------------------------
@@ -130,7 +157,7 @@ void Elevator::update()
 
             return;
         }
-        
+
         Logger::warning(
         "REVERSE limit reached; run-on started"
     );
