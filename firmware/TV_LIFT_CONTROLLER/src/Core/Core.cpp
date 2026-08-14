@@ -16,7 +16,7 @@ bool Core::init()
 
 void Core::loop()
 { 
-    elevator.update();
+    
     
 }
 

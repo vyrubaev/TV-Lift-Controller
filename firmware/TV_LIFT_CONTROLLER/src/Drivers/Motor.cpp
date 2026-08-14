@@ -1,5 +1,6 @@
 #include "Motor.h"
 #include <Arduino.h>
+#include <string>
 #include "../Config/BoardConfig.h"
 #include "../Config/DeviceConfig.h"
 #include "Logger/Logger.h" // тут он для тестов, в будущем будет удален
@@ -75,7 +76,17 @@ float Motor::readCurrentSensor() { // Считываем ток с датчик�
 
     // Перевод Вольт в Амперы с учетом смещения и чувствительности
     float current = (voltage - DeviceConfig::CURRENT_SENSOR_OFFSET_V) / DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
-    
+
+
+    // код для отладки и проверки работы датчика тока
+    //std::string logMessageRAW = "Raw data sensor reading: " + std::to_string(rawAvg);
+    std::string logMessageVolt = "Voltage aproximate: " + std::to_string(voltage) + " V";
+    std::string logMessage = "Current sensor reading: " + std::to_string(current) + " A";
+    //Logger::debug(logMessageRAW.c_str()); // Выводим в лог для отладки
+    Logger::debug(logMessageVolt.c_str()); // Выводим в лог для отладки
+    Logger::debug(logMessage.c_str()); // Выводим в лог для отладки
+    Logger::debug("--------------------------------------------------"); // Разделитель для удобства чтения лога
+    // конец кода для отладки и проверки работы датчика тока
     return abs(current); // Возвращаем абсолютное значение тока
 }
 
@@ -99,7 +110,7 @@ void Motor::checkOvercurrent() {
             // Включаем светодиод аварии на том же пине!
             setFaultLED(true); 
 
-            Logger::error("CRITICAL: Overcurrent detected! Current: %.2f A\n", currentAmps);
+            Logger::error("OVERCURRENT FAULT: Motor current exceeded limit for too long!");
         }
     } else {
         // Ток упал ниже порога — сбрасываем таймер (пусковой ток успешно пройден)
