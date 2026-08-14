@@ -2,6 +2,7 @@
 
 #include "../Drivers/Motor.h"
 #include "../Inputs/InputManager.h"
+#include "../Drivers/IRReceiver.h"
 
 class Elevator
 {
@@ -30,4 +31,5 @@ private:
 
     Motor m_motor;
     InputManager m_input;
+    IRReceiver m_irReceiver;
 };

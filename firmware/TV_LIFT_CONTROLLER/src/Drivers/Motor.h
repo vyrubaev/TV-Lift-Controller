@@ -43,7 +43,7 @@ public:
     // Защита и диагностика
     float getCurrentAmps();
     bool isOverCurrent() const { return m_state == MotorState::OVERCURRENT; }
-    void clearFault();
+    void clearOverCurrent();
 
     // Управление светодиодом аварии  (для индикации состояния аварии)
     void setFaultLED(bool enable);

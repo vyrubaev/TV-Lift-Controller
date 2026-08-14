@@ -83,9 +83,9 @@ float Motor::readCurrentSensor() { // Считываем ток с датчик�
     std::string logMessageVolt = "Voltage aproximate: " + std::to_string(voltage) + " V";
     std::string logMessage = "Current sensor reading: " + std::to_string(current) + " A";
     //Logger::debug(logMessageRAW.c_str()); // Выводим в лог для отладки
-    Logger::debug(logMessageVolt.c_str()); // Выводим в лог для отладки
-    Logger::debug(logMessage.c_str()); // Выводим в лог для отладки
-    Logger::debug("--------------------------------------------------"); // Разделитель для удобства чтения лога
+    //Logger::debug(logMessageVolt.c_str()); // Выводим в лог для отладки
+    //Logger::debug(logMessage.c_str()); // Выводим в лог для отладки
+    //Logger::debug("--------------------------------------------------"); // Разделитель для удобства чтения лога
     // конец кода для отладки и проверки работы датчика тока
     return abs(current); // Возвращаем абсолютное значение тока
 }
@@ -129,7 +129,7 @@ void Motor::setFaultLED(bool enable) {
     }
 }
 
-void Motor::clearFault() { // не уверен что это нужно, но пусть будет для отладки
+void Motor::clearOverCurrent() { // не уверен что это нужно, но пусть будет для отладки
     setFaultLED(false); // Гасим LED и переводим пин обратно в INPUT_PULLUP
     m_state = MotorState::STOPPED;
     m_overcurrentStartMs = 0;

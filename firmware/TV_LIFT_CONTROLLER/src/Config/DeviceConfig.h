@@ -25,5 +25,14 @@ constexpr float CURRENT_SENSOR_OFFSET_V = 0.0f;     // Напряжение пр
 inline float maxMotorCurrentAmps = 2.0f;       // Порог тока (Ампер)
 inline uint32_t overcurrentTimeoutMs = 300;    // Время превышения до аварии (мс)
 
+// Настройки управления лифтом инфракрасными пультом
+// HEX-коды вашей трехкнопочной системы (замените на коды вашего пульта после первого запуска)
+constexpr uint32_t IR_CODE_FORWARD    = 0x11EE18E7; 
+constexpr uint32_t IR_CODE_REVERSE   = 0x11EEE817; 
+constexpr uint32_t IR_CODE_STOP   = 0x11EE9867; 
+    
+constexpr uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/повтора кнопки
+
+
 }
 

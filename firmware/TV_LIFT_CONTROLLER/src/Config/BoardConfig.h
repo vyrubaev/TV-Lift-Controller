@@ -56,8 +56,8 @@ namespace BoardConfig
     constexpr uint8_t CAN_TX_PIN = 5; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
     constexpr uint8_t CAN_RX_PIN = 15; // WARNING - This pin is used by the ESP32 for bootstrapping. Using it may cause issues during boot.
 
-    constexpr uint8_t IR_RECEIVER = 14;
-    constexpr uint8_t IR_TRANSMITTER = 2;
+    constexpr uint8_t IR_RECEIVER_PIN = 14;
+    constexpr uint8_t IR_TRANSMITTER_PIN = 2;
 
     // -------------------------
     // Ethernet

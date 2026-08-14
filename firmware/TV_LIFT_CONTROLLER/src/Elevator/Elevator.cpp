@@ -13,6 +13,8 @@ void Elevator::init()
 {
     m_motor.init();
     m_input.init();
+    m_irReceiver.init();
+
 
     Logger::info("Elevator initialized");
 }
@@ -22,6 +24,7 @@ void Elevator::init()
 void Elevator::update()
 {   
     m_input.update();
+    m_irReceiver.update();
     m_motor.update();
 
     // -------------------------------------------------
@@ -214,5 +217,35 @@ void Elevator::update()
         m_motor.reverse();
 
         return;
+    }
+
+    // -------------------------------------------------
+    // IR Remote Commands
+    // -------------------------------------------------
+    //  Вычитываем команду от ИК
+    IRCommand command = m_irReceiver.getCommand();
+
+    // Если была авария по току и пришла любая управляющая команда — сбрасываем ошибку
+    if (m_motor.isOverCurrent() && command != IRCommand::NONE) {
+        m_motor.clearOverCurrent();
+    }
+
+    //  Выполняем действия
+    switch (command) {
+        case IRCommand::MOVE_UP:
+            m_motor.forward();
+            break;
+
+        case IRCommand::MOVE_DOWN:
+            m_motor.reverse();
+            break;
+
+        case IRCommand::STOP:
+            m_motor.stop();
+            break;
+
+        case IRCommand::NONE:
+        default:
+            break;
     }
 }
