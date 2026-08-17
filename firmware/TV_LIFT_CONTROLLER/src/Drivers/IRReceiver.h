@@ -11,8 +11,8 @@
 // Перечисление команд, понятных нашему проекту
 enum class IRCommand {
     NONE,
-    MOVE_UP,
-    MOVE_DOWN,
+    FORWARD,
+    REVERSE,
     STOP
 };
 

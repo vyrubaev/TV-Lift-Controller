@@ -4,6 +4,7 @@
 
 namespace DeviceConfig
 {
+constexpr u_int8_t MOUNT_TYPE = 1; // 0 = FLOOR, 1 = CEILING, 2 = WALL  Настройка типа лифта (по умолчанию CEILING, т.к. чаще всего используется потолочный вариант)
 
 constexpr bool IS_MASTER = true; // true = master, false = slave
 

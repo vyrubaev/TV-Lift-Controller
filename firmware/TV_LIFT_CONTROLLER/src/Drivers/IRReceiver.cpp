@@ -43,7 +43,7 @@ void IRReceiver::update() {
 IRCommand IRReceiver::parseCode(uint32_t code) {
     if (code == DeviceConfig::IR_CODE_FORWARD) {
         Logger::info("IR Command Parsed -> FORWARD");
-        return IRCommand::MOVE_UP;
+        return IRCommand::FORW;
     } 
     else if (code == DeviceConfig::IR_CODE_REVERSE) {
         Logger::info("IR Command Parsed -> REVERSE");
