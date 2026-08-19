@@ -49,6 +49,8 @@ private:
    
     MotorState m_state = MotorState::STOPPED;
 
+    uint32_t m_moveStartMs = 0; // Время старта движения мотора (для защиты по току)
+
     static std::atomic<bool> s_isEmergency; // Флаг аварийной остановки, доступный из ISR
     uint8_t m_overcurrentRetryCount = 0;
     uint32_t m_firstOvercurrentMs = 0; //  Нужно для отслеживания минуты в течени которой вохможно максимум 3 сброса OVERCURRENT

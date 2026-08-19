@@ -152,16 +152,21 @@ Elevator::PendingCommand Elevator::getNextCommand()
 // -------------------------------------------------
 void Elevator::executeCommand(const PendingCommand& cmd)
 {
-    if (m_motor.isOverCurrent()) {
-        m_motor.clearOverCurrent();
-    }
-
     switch (cmd.type) {
         case PendingCommand::Type::STOP:
+            // Сброс OVERCURRENT происходит ТОЛЬКО при вызове STOP
+            if (m_motor.isOverCurrent()) {
+                m_motor.clearOverCurrent();
+            }
             stop(cmd.source);
             break;
 
         case PendingCommand::Type::UP:
+            // Если мотор в аварии по току — игнорируем команду UP
+            if (m_motor.isOverCurrent()) {
+                Logger::warning("UP blocked: Motor is in OVERCURRENT fault! Press STOP to reset.");
+                return;
+            }
             if (isForwardLimitReached()) {
                 Logger::warning("UP blocked: FORWARD limit switch is active!");
                 return;
@@ -170,6 +175,11 @@ void Elevator::executeCommand(const PendingCommand& cmd)
             break;
 
         case PendingCommand::Type::DOWN:
+            // Если мотор в аварии по току — игнорируем команду DOWN
+            if (m_motor.isOverCurrent()) {
+                Logger::warning("DOWN blocked: Motor is in OVERCURRENT fault! Press STOP to reset.");
+                return;
+            }
             if (isReverseLimitReached()) {
                 Logger::warning("DOWN blocked: REVERSE limit switch is active!");
                 return;

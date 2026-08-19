@@ -23,6 +23,7 @@ constexpr float CURRENT_SENSOR_SENSITIVITY = 0.5f;  // Чувствительн�
 constexpr float CURRENT_SENSOR_OFFSET_V = 0.0f;     // Напряжение при 0А 
 
 // Динамические константы (будут сохраняться в Flash/NVS):
+inline float startCurrentTimeoutMs = 300; // Время превышения тока при старте (мс)
 inline float maxMotorCurrentAmps = 2.0f;       // Порог тока (Ампер)
 inline uint32_t overcurrentTimeoutMs = 300;    // Время превышения до аварии (мс)
 

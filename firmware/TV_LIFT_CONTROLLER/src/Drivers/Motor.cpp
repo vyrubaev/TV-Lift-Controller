@@ -78,13 +78,9 @@ void Motor::update() {
 }
 
 float Motor::readCurrentSensor() {
-    uint32_t rawSum = 0;
-    for (int i = 0; i < 3; i++) {
-        rawSum += analogRead(BoardConfig::MOTOR1_CURR_SENS);
-    }
-    float rawAvg = rawSum / 3.0f;
-
-    float voltage = (rawAvg / 4095.0f) * 3.3f;
+    uint32_t raw = analogRead(BoardConfig::MOTOR1_CURR_SENS);
+   
+    float voltage = (raw / 4095.0f) * 3.3f;
     float current = (voltage - DeviceConfig::CURRENT_SENSOR_OFFSET_V) / DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
 
     return std::abs(current);
@@ -95,6 +91,12 @@ float Motor::getCurrentAmps() {
 }
 
 void Motor::checkOvercurrent() {
+
+    // Игнорируем замер сразу после запуска мотора в течении DeviceConfig::startCurrentTimeoutMs мс, т.к. стартовый ток может быть выше порога
+    if (millis() - m_moveStartMs < DeviceConfig::startCurrentTimeoutMs) {
+        m_overcurrentStartMs = 0;
+        return;
+    }
     float currentAmps = readCurrentSensor();
 
     if (currentAmps >= DeviceConfig::maxMotorCurrentAmps) {
@@ -102,7 +104,11 @@ void Motor::checkOvercurrent() {
             m_overcurrentStartMs = millis();
         } 
         else if (millis() - m_overcurrentStartMs >= DeviceConfig::overcurrentTimeoutMs) {
-            stop();
+            // Выключаем аппаратные выходы напрямую без вызова stop()
+            ledcWrite(BoardConfig::MOTOR1_PWM, 0);
+            digitalWrite(BoardConfig::MOTOR1_INA, LOW);
+            digitalWrite(BoardConfig::MOTOR1_INB, LOW);
+
             m_state = MotorState::OVERCURRENT;
             setFaultLED(true); 
 
@@ -121,7 +127,6 @@ void Motor::checkOvercurrent() {
             // Если превысили 3 попытки за 1 минуту — жёсткая блокировка (как от драйвера)
             if (m_overcurrentRetryCount > 3) {
                 m_isHardFault = true;
-                s_isEmergency.store(true, std::memory_order_relaxed);
                 Logger::error("CRITICAL FAULT: Too many overcurrent events in 1 min! Power reboot required.");
             }
         }
@@ -132,10 +137,16 @@ void Motor::checkOvercurrent() {
 
 void Motor::setFaultLED(bool enable) {
     if (enable) {
+        detachInterrupt(digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG)); // Снимаем ISR
         pinMode(BoardConfig::MOTOR1_DIAG, OUTPUT);
         digitalWrite(BoardConfig::MOTOR1_DIAG, LOW);
     } else {
         pinMode(BoardConfig::MOTOR1_DIAG, INPUT_PULLUP);
+        attachInterrupt(
+            digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG),
+            Motor::emergencyStopFromISR,
+            FALLING
+        ); // Возвращаем ISR
     }
 }
 
@@ -155,16 +166,15 @@ void Motor::clearOverCurrent() {
 }
 
 void Motor::reverse()
-{
-    if (m_state == MotorState::REVERSE || isEmergency()) return;
-
-    // Авто-сброс по току при отправке команды движения (если попытки не исчерпаны)
-    if (m_state == MotorState::OVERCURRENT) {
-        clearOverCurrent();
-        if (m_state == MotorState::OVERCURRENT) return; // Сброс не прошел
+{   // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
+    if (m_state == MotorState::REVERSE || m_state == MotorState::OVERCURRENT || isEmergency()) {
+        Logger::warning("Motor reverse blocked: active fault!");
+        return;
     }
 
     stop();
+    m_moveStartMs = millis(); // Фиксируем время пуска
+    m_overcurrentStartMs = 0; // Очищаем старые замеры
 
     digitalWrite(BoardConfig::MOTOR1_INA, LOW);
     digitalWrite(BoardConfig::MOTOR1_INB, HIGH);
@@ -175,16 +185,15 @@ void Motor::reverse()
 }
 
 void Motor::forward()
-{
-    if (m_state == MotorState::FORWARD || isEmergency()) return;
-
-    // Авто-сброс по току при отправке команды движения (если попытки не исчерпаны)
-    if (m_state == MotorState::OVERCURRENT) {
-        clearOverCurrent();
-        if (m_state == MotorState::OVERCURRENT) return; // Сброс не прошел
+{   // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
+    if (m_state == MotorState::FORWARD  || m_state == MotorState::OVERCURRENT || isEmergency()) {
+        Logger::warning("Motor forward blocked: active fault!");
+        return;
     }
 
     stop();
+    m_moveStartMs = millis(); // Фиксируем время пуска
+    m_overcurrentStartMs = 0; // Очищаем старые замеры
 
     digitalWrite(BoardConfig::MOTOR1_INB, LOW);
     digitalWrite(BoardConfig::MOTOR1_INA, HIGH);
@@ -195,10 +204,16 @@ void Motor::forward()
 }
 
 void Motor::stop()
-{
+{    
     ledcWrite(BoardConfig::MOTOR1_PWM, 0);
     digitalWrite(BoardConfig::MOTOR1_INA, LOW);
     digitalWrite(BoardConfig::MOTOR1_INB, LOW);
+
+    // Авто-сброс по току при отправке команды stop (если попытки не исчерпаны)
+    if (m_state == MotorState::OVERCURRENT) {
+        clearOverCurrent();
+        return;
+    }
     
     if (s_isEmergency.load(std::memory_order_relaxed)) {
         m_state = MotorState::EMERGENCY_STOP;
@@ -227,7 +242,12 @@ bool Motor::isEmergency() const
 }
 
 void Motor::clearEmergency()
-{
+{   // Если на пине всё еще физический LOW — драйвер не восстановился
+    if (digitalRead(BoardConfig::MOTOR1_DIAG) == LOW) {
+        Logger::warning("Cannot clear emergency: motor driver Error! (DIAG pin is still LOW)");
+        return;
+    }
+
     // Сброс аппаратной аварии запрещён вручную, если включён hard fault
     if (!m_isHardFault) {
         s_isEmergency.store(false, std::memory_order_relaxed);
