@@ -41,13 +41,13 @@ void IRReceiver::update() {
 }
 
 IRCommand IRReceiver::parseCode(uint32_t code) {
-    if (code == DeviceConfig::IR_CODE_FORWARD) {
-        Logger::info("IR Command Parsed -> FORWARD");
-        return IRCommand::FORW;
+    if (code == DeviceConfig::IR_CODE_UP) {
+        Logger::info("IR Command Parsed -> MOTOR FORWARD");
+        return IRCommand::UP;
     } 
-    else if (code == DeviceConfig::IR_CODE_REVERSE) {
-        Logger::info("IR Command Parsed -> REVERSE");
-        return IRCommand::MOVE_DOWN;
+    else if (code == DeviceConfig::IR_CODE_DOWN) {
+        Logger::info("IR Command Parsed -> MOTOR REVERSE");
+        return IRCommand::DOWN;
     } 
     else if (code == DeviceConfig::IR_CODE_STOP) {
         Logger::info("IR Command Parsed -> STOP");

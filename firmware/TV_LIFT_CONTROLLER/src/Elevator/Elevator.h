@@ -23,11 +23,12 @@ enum class CommandSource {
 enum class ElevatorState {
     OPEN,
     CLOSED,
-    FORWARD,
-    REVERSE,
+    MOVING_UP,
+    MOVING_DOWN,
     RUN_ON,
-    IDLE,
-    EMERGENCY
+    STOPPED,
+    EMERGENCY,
+    UNKNOWN
 };
 
 class Elevator
@@ -37,23 +38,46 @@ public:
 
     void init();
     void update();
-    void open(CommandSource src = CommandSource::NONE);
-    void close(CommandSource src = CommandSource::NONE);
+    void moveUp(CommandSource src = CommandSource::NONE);
+    void moveDown(CommandSource src = CommandSource::NONE);
     void stop(CommandSource src = CommandSource::NONE);
 
+    // Геттер для получения текущего состояния (например, для Web/CLI)
+    ElevatorState getState() const { return m_state; }
     const char* sourceToString(CommandSource src);
 
 private:
+    struct PendingCommand {
+        enum class Type { NONE, UP, DOWN, STOP } type = Type::NONE;
+        CommandSource source = CommandSource::NONE;
+    };
+    
+    void setState(ElevatorState newState);
+    ElevatorState m_state = ElevatorState::UNKNOWN;
+
+    PendingCommand getNextCommand();
+    void executeCommand(const PendingCommand& cmd);
+
+    bool isForwardLimitReached();
+    bool isReverseLimitReached();
+
+
     enum class LimitRunOnDirection : uint8_t {
         NONE,
         FORWARD,
         REVERSE
     };
 
-    bool m_invertMotor = false;
+    bool m_invertStatus = false;
 
     LimitRunOnDirection m_limitRunOnDirection = LimitRunOnDirection::NONE;
     uint32_t m_limitRunOnStartMs = 0;
+
+
+    void handleLimitReached(LimitRunOnDirection dir);
+
+    bool m_overcurrentTimerActive = false;
+    uint32_t m_overcurrentStartMs = 0;
 
     Motor m_motor;
     InputManager m_input;

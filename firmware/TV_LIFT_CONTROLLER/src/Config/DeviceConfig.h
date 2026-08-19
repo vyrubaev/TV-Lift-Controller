@@ -28,8 +28,8 @@ inline uint32_t overcurrentTimeoutMs = 300;    // Время превышени�
 
 // Настройки управления лифтом инфракрасными пультом
 // HEX-коды вашей трехкнопочной системы (замените на коды вашего пульта после первого запуска)
-constexpr uint32_t IR_CODE_FORWARD    = 0x11EE18E7; 
-constexpr uint32_t IR_CODE_REVERSE   = 0x11EEE817; 
+constexpr uint32_t IR_CODE_UP    = 0x11EEA857; 
+constexpr uint32_t IR_CODE_DOWN   = 0x11EE6897; 
 constexpr uint32_t IR_CODE_STOP   = 0x11EE9867; 
     
 constexpr uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/повтора кнопки

@@ -18,24 +18,15 @@ public:
     Motor();
 
     void init();
-
     void update(); // - ВНИМАНИЕ- проверить!!! Вызывать в main loop! или может в Core::loop() для проверки аварийных условий и защиты по току - ВНИМАНИЕ- проверить!!!
-
     void forward();
-
     void reverse();
-
     void stop();
-
     void setSpeed(uint8_t speed);
-
     uint8_t getSpeed();
-
     MotorState getState();
 
-    
     bool isEmergency() const; // Проверка, случалась ли авария
-    
     void clearEmergency(); // Сброс флага аварии (если нужно восстановить работу)
 
     IRAM_ATTR static void emergencyStopFromISR(); // Обработчик прерывания для аварийной остановки мотора
@@ -59,6 +50,10 @@ private:
     MotorState m_state = MotorState::STOPPED;
 
     static std::atomic<bool> s_isEmergency; // Флаг аварийной остановки, доступный из ISR
+    uint8_t m_overcurrentRetryCount = 0;
+    uint32_t m_firstOvercurrentMs = 0; //  Нужно для отслеживания минуты в течени которой вохможно максимум 3 сброса OVERCURRENT
+    uint32_t m_lastCurrentLogMs = 0; // Таймер периодического вывода тока
+    bool m_isHardFault = false; // Блокировка до перезагрузки по питанию
 
     // Переменные таймера защиты по току
     uint32_t m_overcurrentStartMs = 0;
