@@ -62,6 +62,9 @@ void Elevator::setState(ElevatorState newState) {
         case ElevatorState::EMERGENCY:
             Logger::error("Elevator status: EMERGENCY FAULT");
             break;
+        case ElevatorState::TIMEOUT:
+            Logger::error("Elevator status: TIMEOUT");
+            break;    
         default:
             break;
     }
@@ -85,7 +88,7 @@ void Elevator::moveUp(CommandSource src) {
     char logBuffer[64];
     snprintf(logBuffer, sizeof(logBuffer), "Command UP received from: %s", sourceToString(src));
     Logger::info(logBuffer);
-
+    m_moveStartMs = millis(); // Фиксируем старт
     m_motor.forward();
     setState(ElevatorState::MOVING_UP);
 }
@@ -94,7 +97,7 @@ void Elevator::moveDown(CommandSource src) {
     char logBuffer[64];
     snprintf(logBuffer, sizeof(logBuffer), "Command DOWN received from: %s", sourceToString(src));
     Logger::info(logBuffer);
-
+    m_moveStartMs = millis(); // Фиксируем старт
     m_motor.reverse();
     setState(ElevatorState::MOVING_DOWN);
 }
@@ -103,8 +106,8 @@ void Elevator::stop(CommandSource src) {
     char logBuffer[64];
     snprintf(logBuffer, sizeof(logBuffer), "Command STOP received from: %s", sourceToString(src));
     Logger::info(logBuffer);
-
     m_limitRunOnDirection = LimitRunOnDirection::NONE;
+    m_moveStartMs = 0; // Сбрасываем таймер
     m_motor.stop();
     setState(ElevatorState::STOPPED);
 }
@@ -215,7 +218,29 @@ void Elevator::update()
         return;
     }
 
-    // 2. Обработка завершения добега
+    // 2. ПРОВЕРКА ТАЙМ-АУТА ДВИЖЕНИЯ (Раздельно FORWARD / REVERSE)
+    if (m_motor.getState() == MotorState::FORWARD) 
+    {
+        if (millis() - m_moveStartMs >= DeviceConfig::MAX_FORWARD_TIME_MS) 
+        {
+            Logger::error("TIMEOUT FAULT: Motor FORWARD max run time exceeded!");
+            stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
+            setState(ElevatorState::TIMEOUT);
+            return;
+        }
+    } 
+    else if (m_motor.getState() == MotorState::REVERSE) 
+    {
+        if (millis() - m_moveStartMs >= DeviceConfig::MAX_REVERSE_TIME_MS) 
+        {
+            Logger::error("TIMEOUT FAULT: Motor REVERSE max run time exceeded!");
+            stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
+            setState(ElevatorState::TIMEOUT);
+            return;
+        }
+    }
+
+    // 3. Обработка завершения добега
     if (m_limitRunOnDirection != LimitRunOnDirection::NONE)
     {
         const uint32_t now = millis();
@@ -231,7 +256,7 @@ void Elevator::update()
         return;
     }
 
-    // 3. Остановка по концевику при движении FORWARD
+    // 4. Остановка по концевику при движении FORWARD
     if (m_input.forwardLimit() && m_motor.getState() == MotorState::FORWARD)
     {
         if (DeviceConfig::FORWARD_LIMIT_RUN_ON_MS == 0)
@@ -247,7 +272,7 @@ void Elevator::update()
         return;
     }
 
-    // 4. Остановка по концевику при движении REVERSE
+    // 5. Остановка по концевику при движении REVERSE
     if (m_input.reverseLimit() && m_motor.getState() == MotorState::REVERSE)
     {
         if (DeviceConfig::REVERSE_LIMIT_RUN_ON_MS == 0)
@@ -263,7 +288,7 @@ void Elevator::update()
         return;
     }
 
-    // 5. Сбор и выполнение новых команд
+    // 6. Сбор и выполнение новых команд
     PendingCommand cmd = getNextCommand();
     if (cmd.type != PendingCommand::Type::NONE) {
         executeCommand(cmd);

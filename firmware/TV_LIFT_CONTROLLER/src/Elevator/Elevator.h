@@ -28,6 +28,7 @@ enum class ElevatorState {
     RUN_ON,
     STOPPED,
     EMERGENCY,
+    TIMEOUT,
     UNKNOWN
 };
 
@@ -68,6 +69,8 @@ private:
         REVERSE
     };
 
+    
+
     bool m_invertStatus = false;
 
     LimitRunOnDirection m_limitRunOnDirection = LimitRunOnDirection::NONE;
@@ -77,7 +80,9 @@ private:
     void handleLimitReached(LimitRunOnDirection dir);
 
     bool m_overcurrentTimerActive = false;
-    uint32_t m_overcurrentStartMs = 0;
+    //uint32_t m_overcurrentStartMs = 0;
+
+    uint32_t m_moveStartMs{0}; // Время запуска мотора
 
     Motor m_motor;
     InputManager m_input;

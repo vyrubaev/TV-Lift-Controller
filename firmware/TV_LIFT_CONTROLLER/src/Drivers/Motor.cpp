@@ -166,9 +166,14 @@ void Motor::clearOverCurrent() {
 }
 
 void Motor::reverse()
-{   // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
-    if (m_state == MotorState::REVERSE || m_state == MotorState::OVERCURRENT || isEmergency()) {
-        Logger::warning("Motor reverse blocked: active fault!");
+{   if (m_state == MotorState::REVERSE) {
+        Logger::debug("Motor is already moving reverse");
+        return;
+    }
+
+    // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
+    if (m_state == MotorState::OVERCURRENT || isEmergency()) {
+        Logger::warning("Motor forward blocked: active OVERCURRENT or EMERGENCY fault!");
         return;
     }
 
@@ -185,9 +190,15 @@ void Motor::reverse()
 }
 
 void Motor::forward()
-{   // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
-    if (m_state == MotorState::FORWARD  || m_state == MotorState::OVERCURRENT || isEmergency()) {
-        Logger::warning("Motor forward blocked: active fault!");
+{ 
+    if (m_state == MotorState::FORWARD) {
+        Logger::debug("Motor is already moving forward");
+        return;
+    }
+
+    // Блокируем движение, если мотор уже в OVERCURRENT или EMERGENCY
+    if (m_state == MotorState::OVERCURRENT || isEmergency()) {
+        Logger::warning("Motor forward blocked: active OVERCURRENT or EMERGENCY fault!");
         return;
     }
 
