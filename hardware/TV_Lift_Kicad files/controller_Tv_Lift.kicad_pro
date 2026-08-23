@@ -281,7 +281,32 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      [
+        "lib_symbol_issues|584200|1701800|47e3033f-baf8-4190-b579-cfce146eda7b|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|2235200|1193800|a8665b58-cf08-4ef3-a5bb-0f9e1b724780|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|2260600|1346200|34b37ec4-2037-4afa-af81-1547befc14a8|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|2260600|1447800|a0531590-886b-4b10-9d7f-69622234cc89|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|2705100|304800|01673edc-a74b-4e3a-9df7-ef230f903644|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_mismatch|2781300|304800|44eda382-7391-4059-aa47-1a3ddf756c7b|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ]
+    ],
     "meta": {
       "version": 0
     },
@@ -468,7 +493,7 @@
       "endpoint_off_grid": "warning",
       "extra_units": "error",
       "field_name_whitespace": "warning",
-      "footprint_filter": "ignore",
+      "footprint_filter": "warning",
       "footprint_link_issues": "warning",
       "four_way_junction": "ignore",
       "global_label_dangling": "warning",
@@ -635,7 +660,7 @@
       "method": 0,
       "sort_order": 0
     },
-    "bom_export_filename": "bom_controller_Tv_Lift.csv",
+    "bom_export_filename": "${PROJECTNAME}_BOM.csv",
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
@@ -702,13 +727,13 @@
           "group_by": false,
           "label": "Sim.Pins",
           "name": "Sim.Pins",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "Sim.Device",
           "name": "Sim.Device",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
@@ -720,7 +745,7 @@
           "group_by": false,
           "label": "#",
           "name": "${ITEM_NUMBER}",
-          "show": false
+          "show": true
         }
       ],
       "filter_string": "",
@@ -783,7 +808,7 @@
         "uuid": "906b0219-e8e2-4a64-a5ea-d0350d472c53"
       }
     ],
-    "used_designators": "TP4-5,NT1-2,L1,H1-4,R1-22,R28,Q1-2,LED_GREEN_F3_POWER1,LED_RED_F3_ERROR1,j4,J1-3,J5-11,C1-21,C23-26,SW4-5,U1-11,F1,JP1,JP3-4,D1-4,D6-8,#PWR1-48,#PWR57,#PWR111-112,M_ENCODER1,MOTOR_OUT2",
+    "used_designators": "MOTOR_OUT2,M_ENCODER1,#PWR1-48,#PWR57,#PWR111-112,D1-4,D6-8,JP1,JP3-4,F1,J1-3,J5-11,j4,LED_GREEN_F3_POWER1,LED_RED_F3_ERROR1,U1-11,SW4-5,C1-26,Q1-2,R1-22,R24,R28,H1-4,L1,NT1-2,TP4-5",
     "variants": []
   },
   "sheets": [

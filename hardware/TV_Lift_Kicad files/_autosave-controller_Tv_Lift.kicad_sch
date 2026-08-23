@@ -29256,7 +29256,7 @@
 				)
 			)
 		)
-		(property "Value" "socket LAN8720a"
+		(property "Value" "C54620381"
 			(at 41.91 153.416 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29266,7 +29266,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x07_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x07_P2.54mm_Vertical"
 			(at 40.64 128.778 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29287,7 +29287,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "socket LAN8720a"
 			(at 43.18 140.97 0)
 			(show_name no)
 			(do_not_autoplace no)
