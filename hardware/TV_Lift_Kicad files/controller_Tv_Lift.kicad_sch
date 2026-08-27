@@ -14295,6 +14295,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "socket LAN8720a"
+		(exclude_from_sim no)
+		(at 43.18 156.718 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "c23290bd-8bb3-4e34-969f-9b21622a547a")
+	)
 	(junction
 		(at 91.44 106.68)
 		(diameter 0)
@@ -18741,7 +18751,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "ESP32-WROOM-32"
+		(property "Value" "ESP32-WROOM-32E-N16"
 			(at 104.648 97.536 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18774,7 +18784,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "ESP32-WROOM-32E-N16"
 			(at 100.33 62.23 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29256,7 +29266,7 @@
 				)
 			)
 		)
-		(property "Value" "socket LAN8720a"
+		(property "Value" "C54620381"
 			(at 41.91 153.416 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29266,7 +29276,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x07_P2.54mm_Horizontal"
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_2x07_P2.54mm_Vertical"
 			(at 40.64 128.778 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29287,7 +29297,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "C54620381"
 			(at 43.18 140.97 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29924,7 +29934,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "NCD0805R1"
+		(property "Value" "C84256"
 			(at 198.12 35.814 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29957,7 +29967,7 @@
 				)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" "Light emitting diode NCD0805R1"
 			(at 195.58 41.91 0)
 			(show_name no)
 			(do_not_autoplace no)

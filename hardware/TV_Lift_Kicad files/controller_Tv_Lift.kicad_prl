@@ -119,27 +119,27 @@
   "project": {
     "files": [
       {
-        "name": "controller_Tv_Lift.kicad_pcb",
-        "open": false,
-        "window": {
-          "display": 0,
-          "maximized": false,
-          "pos_x": 0,
-          "pos_y": 38,
-          "size_x": 1470,
-          "size_y": 845
-        }
-      },
-      {
         "name": "controller_Tv_Lift.kicad_sch",
         "open": true,
         "window": {
           "display": 0,
-          "maximized": false,
+          "maximized": true,
           "pos_x": 0,
-          "pos_y": 37,
+          "pos_y": 38,
           "size_x": 1470,
-          "size_y": 919
+          "size_y": 782
+        }
+      },
+      {
+        "name": "controller_Tv_Lift.kicad_pcb",
+        "open": true,
+        "window": {
+          "display": 0,
+          "maximized": true,
+          "pos_x": 0,
+          "pos_y": 38,
+          "size_x": 1470,
+          "size_y": 774
         }
       }
     ]
