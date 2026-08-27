@@ -43,6 +43,8 @@ public:
     void moveDown(CommandSource src = CommandSource::NONE);
     void stop(CommandSource src = CommandSource::NONE);
 
+    float getCurrentAmps();
+
     // Геттер для получения текущего состояния (например, для Web/CLI)
     ElevatorState getState() const { return m_state; }
     const char* sourceToString(CommandSource src);
@@ -68,8 +70,6 @@ private:
         FORWARD,
         REVERSE
     };
-
-    
 
     bool m_invertStatus = false;
 

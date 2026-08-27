@@ -267,10 +267,18 @@ void WebManager::broadcastStatus() {
     if (!m_elevator || m_ws.count() == 0) return;
 
     uint32_t now = millis();
-    if (now - m_lastBroadcastMs < 50) return;
+    if (now - m_lastBroadcastMs < 100) return; 
+
+    // Используем ссылку auto& и обращение через точку .
+    for (auto& client : m_ws.getClients()) {
+        if (client.status() == WS_CONNECTED && client.queueIsFull()) {
+            return; // Пропускаем кадр, если очередь переполнена
+        }
+    }
+
     m_lastBroadcastMs = now;
 
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<128> doc;
     doc["st"] = static_cast<int>(m_elevator->getState());
 
     String jsonString;

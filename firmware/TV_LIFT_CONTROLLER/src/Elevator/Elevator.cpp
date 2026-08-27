@@ -120,6 +120,10 @@ bool Elevator::isReverseLimitReached() {
     return m_input.reverseLimit();
 }
 
+float Elevator::getCurrentAmps() {
+        return  m_motor.getCurrentAmps(); 
+    }
+
 // -------------------------------------------------
 // Сбор команд со всех источников
 // -------------------------------------------------
