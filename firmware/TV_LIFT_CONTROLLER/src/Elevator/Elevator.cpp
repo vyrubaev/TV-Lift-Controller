@@ -151,6 +151,11 @@ Elevator::PendingCommand Elevator::getNextCommand()
         return { PendingCommand::Type::DOWN, CommandSource::IR };
     }
 
+    PendingCommand::Type webType = m_webPendingType.exchange(PendingCommand::Type::NONE, std::memory_order_relaxed);
+    if (webType != PendingCommand::Type::NONE) {
+        return { webType, CommandSource::WEB };
+    }
+
     return { PendingCommand::Type::NONE, CommandSource::NONE };
 }
 

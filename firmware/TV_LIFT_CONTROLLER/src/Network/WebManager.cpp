@@ -235,17 +235,14 @@ void WebManager::setupRoutes() {
 
                     if (m_elevator) {
                         if (strcmp(action, "UP") == 0) {
-                            Logger::info("[CMD] Команда ВВЕРХ");
-                            m_elevator->moveUp();
+                            m_elevator->postWebCommand(Elevator::PendingCommand::Type::UP);
                         } else if (strcmp(action, "DOWN") == 0) {
-                            Logger::info("[CMD] Команда ВНИЗ");
-                            m_elevator->moveDown();
+                            m_elevator->postWebCommand(Elevator::PendingCommand::Type::DOWN);
                         } else if (strcmp(action, "STOP") == 0) {
-                            Logger::info("[CMD] Команда СТОП");
-                            m_elevator->stop();
+                            m_elevator->postWebCommand(Elevator::PendingCommand::Type::STOP);
                         }
                     }
-                }
+}
             }
         }
     });
