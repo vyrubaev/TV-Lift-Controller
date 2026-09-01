@@ -17,8 +17,8 @@ constexpr uint8_t NODE_ID = 1;
 constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
 
 constexpr uint8_t  SOFT_START_MIN_PWM = 1;  // Минимальный ШИМ, при котором мотор начинает крутиться
-constexpr uint32_t SOFT_START_STEP_MS = 300;  // Интервал увеличения ШИМ (мс)
-constexpr uint8_t  SOFT_START_STEP_PWM = 10;  // Шаг прибавки ШИМ
+constexpr uint32_t SOFT_START_STEP_MS = 100;  // Интервал увеличения ШИМ (мс)
+constexpr uint8_t  SOFT_START_STEP_PWM = 5;  // Шаг прибавки ШИМ
 
 
 
@@ -40,7 +40,7 @@ constexpr uint32_t MAX_REVERSE_TIME_MS = 30000; // 30 секунд на спус
 constexpr uint32_t FORWARD_LIMIT_RUN_ON_MS = 1000; 
 constexpr uint32_t REVERSE_LIMIT_RUN_ON_MS = 1000; 
 // Конфигурация счетчика оборотов мотора 
-constexpr uint32_t MAX_LIFT_ENCODER_TICKS=0; // 
+constexpr uint32_t MAX_LIFT_ENCODER_TICKS = 0; // 
 
 
 // Настройки управления лифтом инфракрасными пультом
