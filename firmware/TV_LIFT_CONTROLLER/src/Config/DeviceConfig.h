@@ -16,9 +16,11 @@ constexpr uint8_t NODE_ID = 1;
 // --- СКОРОСТЬ МОТОРА ---
 constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
 
-constexpr uint8_t  SOFT_START_MIN_PWM = 60;  // Минимальный ШИМ, при котором мотор начинает крутиться
-constexpr uint32_t SOFT_START_STEP_MS = 10;  // Интервал увеличения ШИМ (мс)
-constexpr uint8_t  SOFT_START_STEP_PWM = 5;  // Шаг прибавки ШИМ
+constexpr uint8_t  SOFT_START_MIN_PWM = 1;  // Минимальный ШИМ, при котором мотор начинает крутиться
+constexpr uint32_t SOFT_START_STEP_MS = 300;  // Интервал увеличения ШИМ (мс)
+constexpr uint8_t  SOFT_START_STEP_PWM = 10;  // Шаг прибавки ШИМ
+
+
 
 // --- НАСТРОЙКИ ТОКА И ЗАЩИТЫ --- ПРИМЕР! (требуется проверка и калибровка под конкретный мотор и драйвер) !!!
 // Коэффициент чувствительности датчика тока (Ампер на Вольт или мВ/А)
@@ -31,12 +33,14 @@ inline float maxMotorCurrentAmps = 2.0f;       // Порог тока (Ампе�
 inline uint32_t overcurrentTimeoutMs = 300;    // Время превышения до аварии (мс)
 
 // Максимальное время работы мотора для каждого направления
-constexpr uint32_t MAX_FORWARD_TIME_MS = 7000; // 5 секунд на подъем (вперед)
-constexpr uint32_t MAX_REVERSE_TIME_MS = 4000; // 20 секунд на спуск (назад)
+constexpr uint32_t MAX_FORWARD_TIME_MS = 30000; // 30 секунд на подъем (вперед) (мс)
+constexpr uint32_t MAX_REVERSE_TIME_MS = 30000; // 30 секунд на спуск (назад) (мс)
 
 // Время добега после срабатывания концевика в мсек. 0 = остановить мотор сразу.
 constexpr uint32_t FORWARD_LIMIT_RUN_ON_MS = 1000; 
-constexpr uint32_t REVERSE_LIMIT_RUN_ON_MS = 2000; 
+constexpr uint32_t REVERSE_LIMIT_RUN_ON_MS = 1000; 
+// Конфигурация счетчика оборотов мотора 
+constexpr uint32_t MAX_LIFT_ENCODER_TICKS=0; // 
 
 
 // Настройки управления лифтом инфракрасными пультом

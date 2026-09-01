@@ -9,7 +9,8 @@
 #include <soc/gpio_struct.h>
 #include <rom/gpio.h>
 
-std::atomic<bool> Motor::s_isEmergency{false};
+std::atomic<bool> Motor::s_isEmergency{false}; 
+volatile int32_t Motor::s_encoderPosition = 0; // Инициализация счетчика
 
 Motor::Motor()
     : m_speed(DeviceConfig::MOTOR_SPEED),
@@ -43,13 +44,24 @@ void Motor::init()
         FALLING
     );
 
-    pinMode(BoardConfig::MOTOR1_CURR_SENS, INPUT);
+    pinMode(BoardConfig::MOTOR1_CURR_SENS, INPUT); // пин для чтения данных по силе тока
     analogReadResolution(12);
+
+    // Настройка пинов энкодера
+    pinMode(BoardConfig::ENC_A, INPUT); // Важно: INPUT, т.к. GPIO 36/39 не поддерживают INPUT_PULLUP
+    pinMode(BoardConfig::ENC_B, INPUT);
+
+    attachInterrupt(
+        digitalPinToInterrupt(BoardConfig::ENC_A),
+        Motor::encoderISR,
+        RISING
+    );
+
+    setMaxEncoderTicks(DeviceConfig::MAX_LIFT_ENCODER_TICKS); 
 }
 
 void Motor::update() {
-    // Единый снимок времени на итерацию
-    const uint32_t now = millis();
+    const uint32_t now = millis(); // Единый снимок времени на итерацию 
 
     // 1. Аппаратная авария с фильтрацией помех (5 мс)
     if (isEmergency()) {
@@ -105,9 +117,30 @@ void Motor::update() {
         return; 
     }
 
+
+
     // 3. Управление в движении
+
     if (m_state == MotorState::FORWARD || m_state == MotorState::REVERSE) {
-        
+
+        // --- ПРОВЕРКА ПРОГРАММНЫХ ОГРАНИЧИТЕЛЕЙ (SOFT LIMITS) ---
+        if (m_maxEncoderTicks > 0) {
+            int32_t currentPos = getEncoderPosition();
+
+            // Если едем ВПЕРЕД и достигли/превысили максимум — останавливаемся
+            if (m_state == MotorState::FORWARD && currentPos >= m_maxEncoderTicks) {
+                stop();
+                Logger::warning("Motor STOPPED: Reached MAX Encoder Soft Limit!");
+                return;
+            }
+
+            // Если едем НАЗАД и ушли ниже или в 0 — останавливаемся
+            if (m_state == MotorState::REVERSE && currentPos <= 0) {
+                stop();
+                Logger::warning("Motor STOPPED: Reached MIN (0) Encoder Soft Limit!");
+                return;
+            }
+        }
         // Плавный разгон
         if (m_currentPwm < m_speed) {
             if (now - m_lastRampMs >= DeviceConfig::SOFT_START_STEP_MS) {
@@ -359,4 +392,33 @@ void Motor::setSpeed(uint8_t speed)
 uint8_t Motor::getSpeed()
 {
     return m_speed;
+}
+
+void IRAM_ATTR Motor::encoderISR() {
+    // Читаем B-фазу для определения направления
+    if (digitalRead(BoardConfig::ENC_B) == HIGH) {
+        s_encoderPosition++;
+    } else {
+        s_encoderPosition--;
+    }
+}
+
+void Motor::resetEncoder() { 
+    s_encoderPosition = 0; // сброс счетчика энкодера при достижении определенного концевика
+    Logger::info("Encoder position reset to 0.");
+}
+
+int32_t Motor::getEncoderPosition() const {
+    return s_encoderPosition;
+}
+
+void Motor::setMaxEncoderTicks(int32_t maxTicks) {
+    m_maxEncoderTicks = maxTicks;
+    char logBuffer[64];
+    snprintf(logBuffer, sizeof(logBuffer), "Motor max encoder limit set to: %ld ticks", (long)maxTicks);
+    Logger::info(logBuffer);
+}
+
+int32_t Motor::getMaxEncoderTicks() const {
+    return m_maxEncoderTicks;
 }

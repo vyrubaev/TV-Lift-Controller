@@ -77,10 +77,20 @@ void Elevator::handleLimitReached(LimitRunOnDirection dir) {
 
     if (dir == LimitRunOnDirection::FORWARD) {
         // Если потолочный — FORWARD это закрытие, иначе — открытие
-        setState(m_invertStatus ? ElevatorState::CLOSED : ElevatorState::OPEN);
+        if (m_invertStatus) {
+            m_motor.resetEncoder(); // CEILING: закрылись по FORWARD -> сброс в 0
+            setState(ElevatorState::CLOSED);
+        } else {
+            setState(ElevatorState::OPEN);
+        }
     } else if (dir == LimitRunOnDirection::REVERSE) {
         // Если потолочный — REVERSE это открытие, иначе — закрытие
-        setState(m_invertStatus ? ElevatorState::OPEN : ElevatorState::CLOSED);
+        if (m_invertStatus) {
+            setState(ElevatorState::OPEN);
+        } else {
+            m_motor.resetEncoder(); // WALL/FLOOR: закрылись по REVERSE -> сброс в 0
+            setState(ElevatorState::CLOSED);
+        }
     }
 }
 
