@@ -4,6 +4,8 @@
 
 namespace DeviceConfig
 {
+// Динамические константы (будут сохраняться в Flash/NVS):
+
 // --- КОНФИГУРАЦИЯ УСТАНОВКИ ЛИФТА (ПЛАТЫ УПРАВЛЕНИЯ) ---    
 constexpr u_int8_t MOUNT_TYPE = 1; // 0 = FLOOR, 1 = CEILING, 2 = WALL  Настройка типа лифта (по умолчанию CEILING, т.к. чаще всего используется потолочный вариант)
 
@@ -14,14 +16,17 @@ constexpr uint8_t NODE_ID = 1;
 // --- СКОРОСТЬ МОТОРА ---
 constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
 
+constexpr uint8_t  SOFT_START_MIN_PWM = 60;  // Минимальный ШИМ, при котором мотор начинает крутиться
+constexpr uint32_t SOFT_START_STEP_MS = 10;  // Интервал увеличения ШИМ (мс)
+constexpr uint8_t  SOFT_START_STEP_PWM = 5;  // Шаг прибавки ШИМ
+
 // --- НАСТРОЙКИ ТОКА И ЗАЩИТЫ --- ПРИМЕР! (требуется проверка и калибровка под конкретный мотор и драйвер) !!!
 // Коэффициент чувствительности датчика тока (Ампер на Вольт или мВ/А)
 // Например, для ACS712-05B это 185 мВ/А (0.185 В/А)
 constexpr float CURRENT_SENSOR_SENSITIVITY = 0.5f;  // Чувствительность датчика тока (Ампер на Вольт) - необходимо уточнить при калибровке под конкретный мотор и драйвер
 constexpr float CURRENT_SENSOR_OFFSET_V = 0.0f;     // Напряжение при 0А 
 
-// Динамические константы (будут сохраняться в Flash/NVS):
-inline float startCurrentTimeoutMs = 300; // Время превышения тока при старте (мс)
+inline float startCurrentTimeoutMs = 300; // Время превышения максимального тока при старте (мс)
 inline float maxMotorCurrentAmps = 2.0f;       // Порог тока (Ампер)
 inline uint32_t overcurrentTimeoutMs = 300;    // Время превышения до аварии (мс)
 

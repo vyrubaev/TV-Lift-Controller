@@ -22,6 +22,7 @@ namespace BoardConfig
     constexpr uint8_t MOTOR1_CURR_SENS = 32; //пин для измерения тока мотора с выхода драйвера мотора
 
     constexpr uint8_t MOTOR_DEFAULT_SPEED = 180; // range 0-255
+    constexpr uint32_t MOTOR_DEAD_TIME_MS = 50; // Пауза при смене направления (мс)
     
 
     // -------------------------
