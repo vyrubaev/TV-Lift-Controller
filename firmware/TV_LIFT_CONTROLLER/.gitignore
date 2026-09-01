@@ -3,3 +3,14 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+# PlatformIO
+.pioenvs/
+.piolibdeps/
+
+# Node.js
+node_modules/
+npm-debug.log
+
+# VS Code / OS
+.vscode/
+.DS_Store
