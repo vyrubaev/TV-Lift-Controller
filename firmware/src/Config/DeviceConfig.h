@@ -54,5 +54,6 @@ constexpr uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/пов�
 // Адрес для обновления прошивки OTA 
  
 constexpr char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
+constexpr uint32_t otaUpdateIntervalMs = 2000; // Интервал проверки обновлений (мс)
 }
 

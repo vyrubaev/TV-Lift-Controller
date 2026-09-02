@@ -6,6 +6,7 @@
 #include <HTTPUpdate.h>
 #include <ArduinoJson.h>
 #include "Logger/Logger.h"
+#include "Config/DeviceConfig.h"
 
 // Версия текущей прошивки
 #define CURRENT_FIRMWARE_VERSION "1.0.5"
@@ -13,7 +14,7 @@
 class OtaUpdater {
 public:
     // По умолчанию URL ведет на ваш Express-сервер
-    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json", uint32_t checkIntervalMs = 1800000);
+    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json", uint32_t checkIntervalMs = DeviceConfig::otaUpdateIntervalMs);
     
     void init();
     void update();     // Вызывается в Core::loop()

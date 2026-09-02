@@ -1,0 +1,26 @@
+{
+  "folders": [
+    {
+      "name": "⚡ ESP32 Firmware",
+      "path": "TVLift/firmware"
+    },
+    {
+      "name": "🌐 Backend Node.js",
+      "path": "TVLift/backend"
+    }
+  ],
+  "settings": {
+    "explorer.compactFolders": false,
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": false
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "platformio.platformio-ide",
+      "esbenp.prettier-vscode"
+    ]
+  }
+}

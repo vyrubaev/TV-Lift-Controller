@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TV Lift Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TV Lift</title>
+
+    <!-- PWA Settings (iOS / Android WebApp) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TV Lift">
+    <meta name="theme-color" content="#121212">
+
+    <!-- App Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232e7d32'><rect width='512' height='512' rx='110' fill='%23121212'/><rect x='80' y='120' width='352' height='220' rx='16' fill='none' stroke='%23ffffff' stroke-width='24'/><path d='M200 400h112m-56-60v60' stroke='%23ffffff' stroke-width='24' stroke-linecap='round'/><path d='M256 170v120m-40-40l40 40 40-40' stroke='%232e7d32' stroke-width='28' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232e7d32'><rect width='512' height='512' rx='110' fill='%23121212'/><rect x='80' y='120' width='352' height='220' rx='16' fill='none' stroke='%23ffffff' stroke-width='24'/><path d='M200 400h112m-56-60v60' stroke='%23ffffff' stroke-width='24' stroke-linecap='round'/><path d='M256 170v120m-40-40l40 40 40-40' stroke='%232e7d32' stroke-width='28' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
     <style>
         :root {
             --bg-color: #121212;
@@ -32,7 +43,7 @@
             background-color: var(--card-bg);
             width: 100%;
             max-width: 400px;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
@@ -66,16 +77,17 @@
 
         .telemetry-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 12px;
             background: #262626;
             padding: 16px;
-            border-radius: 16px;
+            border-radius: 18px;
         }
 
         .telemetry-item {
             display: flex;
             flex-direction: column;
+            text-align: center;
         }
 
         .telemetry-item .label {
@@ -85,7 +97,7 @@
         }
 
         .telemetry-item .value {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             margin-top: 4px;
         }
@@ -103,7 +115,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: white;
-            border-radius: 16px;
+            border-radius: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -124,37 +136,38 @@
     <div class="container">
         <div class="header">
             <h1>TV Lift Controller</h1>
-            <div id="conn-status" class="status-badge offline">ПОДКЛЮЧЕНИЕ...</div>
+            <div id="conn-status" class="status-badge offline">CONNECTING...</div>
         </div>
 
         <div class="telemetry-grid">
             <div class="telemetry-item">
-                <span class="label">Мотор 1</span>
-                <span id="m1-val" class="value">0</span>
-            </div>
-            <div class="telemetry-item">
-                <span class="label">Мотор 2</span>
-                <span id="m2-val" class="value">0</span>
-            </div>
-            <div class="telemetry-item">
-                <span class="label">Ток системы</span>
-                <span id="amp-val" class="value">0.0 А</span>
-            </div>
-            <div class="telemetry-item">
-                <span class="label">Состояние</span>
-                <span id="state-val" class="value">IDLE</span>
+                <span class="label">Status</span>
+                <span id="state-val" class="value">...</span>
             </div>
         </div>
 
         <div class="controls">
-            <button class="btn btn-up" onclick="sendCmd('UP')">▲ ВВЕРХ</button>
-            <button class="btn btn-stop" onclick="sendCmd('STOP')">■ СТОП</button>
-            <button class="btn btn-down" onclick="sendCmd('DOWN')">▼ ВНИЗ</button>
+            <button class="btn btn-up" onclick="sendCmd('UP')">UP</button>
+            <button class="btn btn-stop" onclick="sendCmd('STOP')">STOP</button>
+            <button class="btn btn-down" onclick="sendCmd('DOWN')">DOWN</button>
         </div>
     </div>
 
     <script>
         let ws;
+
+        // Карта статусов: число -> человеческий текст
+        const STATE_NAMES = {
+            0: 'OPEN',
+            1: 'CLOSED',
+            2: 'MOVING_UP',
+            3: 'MOVING_DOWN',
+            4: 'RUN_ON',
+            5: 'STOPPED',
+            6: 'EMERGENCY',
+            7: 'TIMEOUT',
+            8: 'UNKNOWN'
+        };
 
         function connect() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -162,47 +175,24 @@
 
             ws.onopen = () => {
                 const badge = document.getElementById('conn-status');
-                badge.innerText = 'ОНЛАЙН';
+                badge.innerText = 'ONLINE';
                 badge.className = 'status-badge online';
             };
 
-            // Карта статусов: число -> человеческий текст
-const STATE_NAMES = {
-    0: 'OPEN',
-    1: 'CLOSED',
-    2: 'MOVING_UP',
-    3: 'MOVING_DOWN',
-    4: 'RUN_ON',
-    5: 'STOPPED',
-    6: 'EMERGENCY,',
-    7: 'TIMEOUT',
-    8: 'UNKNOWN'
-};
-
-ws.onmessage = (event) => {
-    try {
-        const data = JSON.parse(event.data);
-        
-        if (data.m1 !== undefined) document.getElementById('m1-val').innerText = data.m1;
-        if (data.m2 !== undefined) document.getElementById('m2-val').innerText = data.m2;
-        
-        // Отображение тока
-        if (data.amp !== undefined) {
-            document.getElementById('amp-val').innerText = data.amp.toFixed(2) + ' А';
-        }
-        
-        // Превращаем цифру состояния в текст
-        if (data.st !== undefined) {
-            document.getElementById('state-val').innerText = STATE_NAMES[data.st] || `КОД (${data.st})`;
-        }
-    } catch(e) {}
-};
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.st !== undefined) {
+                        document.getElementById('state-val').innerText = STATE_NAMES[data.st] || `CODE (${data.st})`;
+                    }
+                } catch(e) {}
+            };
 
             ws.onclose = () => {
                 const badge = document.getElementById('conn-status');
-                badge.innerText = 'ОФФЛАЙН';
+                badge.innerText = 'OFFLINE';
                 badge.className = 'status-badge offline';
-                setTimeout(connect, 2000); // Переподключение
+                setTimeout(connect, 2000);
             };
         }
 
