@@ -1,21 +1,23 @@
 #pragma once
 
 #include <Arduino.h>
-#include <WiFi.h>            // <--- Добавили, чтобы решить ошибки 1 и 3 (WiFi и WiFiClient)
+#include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
 #include <ArduinoJson.h>
 #include "Logger/Logger.h"
 
 // Версия текущей прошивки
-#define CURRENT_FIRMWARE_VERSION "1.0.0"
+#define CURRENT_FIRMWARE_VERSION "1.0.2"
 
 class OtaUpdater {
 public:
-    OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs = 3600000); // По умолчанию опрос раз в 1 час
+    // По умолчанию URL ведет на ваш Express-сервер
+    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json", uint32_t checkIntervalMs = 1800000);
     
-    void update(); // Вызывать в loop()
-    void forceCheck(); // Принудительный запуск проверки
+    void init();
+    void update();     // Вызывается в Core::loop()
+    void forceCheck(); // Для принудительного вызова из WebManager
 
 private:
     const char* m_checkUrl;

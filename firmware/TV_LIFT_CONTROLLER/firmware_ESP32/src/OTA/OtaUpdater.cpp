@@ -5,8 +5,12 @@ static char logBuf[128];
 OtaUpdater::OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs)
     : m_checkUrl(checkUrl), m_checkIntervalMs(checkIntervalMs) {}
 
+void OtaUpdater::init() {
+    Logger::info("OTA: Инициализация сервиса обновлений");
+}
+
 void OtaUpdater::update() {
-    if (millis() - m_lastCheckMs >= m_checkIntervalMs) {
+    if (WiFi.status() == WL_CONNECTED && (millis() - m_lastCheckMs >= m_checkIntervalMs)) {
         m_lastCheckMs = millis();
         checkForUpdates();
     }
@@ -34,7 +38,7 @@ void OtaUpdater::checkForUpdates() {
             const char* serverVersion = doc["version"];
             const char* binUrl = doc["url"];
 
-            if (serverVersion && isNewerVersion(serverVersion)) {
+            if (serverVersion && binUrl && isNewerVersion(serverVersion)) {
                 snprintf(logBuf, sizeof(logBuf), "OTA: Найдено обновление: %s", serverVersion);
                 Logger::info(logBuf);
                 performOTA(binUrl);
@@ -59,6 +63,10 @@ bool OtaUpdater::isNewerVersion(const char* serverVersion) {
 
 void OtaUpdater::performOTA(const char* binUrl) {
     WiFiClient client;
+    
+    // Включение авто-перезагрузки ESP32 после успешной прошивки
+    httpUpdate.rebootOnUpdate(true);
+
     t_httpUpdate_return ret = httpUpdate.update(client, binUrl);
 
     switch (ret) {

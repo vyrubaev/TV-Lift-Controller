@@ -49,5 +49,10 @@ constexpr uint32_t IR_CODE_UP     = 0x11EEA857;
 constexpr uint32_t IR_CODE_DOWN   = 0x11EE6897; 
 constexpr uint32_t IR_CODE_STOP   = 0x11EE9867; 
 constexpr uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/повтора кнопки
+
+
+// Адрес для обновления прошивки OTA 
+ 
+constexpr char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
 }
 

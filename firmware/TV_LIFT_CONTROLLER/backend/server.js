@@ -7,16 +7,16 @@ const PORT = 3000;
 
 app.use(cors());
 
-// Статическая раздача папки public (включая public/firmware)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Логирование запросов от ESP32
+// 1. Логирование ВСЕХ запросов (помещено ВЫШЕ статики)
 app.use((req, res, next) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url} - IP: ${req.ip}`);
   next();
 });
 
-// Роут проверки работы сервера
+// 2. Статическая раздача папки public (файлы будут доступны по адресам /firmware/version.json и т.д.)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 3. Роут проверки работы сервера
 app.get('/', (req, res) => {
   res.send('TV Lift Backend Service is Running');
 });
