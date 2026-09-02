@@ -8,9 +8,6 @@
 #include "Logger/Logger.h"
 #include "Config/DeviceConfig.h"
 
-// Версия текущей прошивки
-#define CURRENT_FIRMWARE_VERSION "1.0.5"
-
 class OtaUpdater {
 public:
     // По умолчанию URL ведет на ваш Express-сервер

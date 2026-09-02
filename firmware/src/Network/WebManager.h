@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncTCP.h>
+#include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include <DNSServer.h>       // Подключаем DNS-сервер для Captive Portal
 #include <ESPmDNS.h>         // Подключаем mDNS для обращения по имени tv-lift.local

@@ -1,22 +1,21 @@
 #include "Core.h"
-
 #include "Logger/Logger.h"
 #include "Elevator/Elevator.h" 
 #include "Network/WebManager.h"
 #include "OTA/OtaUpdater.h"
+#include "Config/DeviceConfig.h" // Убедись, что подключен конфиг с VERSION
 
 Elevator elevator;
 WebManager webManager;
 OtaUpdater otaUpdater;
 
-// Таймер для фоновой проверки обновлений (например, раз в 30 минут)
-unsigned long lastOtaCheck = 0;
-const unsigned long OTA_CHECK_INTERVAL = 30 * 60 * 1000; // 30 минут в мс
-
 bool Core::init()
 {
     Logger::init();
+    
     Logger::info("Core initialization");
+
+    printSystemInfo(); 
 
     elevator.init();
 
@@ -32,18 +31,21 @@ void Core::loop()
 { 
     elevator.update();
 
-    // 4. Обязательно вызываем update() веб-сервера
-    // Это нужно для обработки DNS (в режиме настройки) и очистки WebSocket
+    // Обязательно вызываем update() веб-сервера
     webManager.update();
     otaUpdater.update();
-    
-
-   
 }
-
 
 void Core::reboot()
 {
     Logger::info("System rebooting...");
-    ESP.restart(); // Встроенная функция сброса ESP32
+    ESP.restart();
+}
+
+// РЕАЛИЗАЦИЯ КАК МЕТОДА КЛАССА (убран static, добавлено Core::)
+void Core::printSystemInfo() {
+    char buffer[96];
+    snprintf(buffer, sizeof(buffer), "[SYSTEM] Firmware Version: %s (Build: %s %s)", 
+                DeviceConfig::VERSION, __DATE__, __TIME__);
+    Logger::info(buffer);
 }

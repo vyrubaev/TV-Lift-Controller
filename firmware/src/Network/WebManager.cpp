@@ -219,6 +219,99 @@ void WebManager::setupRoutes() {
             request->send(404, "text/plain", "Error: index.html not found in LittleFS!");
         }
     });
+    // --- ДОБАВЛЯЕМ СТРАНИЦУ ИНСТАЛЛЯТОРА И API НАСТРОЕК ---
+    
+    // 2. Отдача config.html для технического специалиста
+    m_server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request) {
+        if (LittleFS.exists("/config.html")) {
+            request->send(LittleFS, "/config.html", "text/html");
+        } else {
+            request->send(404, "text/plain", "Error: config.html not found in LittleFS!");
+        }
+    });
+
+// 3. GET: Чтение текущих настроек в JSON
+    m_server.on("/api/config", HTTP_GET, [](AsyncWebServerRequest *request) {
+        DynamicJsonDocument doc(1024); // Заменено на Static/Dynamic под ArduinoJson v6
+        
+        doc["MOUNT_TYPE"]                = DeviceConfig::MOUNT_TYPE;
+        doc["IS_MASTER"]                 = DeviceConfig::IS_MASTER;
+        doc["NODE_ID"]                   = DeviceConfig::NODE_ID;
+        doc["MOTOR_SPEED"]               = DeviceConfig::MOTOR_SPEED;
+        doc["SOFT_START_MIN_PWM"]        = DeviceConfig::SOFT_START_MIN_PWM;
+        doc["SOFT_START_STEP_MS"]        = DeviceConfig::SOFT_START_STEP_MS;
+        doc["SOFT_START_STEP_PWM"]       = DeviceConfig::SOFT_START_STEP_PWM;
+        doc["CURRENT_SENSOR_SENSITIVITY"] = DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
+        doc["CURRENT_SENSOR_OFFSET_V"]   = DeviceConfig::CURRENT_SENSOR_OFFSET_V;
+        doc["startCurrentTimeoutMs"]     = DeviceConfig::startCurrentTimeoutMs;
+        doc["maxMotorCurrentAmps"]       = DeviceConfig::maxMotorCurrentAmps;
+        doc["overcurrentTimeoutMs"]      = DeviceConfig::overcurrentTimeoutMs;
+        doc["MAX_FORWARD_TIME_MS"]       = DeviceConfig::MAX_FORWARD_TIME_MS;
+        doc["MAX_REVERSE_TIME_MS"]       = DeviceConfig::MAX_REVERSE_TIME_MS;
+        doc["FORWARD_LIMIT_RUN_ON_MS"]   = DeviceConfig::FORWARD_LIMIT_RUN_ON_MS;
+        doc["REVERSE_LIMIT_RUN_ON_MS"]   = DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
+        doc["MAX_LIFT_ENCODER_TICKS"]    = DeviceConfig::MAX_LIFT_ENCODER_TICKS;
+
+        char hexBuffer[11];
+        snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_UP);
+        doc["IR_CODE_UP"]   = hexBuffer;
+        snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_DOWN);
+        doc["IR_CODE_DOWN"] = hexBuffer;
+        snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_STOP);
+        doc["IR_CODE_STOP"] = hexBuffer;
+        snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_REPEAT);
+        doc["IR_CODE_REPEAT"] = hexBuffer;
+
+        doc["otaUrl"] = DeviceConfig::otaUrl;
+
+        String response;
+        serializeJson(doc, response);
+        request->send(200, "application/json", response);
+    });
+
+    // 4. POST: Сохранение настроек
+    AsyncCallbackJsonWebHandler* handleSaveConfig = new AsyncCallbackJsonWebHandler(
+        "/api/config", 
+        [](AsyncWebServerRequest *request, JsonVariant &json) {
+            JsonObject jsonObj = json.as<JsonObject>();
+            if (jsonObj.isNull()) {
+                request->send(400, "application/json", "{\"status\":\"error\"}");
+                return;
+            }
+
+            if (jsonObj.containsKey("MOUNT_TYPE"))                DeviceConfig::MOUNT_TYPE                = jsonObj["MOUNT_TYPE"];
+            if (jsonObj.containsKey("IS_MASTER"))                 DeviceConfig::IS_MASTER                 = jsonObj["IS_MASTER"];
+            if (jsonObj.containsKey("NODE_ID"))                   DeviceConfig::NODE_ID                   = jsonObj["NODE_ID"];
+            if (jsonObj.containsKey("MOTOR_SPEED"))               DeviceConfig::MOTOR_SPEED               = jsonObj["MOTOR_SPEED"];
+            if (jsonObj.containsKey("SOFT_START_MIN_PWM"))          DeviceConfig::SOFT_START_MIN_PWM          = jsonObj["SOFT_START_MIN_PWM"];
+            if (jsonObj.containsKey("SOFT_START_STEP_MS"))          DeviceConfig::SOFT_START_STEP_MS          = jsonObj["SOFT_START_STEP_MS"];
+            if (jsonObj.containsKey("SOFT_START_STEP_PWM"))         DeviceConfig::SOFT_START_STEP_PWM         = jsonObj["SOFT_START_STEP_PWM"];
+            if (jsonObj.containsKey("CURRENT_SENSOR_SENSITIVITY")) DeviceConfig::CURRENT_SENSOR_SENSITIVITY = jsonObj["CURRENT_SENSOR_SENSITIVITY"];
+            if (jsonObj.containsKey("CURRENT_SENSOR_OFFSET_V"))     DeviceConfig::CURRENT_SENSOR_OFFSET_V     = jsonObj["CURRENT_SENSOR_OFFSET_V"];
+            if (jsonObj.containsKey("startCurrentTimeoutMs"))    DeviceConfig::startCurrentTimeoutMs    = jsonObj["startCurrentTimeoutMs"];
+            if (jsonObj.containsKey("maxMotorCurrentAmps"))      DeviceConfig::maxMotorCurrentAmps      = jsonObj["maxMotorCurrentAmps"];
+            if (jsonObj.containsKey("overcurrentTimeoutMs"))     DeviceConfig::overcurrentTimeoutMs     = jsonObj["overcurrentTimeoutMs"];
+            if (jsonObj.containsKey("MAX_FORWARD_TIME_MS"))         DeviceConfig::MAX_FORWARD_TIME_MS         = jsonObj["MAX_FORWARD_TIME_MS"];
+            if (jsonObj.containsKey("MAX_REVERSE_TIME_MS"))         DeviceConfig::MAX_REVERSE_TIME_MS         = jsonObj["MAX_REVERSE_TIME_MS"];
+            if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))      DeviceConfig::FORWARD_LIMIT_RUN_ON_MS      = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
+            if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))      DeviceConfig::REVERSE_LIMIT_RUN_ON_MS      = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
+            if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))      DeviceConfig::MAX_LIFT_ENCODER_TICKS      = jsonObj["MAX_LIFT_ENCODER_TICKS"];
+
+            if (jsonObj.containsKey("IR_CODE_UP"))     DeviceConfig::IR_CODE_UP     = strtoul(jsonObj["IR_CODE_UP"], nullptr, 0);
+            if (jsonObj.containsKey("IR_CODE_DOWN"))   DeviceConfig::IR_CODE_DOWN   = strtoul(jsonObj["IR_CODE_DOWN"], nullptr, 0);
+            if (jsonObj.containsKey("IR_CODE_STOP"))   DeviceConfig::IR_CODE_STOP   = strtoul(jsonObj["IR_CODE_STOP"], nullptr, 0);
+            if (jsonObj.containsKey("IR_CODE_REPEAT")) DeviceConfig::IR_CODE_REPEAT = strtoul(jsonObj["IR_CODE_REPEAT"], nullptr, 0);
+
+            if (jsonObj.containsKey("otaUrl")) {
+                snprintf(DeviceConfig::otaUrl, sizeof(DeviceConfig::otaUrl), "%s", jsonObj["otaUrl"].as<const char*>());
+            }
+
+            DeviceConfig::save();
+            request->send(200, "application/json", "{\"status\":\"ok\"}");
+        }
+    );
+    m_server.addHandler(handleSaveConfig);
+
 
     // 2. Настройка WebSocket и регистрация
     m_ws.onEvent([this](AsyncWebSocket *server, AsyncWebSocketClient *client, 

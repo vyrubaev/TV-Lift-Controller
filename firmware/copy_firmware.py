@@ -18,7 +18,7 @@ bin_target = os.path.join(target_dir, "firmware.bin")
 version = "1.0.0"
 if os.path.exists(header_file):
     with open(header_file, "r", encoding="utf-8") as f:
-        match = re.search(r'#define\s+CURRENT_FIRMWARE_VERSION\s+"([^"]+)"', f.read())
+        match = re.search(r'#define\s+DeviceConfig::VERSION\s+"([^"]+)"', f.read())
         if match:
             version = match.group(1)
 

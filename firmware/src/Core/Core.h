@@ -11,4 +11,7 @@ public:
 
     static void reboot();
 
+private:
+    static void printSystemInfo();        
+
 };

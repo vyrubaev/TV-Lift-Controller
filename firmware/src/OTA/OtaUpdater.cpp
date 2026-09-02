@@ -43,7 +43,7 @@ void OtaUpdater::checkForUpdates() {
                 Logger::info(logBuf);
                 performOTA(binUrl);
             } else {
-                snprintf(logBuf, sizeof(logBuf), "OTA: Актуальная версия: %s", CURRENT_FIRMWARE_VERSION);
+                snprintf(logBuf, sizeof(logBuf), "OTA: Актуальная версия: %s", DeviceConfig::VERSION);
                 Logger::info(logBuf);
             }
         } else {
@@ -58,7 +58,7 @@ void OtaUpdater::checkForUpdates() {
 }
 
 bool OtaUpdater::isNewerVersion(const char* serverVersion) {
-    return strcmp(serverVersion, CURRENT_FIRMWARE_VERSION) != 0;
+    return strcmp(serverVersion, DeviceConfig::VERSION) != 0;
 }
 
 void OtaUpdater::performOTA(const char* binUrl) {
