@@ -41,6 +41,7 @@ def after_build(source, target, env):
     project_dir = env.subst("$PROJECT_DIR") if hasattr(env, "subst") else os.getcwd()
     server_dir = os.path.abspath(os.path.join(project_dir, "../backend/public/firmware"))
     
+    
     firmware_path = str(target[0])
     version = extract_firmware_version(project_dir)
     

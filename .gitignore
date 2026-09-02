@@ -1,0 +1,13 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# PlatformIO & C++
+.pio/
+.vscode/
+*.bin
+*.elf
+
+# macOS & System
+.DS_Store
+Thumbs.db

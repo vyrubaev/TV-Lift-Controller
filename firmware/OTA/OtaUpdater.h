@@ -8,7 +8,7 @@
 #include "Logger/Logger.h"
 
 // Версия текущей прошивки
-#define CURRENT_FIRMWARE_VERSION "1.0.3"
+#define CURRENT_FIRMWARE_VERSION "1.0.4"
 
 class OtaUpdater {
 public:
