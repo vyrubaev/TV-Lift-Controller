@@ -58,10 +58,18 @@ void OtaUpdater::checkForUpdates() {
 }
 
 bool OtaUpdater::isNewerVersion(const char* serverVersion) {
-    // Безопасное сравнение: обновление запускается только если строки реально отличаются 
-    // И при этом серверная версия не совпадает с текущей. 
-    // Для полноценного сравнения семантических версий (major.minor.patch) лучше использовать strcmp:
-    return (strcmp(serverVersion, DeviceConfig::VERSION) > 0);
+    int s_major = 0, s_minor = 0, s_patch = 0;
+    int c_major = 0, c_minor = 0, c_patch = 0;
+
+    // Парсим серверную версию
+    sscanf(serverVersion, "%d.%d.%d", &s_major, &s_minor, &s_patch);
+    // Парсим текущую локальную версию из DeviceConfig
+    sscanf(DeviceConfig::VERSION, "%d.%d.%d", &c_major, &c_minor, &c_patch);
+
+    // Сравниваем покомпонентно
+    if (s_major != c_major) return s_major > c_major;
+    if (s_minor != c_minor) return s_minor > c_minor;
+    return s_patch > c_patch;
 }
 
 void OtaUpdater::performOTA(const char* binUrl) {
