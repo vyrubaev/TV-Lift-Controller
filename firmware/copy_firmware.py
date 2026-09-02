@@ -4,71 +4,44 @@ import json
 import re
 from datetime import datetime
 
-# Вход в окружение SCons
-try:
-    from SCons.Script import Import # type: ignore
-    Import("env")
-except Exception:
-    env = None
+print("\n>>> [ЧЕКЕР] ПИТОН-СКРИПТ ИНИЦИАЛИЗИРОВАН ПЛАТФОРМИО! <<<\n")
 
-def extract_firmware_version(project_dir):
-    """Ищет OtaUpdater.h и извлекает номер версии"""
-    possible_paths = [
-        os.path.join(project_dir, "src", "OTA", "OtaUpdater.h"),
-        os.path.join(project_dir, "src", "OtaUpdater.h"),
-        os.path.join(project_dir, "OtaUpdater.h")
-    ]
-    
-    for path in possible_paths:
-        if os.path.exists(path):
-            print(f"\n[OTA-SCRIPT] Читаем файл: {path}")
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    content = f.read()
-                    match = re.search(r'#define\s+CURRENT_FIRMWARE_VERSION\s+"([^"]+)"', content)
-                    if match:
-                        ver = match.group(1)
-                        print(f"[OTA-SCRIPT] Прочитана версия: {ver}")
-                        return ver
-            except Exception as e:
-                print(f"[OTA-SCRIPT] Ошибка файла: {e}")
-                
-    print("[OTA-SCRIPT] OtaUpdater.h не найден, используем дефолт 1.0.0")
-    return "1.0.0"
+# 1. Пути к файлам
+project_dir = os.getcwd()
+header_file = os.path.join(project_dir, "src", "OTA", "OtaUpdater.h")
+target_dir = os.path.abspath(os.path.join(project_dir, "../backend/public/firmware"))
+json_file = os.path.join(target_dir, "version.json")
+bin_source = os.path.join(project_dir, ".pio", "build", "esp32dev", "firmware.bin")
+bin_target = os.path.join(target_dir, "firmware.bin")
 
-def after_build(source, target, env):
-    # Определяем пути
-    project_dir = env.subst("$PROJECT_DIR") if hasattr(env, "subst") else os.getcwd()
-    server_dir = os.path.abspath(os.path.join(project_dir, "../backend/public/firmware"))
-    
-    
-    firmware_path = str(target[0])
-    version = extract_firmware_version(project_dir)
-    
-    # Создаем папку бэкенда и копируем файлы
-    os.makedirs(server_dir, exist_ok=True)
-    dest_bin = os.path.join(server_dir, "firmware.bin")
-    shutil.copy(firmware_path, dest_bin)
-    
-    manifest = {
-        "version": version,
-        "url": "http://192.168.88.33:3000/firmware/firmware.bin",
-        "build_date": datetime.now().isoformat()
-    }
-    
-    manifest_path = os.path.join(server_dir, "version.json")
-    with open(manifest_path, "w", encoding="utf-8") as f:
-        json.dump(manifest, f, indent=2)
-        
-    print("\n==========================================")
-    print("[OTA-SCRIPT] Файлы обновлены в backend:")
-    print(f"  Версия: {version}")
-    print(f"  BIN:  {dest_bin}")
-    print(f"  JSON: {manifest_path}")
-    print("==========================================\n")
+# 2. Ищем версию в OtaUpdater.h
+version = "1.0.0"
+if os.path.exists(header_file):
+    with open(header_file, "r", encoding="utf-8") as f:
+        match = re.search(r'#define\s+CURRENT_FIRMWARE_VERSION\s+"([^"]+)"', f.read())
+        if match:
+            version = match.group(1)
 
-    print(f"[DEBUG] Путь к бэкенду: {server_dir}")
+print(f"[OTA] Прочитана версия из файла: {version}")
 
-# Привязываем пост-акцию к окончанию сборки
-if env:
-    env.AddPostAction("$BUILD_DIR/${PROGNAME}.bin", after_build)
+# 3. Создаем папку в бэкенде, если её нет
+os.makedirs(target_dir, exist_ok=True)
+
+# 4. Перезаписываем version.json
+manifest = {
+    "version": version,
+    "url": "http://192.168.88.33:3000/firmware/firmware.bin",
+    "build_date": datetime.now().isoformat()
+}
+
+with open(json_file, "w", encoding="utf-8") as f:
+    json.dump(manifest, f, indent=2)
+
+print(f"[OTA] Записан JSON: {json_file}")
+
+# 5. Копируем бинарник (если он скомпилирован)
+if os.path.exists(bin_source):
+    shutil.copy(bin_source, bin_target)
+    print(f"[OTA] Скопирован бинарник -> {bin_target}")
+
+print(">>> [ЧЕКЕР] СКРИПТ УСПЕШНО ЗАВЕРШИЛ РАБОТУ! <<<\n")

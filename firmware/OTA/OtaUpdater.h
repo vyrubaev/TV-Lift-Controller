@@ -8,12 +8,13 @@
 #include "Logger/Logger.h"
 
 // Версия текущей прошивки
-#define CURRENT_FIRMWARE_VERSION "1.0.4"
+#define CURRENT_FIRMWARE_VERSION "1.0.6"
 
 class OtaUpdater {
 public:
     // По умолчанию URL ведет на ваш Express-сервер
-    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json", uint32_t checkIntervalMs = 1800000);
+    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json",
+         uint32_t checkIntervalMs = 2000); // Интервал проверки обновлений в миллисекундах 
     
     void init();
     void update();     // Вызывается в Core::loop()
