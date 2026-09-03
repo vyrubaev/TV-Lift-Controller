@@ -6,7 +6,7 @@
 namespace DeviceConfig
 {
 // Версия прошивки
-inline const char* VERSION = "1.0.10"; // Обновите версию при каждом изменении прошивки
+inline const char* VERSION = "1.0.11"; // Обновите версию при каждом изменении прошивки
     
 // Динамические константы (будут сохраняться в Flash/NVS):
 
@@ -36,7 +36,7 @@ inline uint32_t overcurrentTimeoutMs = 300;    // Время превышени�
 
 // Максимальное время работы мотора для каждого направления
 inline uint32_t MAX_FORWARD_TIME_MS = 30000; // 30 секунд на подъем (вперед) (мс)
-inline uint32_t MAX_REVERSE_TIME_MS = 30000; // 30 секунд на спуск (назад) (мс)
+inline uint32_t MAX_REVERSE_TIME_MS= 30000; // 30 секунд на спуск (назад) (мс)
 
 // Время добега после срабатывания концевика в мсек. 0 = остановить мотор сразу.
 inline uint32_t FORWARD_LIMIT_RUN_ON_MS = 1000; 
@@ -52,8 +52,8 @@ inline uint32_t IR_CODE_STOP   = 0x11EE9867;
 inline uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/повтора кнопки
 
 // Адрес для обновления прошивки OTA 
-inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
-inline uint32_t otaUpdateIntervalMs = 5000; // Интервал проверки обновлений (мс)
+inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json"; // URL для проверки обновлений прошивки (можно указать локальный сервер или внешний URL)
+inline uint32_t otaUpdateIntervalMs = 5000; // Интервал проверки обновлений (мс) 
 
 
 // --- ФУНКЦИИ РАБОТЫ С NVS ПАМЯТЬЮ ---

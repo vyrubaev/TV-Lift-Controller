@@ -311,8 +311,16 @@ void WebManager::setupRoutes() {
                 snprintf(DeviceConfig::otaUrl, sizeof(DeviceConfig::otaUrl), "%s", jsonObj["otaUrl"].as<const char*>());
             }
 
+            // 1. Принимаем и парсим JSON, обновляем переменные...
+            // 2. Сохраняем в постоянную память:
             DeviceConfig::save();
+
+            // 3. Отправляем успешный ответ клиенту (браузеру)
             request->send(200, "application/json", "{\"status\":\"ok\"}");
+
+            // 4. Делаем небольшую паузу, чтобы пакет успел уйти по Wi-Fi, и перезагружаем плату
+            delay(500); 
+            ESP.restart();
         }
     );
     m_server.addHandler(handleSaveConfig);
