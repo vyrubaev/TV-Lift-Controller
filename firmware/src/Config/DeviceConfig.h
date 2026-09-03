@@ -15,7 +15,7 @@ inline uint8_t MOUNT_TYPE = 1; // 0 = FLOOR, 1 = CEILING, 2 = WALL  Настро
 
 inline bool IS_MASTER = true; // true = master, false = slave
 
-inline uint8_t NODE_ID = 1; 
+inline uint8_t NODE_ID = 1; // Идентификатор узла (для master/slave конфигурации, по умолчанию 1) для мультимоторных систем, где несколько плат управляют разными моторами лифта. Каждый узел должен иметь уникальный идентификатор (1, 2, 3 и т.д.).
 
 // --- СКОРОСТЬ МОТОРА ---
 inline uint8_t MOTOR_SPEED = 180; // range 0-255 
