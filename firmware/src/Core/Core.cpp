@@ -19,6 +19,9 @@ bool Core::init()
     
     Logger::info("Core initialization");
 
+    // 1. ПЕРВЫМ ДЕЛОМ загружаем сохраненную конфигурацию из NVS/Preferences!
+    DeviceConfig::load();
+
     printSystemInfo(); 
 
     elevator.init();
