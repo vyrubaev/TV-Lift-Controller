@@ -75,21 +75,26 @@ bool OtaUpdater::isNewerVersion(const char* serverVersion) {
 void OtaUpdater::performOTA(const char* binUrl) {
     WiFiClient client;
     
-    // Включение авто-перезагрузки ESP32 после успешной прошивки
-    httpUpdate.rebootOnUpdate(true);
+    snprintf(logBuf, sizeof(logBuf), "OTA: Начинаю загрузку с %s", binUrl);
+    Logger::info(logBuf);
 
     t_httpUpdate_return ret = httpUpdate.update(client, binUrl);
 
+    // Принудительно выводим текст ошибки ДО свича, чтобы она точно попала в лог
+    if (ret != HTTP_UPDATE_OK) {
+        snprintf(logBuf, sizeof(logBuf), "OTA ОШИБКА КОД: %d | Текст: %s", 
+                 httpUpdate.getLastError(), 
+                 httpUpdate.getLastErrorString().c_str());
+        Logger::error(logBuf);
+    }
+
     switch (ret) {
         case HTTP_UPDATE_FAILED:
-            snprintf(logBuf, sizeof(logBuf), "OTA: Ошибка обновления (%d): %s", 
-                     httpUpdate.getLastError(), 
-                     httpUpdate.getLastErrorString().c_str());
-            Logger::error(logBuf);
+            Logger::error("OTA: Обновление провалено!");
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
-            Logger::info("OTA: Нет обновлений");
+            Logger::info("OTA: Нет обновлений (сервер вернул тот же бинарник)");
             break;
 
         case HTTP_UPDATE_OK:
