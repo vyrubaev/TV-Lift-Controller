@@ -313,8 +313,8 @@
             const res = await fetch('/api/config');
             const data = await res.json();
 
-            document.getElementById('mountType').value = data.mountType ?? 0;
-            document.getElementById('isMaster').value = (data.isMaster ?? true) ? "true" : "false";
+            document.getElementById('mountType').value = data.MOUNT_TYPE ?? 0;
+            document.getElementById('isMaster').value = (data.IS_MASTER ?? true) ? "true" : "false";
             document.getElementById('nodeId').value = data.NODE_ID ?? '';
 
             document.getElementById('motorSpeed').value = data.MOTOR_SPEED ?? '';
@@ -349,33 +349,33 @@
         e.preventDefault();
 
         const payload = {
-            mountType: parseInt(document.getElementById('mountType').value) || 0,
-            isMaster: document.getElementById('isMaster').value === "true",
-            nodeId: parseInt(document.getElementById('nodeId').value) || 0,
+            MOUNT_TYPE: parseInt(document.getElementById('mountType').value) || 0,
+            IS_MASTER: document.getElementById('isMaster').value === "true",
+            NODE_ID: parseInt(document.getElementById('nodeId').value) || 0,
 
-            motorSpeed: parseInt(document.getElementById('motorSpeed').value) || 0,
-            softStartMinPwm: parseInt(document.getElementById('softStartMinPwm').value) || 0,
-            softStartStepMs: parseInt(document.getElementById('softStartStepMs').value) || 0,
-            softStartStepPwm: parseInt(document.getElementById('softStartStepPwm').value) || 0,
+            MOTOR_SPEED: parseInt(document.getElementById('motorSpeed').value) || 0,
+            SOFT_START_MIN_PWM: parseInt(document.getElementById('softStartMinPwm').value) || 0,
+            SOFT_START_STEP_MS: parseInt(document.getElementById('softStartStepMs').value) || 0,
+            SOFT_START_STEP_PWM: parseInt(document.getElementById('softStartStepPwm').value) || 0,
 
-            currentSensorSensitivity: parseFloat(document.getElementById('currentSensorSensitivity').value) || 0,
-            currentSensorOffsetV: parseFloat(document.getElementById('currentSensorOffsetV').value) || 0,
+            CURRENT_SENSOR_SENSITIVITY: parseFloat(document.getElementById('currentSensorSensitivity').value) || 0,
+            CURRENT_SENSOR_OFFSET_V: parseFloat(document.getElementById('currentSensorOffsetV').value) || 0,
             startCurrentTimeoutMs: parseInt(document.getElementById('startCurrentTimeoutMs').value) || 0,
             maxMotorCurrentAmps: parseFloat(document.getElementById('maxMotorCurrentAmps').value) || 0,
             overcurrentTimeoutMs: parseInt(document.getElementById('overcurrentTimeoutMs').value) || 0,
 
-            maxForwardTimeMs: parseInt(document.getElementById('maxForwardTimeMs').value) || 0,
-            maxReverseTimeMs: parseInt(document.getElementById('maxReverseTimeMs').value) || 0,
-            forwardLimitRunOnMs: parseInt(document.getElementById('forwardLimitRunOnMs').value) || 0,
-            reverseLimitRunOnMs: parseInt(document.getElementById('reverseLimitRunOnMs').value) || 0,
-            maxLiftEncoderTicks: parseInt(document.getElementById('maxLiftEncoderTicks').value) || 0,
+            MAX_FORWARD_TIME_MS: parseInt(document.getElementById('maxForwardTimeMs').value) || 0,
+            MAX_REVERSE_TIME_MS: parseInt(document.getElementById('maxReverseTimeMs').value) || 0,
+            FORWARD_LIMIT_RUN_ON_MS: parseInt(document.getElementById('forwardLimitRunOnMs').value) || 0,
+            REVERSE_LIMIT_RUN_ON_MS: parseInt(document.getElementById('reverseLimitRunOnMs').value) || 0,
+            MAX_LIFT_ENCODER_TICKS: parseInt(document.getElementById('maxLiftEncoderTicks').value) || 0,
 
-            irCodeUp: document.getElementById('irCodeUp').value,
-            irCodeDown: document.getElementById('irCodeDown').value,
-            irCodeStop: document.getElementById('irCodeStop').value,
+            IR_CODE_UP: document.getElementById('irCodeUp').value,
+            IR_CODE_DOWN: document.getElementById('irCodeDown').value,
+            IR_CODE_STOP: document.getElementById('irCodeStop').value,
 
             otaUrl: document.getElementById('otaUrl').value,
-            otaInt: parseInt(document.getElementById('otaInt').value) || 0
+            OTA_INTERVAL_MS: parseInt(document.getElementById('otaInt').value) || 0
         };
 
         try {
@@ -387,11 +387,8 @@
 
             if (res.ok) {
                 showToast('Настройки сохранены! Перезагрузка контроллера...');
-                // Блокируем форму, чтобы пользователь ничего не нажимал во время рестарта
                 document.getElementById('configForm').style.opacity = '0.5';
                 
-                // Ждем 3 секунды, давая плате время применить настройки и перезагрузиться, 
-                // после чего обновляем страницу, чтобы подтянуть актуальное состояние
                 setTimeout(() => {
                     location.reload();
                 }, 3000);

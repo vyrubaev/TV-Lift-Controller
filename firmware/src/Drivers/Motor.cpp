@@ -397,9 +397,9 @@ uint8_t Motor::getSpeed()
 void IRAM_ATTR Motor::encoderISR() {
     // Читаем B-фазу для определения направления
     if (digitalRead(BoardConfig::ENC_B) == HIGH) {
-        s_encoderPosition++;
+        s_encoderPosition = s_encoderPosition + 1;
     } else {
-        s_encoderPosition--;
+        s_encoderPosition = s_encoderPosition - 1;
     }
 }
 
