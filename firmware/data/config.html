@@ -283,10 +283,13 @@
                 <label>Адрес OTA (otaUrl)</label>
                 <div class="hint">Адрес для обновления прошивки OTA</div>
                 <input type="url" id="otaUrl">
+                <label>Период проверки (otaInt)</label>
+                <div class="hint">Интервал проверки новой прошивки OTA</div>
+                <input type="url" id="otaInt">
             </div>
         </div>
 
-        <button type="submit" class="btn-save">СОХРАНИТЬ В NVS</button>
+        <button type="submit" class="btn-save">СОХРАНИТЬ В ПАМЯТЬ</button>
     </form>
 </div>
 
@@ -324,6 +327,7 @@
             document.getElementById('irCodeStop').value = data.irCodeStop;
 
             document.getElementById('otaUrl').value = data.otaUrl;
+            document.getElementById('otaInt').value = data.otaInt;
         } catch (e) {
             alert('Ошибка загрузки конфигурации');
         }
@@ -358,7 +362,8 @@
             irCodeDown: document.getElementById('irCodeDown').value,
             irCodeStop: document.getElementById('irCodeStop').value,
 
-            otaUrl: document.getElementById('otaUrl').value
+            otaUrl: document.getElementById('otaUrl').value,
+            otaInt: document.getElementById('otaInt').value
         };
 
         try {

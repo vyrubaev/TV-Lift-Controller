@@ -6,12 +6,9 @@
 namespace DeviceConfig
 {
 // Версия прошивки
-inline const char* VERSION = "1.0.8"; // Обновите версию при каждом изменении прошивки
+inline const char* VERSION = "1.0.9"; // Обновите версию при каждом изменении прошивки
     
-
 // Динамические константы (будут сохраняться в Flash/NVS):
-
-
 
 // --- КОНФИГУРАЦИЯ УСТАНОВКИ ЛИФТА (ПЛАТЫ УПРАВЛЕНИЯ) ---    
 inline uint8_t MOUNT_TYPE = 1; // 0 = FLOOR, 1 = CEILING, 2 = WALL  Настройка типа лифта (по умолчанию CEILING, т.к. чаще всего используется потолочный вариант)
@@ -56,7 +53,7 @@ inline uint32_t IR_CODE_REPEAT = 0xFFFFFFFF; // Код зажатия/повто
 
 // Адрес для обновления прошивки OTA 
 inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
-inline uint32_t otaUpdateIntervalMs = 2000; // Интервал проверки обновлений (мс)
+inline uint32_t otaUpdateIntervalMs = 5000; // Интервал проверки обновлений (мс)
 
 
 // --- ФУНКЦИИ РАБОТЫ С NVS ПАМЯТЬЮ ---

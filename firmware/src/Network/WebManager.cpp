@@ -109,7 +109,7 @@ void WebManager::startSTAMode() {
             MDNS.addService("http", "tcp", 80);
         }
 
-        // ВАЖНО: Вызываем setupRoutes(), который внутри регистрирует и HTTP, и WebSocket
+        // Регистрируем основные роутеры и API
         setupRoutes();
         m_server.begin();
     } else {
@@ -130,7 +130,10 @@ void WebManager::startAPMode() {
     Logger::info(buffer);   
 
     m_dnsServer.start(DNS_PORT, "*", apIP);
+    
+    // ВАЖНО: Регистрируем и маршруты captive portal, и основные роутеры с API
     setupCaptivePortalRoutes();
+    setupRoutes(); 
     m_server.begin();
 }
 
@@ -251,6 +254,7 @@ void WebManager::setupRoutes() {
         doc["FORWARD_LIMIT_RUN_ON_MS"]   = DeviceConfig::FORWARD_LIMIT_RUN_ON_MS;
         doc["REVERSE_LIMIT_RUN_ON_MS"]   = DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
         doc["MAX_LIFT_ENCODER_TICKS"]    = DeviceConfig::MAX_LIFT_ENCODER_TICKS;
+        doc["OTA_INTERVAL_MS"]           = DeviceConfig::otaUpdateIntervalMs;
 
         char hexBuffer[11];
         snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_UP);
@@ -296,6 +300,7 @@ void WebManager::setupRoutes() {
             if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))      DeviceConfig::FORWARD_LIMIT_RUN_ON_MS      = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
             if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))      DeviceConfig::REVERSE_LIMIT_RUN_ON_MS      = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
             if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))      DeviceConfig::MAX_LIFT_ENCODER_TICKS      = jsonObj["MAX_LIFT_ENCODER_TICKS"];
+            if (jsonObj.containsKey("OTA_INTERVAL_MS"))           DeviceConfig::otaUpdateIntervalMs       = jsonObj["OTA_INTERVAL_MS"];
 
             if (jsonObj.containsKey("IR_CODE_UP"))     DeviceConfig::IR_CODE_UP     = strtoul(jsonObj["IR_CODE_UP"], nullptr, 0);
             if (jsonObj.containsKey("IR_CODE_DOWN"))   DeviceConfig::IR_CODE_DOWN   = strtoul(jsonObj["IR_CODE_DOWN"], nullptr, 0);
