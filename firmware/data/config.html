@@ -218,7 +218,6 @@
             <button class="ctrl-btn btn-down" onclick="sendCmd('DOWN')">▼ Вниз</button>
             <button class="ctrl-btn btn-reboot" onclick="rebootDevice()" style="background: #6c757d;">🔄 Перезагрузка</button>
             <button class="ctrl-btn" onclick="resetToDefaults()" style="background: #b71c1c; grid-column: span 3; margin-top: 4px;">⚠️ Сбросить настройки по умолчанию</button>
-           
         </div>
     </div>
 
@@ -392,7 +391,6 @@
         8: 'UNKNOWN'
     };
 
-    // Загрузка конфигурации с платы
     async function loadConfig() {
         try {
             const res = await fetch('/api/config');
@@ -430,7 +428,6 @@
         }
     }
 
-    // Инициализация WebSocket для приема телеметрии и отправки команд
     function initWebSocket() {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
@@ -445,13 +442,11 @@
             try {
                 const data = JSON.parse(event.data);
                 
-                // Обновление текстового статуса лифта (поддерживаем оба ключа: st и state)
                 const statusCode = data.st !== undefined ? data.st : data.state;
                 if (statusCode !== undefined) {
                     document.getElementById('state-val').innerText = STATE_NAMES[statusCode] || `CODE (${statusCode})`;
                 }
 
-                // Обновление тока (поддерживаем как вложенные поля, так и прямые)
                 const currentVal = data.current !== undefined ? data.current : (data.cur !== undefined ? data.cur : null);
                 if (currentVal !== null && !isNaN(currentVal)) {
                     document.getElementById('current-val').innerText = Number(currentVal).toFixed(2);
@@ -469,17 +464,14 @@
         };
     }
 
-    // Отправка команд управления через WebSocket
     function sendCmd(action) {
         if (ws && ws.readyState === WebSocket.OPEN) {
-            // Отправляем универсальные ключи (и action, и cmd на случай разной логики бэкенда)
             ws.send(JSON.stringify({ action: action, cmd: action.toLowerCase() }));
         } else {
             alert('Нет подключения к контроллеру!');
         }
     }
 
-    // Сохранение конфигурации
     document.getElementById('configForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -539,41 +531,38 @@
         setTimeout(() => toast.style.display = 'none', 2500);
     }
 
-    // Единый запуск при загрузке страницы
     window.addEventListener('load', () => {
         loadConfig();
         initWebSocket();
     });
 
-    // Надежная перезагрузка через HTTP
-async function rebootDevice() {
-    if (confirm('Перезагрузить контроллер?')) {
-        try {
-            await fetch('/api/reboot', { method: 'POST' });
-            showToast('Перезагрузка...');
-            setTimeout(() => { location.reload(); }, 4000);
-        } catch (e) {
-            alert('Ошибка сети при перезагрузке');
-        }
-    }
-}
-
-// Сброс настроек к дефолтным
-async function resetToDefaults() {
-    if (confirm('ВНИМАНИЕ! Все настройки будут сброшены к значениям по умолчанию. Продолжить?')) {
-        try {
-            const res = await fetch('/api/config/reset', { method: 'POST' });
-            if (res.ok) {
-                showToast('Настройки сброшены! Перезагрузка...');
+    async function rebootDevice() {
+        if (confirm('Перезагрузить контроллер?')) {
+            try {
+                await fetch('/api/reboot', { method: 'POST' });
+                showToast('Перезагрузка...');
                 setTimeout(() => { location.reload(); }, 4000);
-            } else {
-                alert('Ошибка сброса настроек');
+            } catch (e) {
+                alert('Ошибка сети при перезагрузке');
             }
-        } catch (e) {
-            alert('Ошибка сети');
         }
     }
-}
+
+    async function resetToDefaults() {
+        if (confirm('ВНИМАНИЕ! Все настройки будут сброшены к значениям по умолчанию. Продолжить?')) {
+            try {
+                const res = await fetch('/api/config/reset', { method: 'POST' });
+                if (res.ok) {
+                    showToast('Настройки сброшены! Перезагрузка...');
+                    setTimeout(() => { location.reload(); }, 4000);
+                } else {
+                    alert('Ошибка сброса настроек');
+                }
+            } catch (e) {
+                alert('Ошибка сети');
+            }
+        }
+    }
 </script>
 
 </body>

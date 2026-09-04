@@ -118,7 +118,7 @@ void WebManager::handleWsCommand(uint8_t* data, size_t len) {
         const char* cmd = doc["cmd"];
         if (strcmp(cmd, "reboot") == 0) {
             Logger::info("[WebSocket] Запрошена перезагрузка");
-            ESP.restart();
+            Core::reboot();
         }
     }
 }
@@ -140,8 +140,8 @@ void WebManager::broadcastStatus() {
 
     StaticJsonDocument<128> doc;
     doc["st"] = static_cast<int>(m_elevator->getState());
-    // Сюда же можно передавать текущий ток:
-    // doc["cur"] = CurrentSensor::getCurrent();
+
+    doc["cur"] = m_elevator->getCurrentAmps();
 
     String jsonString;
     serializeJson(doc, jsonString);
@@ -316,7 +316,7 @@ void WebManager::setupRoutes() {
     m_server.on("/api/reboot", HTTP_POST, [](AsyncWebServerRequest *request){
         request->send(200, "application/json", "{\"status\":\"rebooting\"}");
         delay(500);
-        ESP.restart();
+        Core::reboot(); // Перезагрузка через Core
     });
 
     m_server.on("/api/config/reset", HTTP_POST, [](AsyncWebServerRequest *request){
@@ -326,7 +326,7 @@ void WebManager::setupRoutes() {
         
         request->send(200, "application/json", "{\"status\":\"reset_ok\"}");
         delay(500);
-        ESP.restart();
+        Core::reboot(); // Перезагружаем устройство, чтобы применить дефолтные настройки
 }   );
 
     // Чтение конфигурации
