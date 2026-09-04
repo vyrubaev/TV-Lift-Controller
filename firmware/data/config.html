@@ -10,6 +10,8 @@
             --card-bg: #1e1e1e;
             --accent: #2196f3;
             --accent-green: #2e7d32;
+            --accent-red: #c62828;
+            --accent-blue: #1565c0;
             --text-main: #ffffff;
             --text-muted: #888888;
             --input-bg: #2a2a2a;
@@ -34,14 +36,44 @@
             border-radius: 16px;
             padding: 24px;
             border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         h1 {
             font-size: 1.3rem;
             text-align: center;
-            margin-bottom: 20px;
             color: var(--accent);
         }
+
+        /* Панель статуса и отладки */
+        .debug-panel {
+            background: #262626;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            background: #b71c1c;
+            color: #ef9a9a;
+        }
+        .status-badge.online { background: #1b5e20; color: #81c784; }
 
         form {
             display: flex;
@@ -77,7 +109,6 @@
             border-color: var(--accent);
         }
 
-        /* Всплывающая подсказка (Tooltip) при фокусе или наведении */
         .hint {
             visibility: hidden;
             background-color: #252525;
@@ -126,6 +157,26 @@
 
         .btn-save:active { opacity: 0.8; }
 
+        .control-btns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ctrl-btn {
+            border: none;
+            padding: 10px;
+            font-weight: bold;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-up { background-color: var(--accent-green); }
+        .btn-stop { background-color: var(--accent-red); }
+        .btn-down { background-color: var(--accent-blue); }
+        .btn-reboot { background-color: #6c757d; grid-column: span 3; margin-top: 4px; }
+
         .toast {
             position: fixed;
             bottom: 20px;
@@ -145,6 +196,31 @@
 
 <div class="container">
     <h1>Настройки TV Lift</h1>
+
+    <!-- Панель отладки, статуса и ручного управления -->
+    <div class="debug-panel">
+        <div class="status-row">
+            <span>Связь WebSocket:</span>
+            <span id="conn-status" class="status-badge">OFFLINE</span>
+        </div>
+        <div class="status-row">
+            <span>Статус лифта:</span>
+            <strong id="state-val" style="color: var(--accent);">...</strong>
+        </div>
+        <div class="status-row">
+            <span>Текущий ток:</span>
+            <span><strong id="current-val" style="color: #2196f3;">0.00</strong> A</span>
+        </div>
+
+        <div class="control-btns">
+            <button class="ctrl-btn btn-up" onclick="sendCmd('UP')">▲ Вверх</button>
+            <button class="ctrl-btn btn-stop" onclick="sendCmd('STOP')">⏹ Стоп</button>
+            <button class="ctrl-btn btn-down" onclick="sendCmd('DOWN')">▼ Вниз</button>
+            <button class="ctrl-btn btn-reboot" onclick="rebootDevice()" style="background: #6c757d;">🔄 Перезагрузка</button>
+            <button class="ctrl-btn" onclick="resetToDefaults()" style="background: #b71c1c; grid-column: span 3; margin-top: 4px;">⚠️ Сбросить настройки по умолчанию</button>
+           
+        </div>
+    </div>
 
     <form id="configForm">
         <div class="row">
@@ -180,20 +256,18 @@
             </div>
         </div>
 
-            <div class="form-group">
-                <label>Maximum current ( Максимальный ток ) (A)</label>
-                <input type="number" step="0.1" id="maxMotorCurrentAmps">
-                <div class="hint">Максимальный допустимый рабочий ток</div>
-            </div>
+        <div class="form-group">
+            <label>Maximum current ( Максимальный ток ) (A)</label>
+            <input type="number" step="0.1" id="maxMotorCurrentAmps">
+            <div class="hint">Максимальный допустимый рабочий ток</div>
+        </div>
 
         <div class="row">
-           
             <div class="form-group">
                 <label>Таймаут старта (мс)</label>
                 <input type="number" id="startCurrentTimeoutMs">
                 <div class="hint">Время игнорирования броска тока при старте</div>
             </div>
-
              <div class="form-group">
                 <label>Таймаут перегрузки (мс)</label>
                 <input type="number" id="overcurrentTimeoutMs">
@@ -232,10 +306,6 @@
                 <div class="hint">Напряжение датчика тока при 0А</div>
             </div>
         </div>
-
-        
-
-       
 
         <div class="row">
             <div class="form-group">
@@ -308,6 +378,21 @@
 <div id="toast" class="toast">Настройки сохранены!</div>
 
 <script>
+    let ws;
+
+    const STATE_NAMES = {
+        0: 'OPEN',
+        1: 'CLOSED',
+        2: 'MOVING_UP',
+        3: 'MOVING_DOWN',
+        4: 'RUN_ON',
+        5: 'STOPPED',
+        6: 'EMERGENCY',
+        7: 'TIMEOUT',
+        8: 'UNKNOWN'
+    };
+
+    // Загрузка конфигурации с платы
     async function loadConfig() {
         try {
             const res = await fetch('/api/config');
@@ -341,10 +426,60 @@
             document.getElementById('otaUrl').value = data.otaUrl ?? '';
             document.getElementById('otaInt').value = data.OTA_INTERVAL_MS ?? '';
         } catch (e) {
-            console.error('Ошибка загрузки:', e);
+            console.error('Ошибка загрузки конфигурации:', e);
         }
     }
 
+    // Инициализация WebSocket для приема телеметрии и отправки команд
+    function initWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+        ws.onopen = () => {
+            const badge = document.getElementById('conn-status');
+            badge.innerText = 'ONLINE';
+            badge.className = 'status-badge online';
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                
+                // Обновление текстового статуса лифта (поддерживаем оба ключа: st и state)
+                const statusCode = data.st !== undefined ? data.st : data.state;
+                if (statusCode !== undefined) {
+                    document.getElementById('state-val').innerText = STATE_NAMES[statusCode] || `CODE (${statusCode})`;
+                }
+
+                // Обновление тока (поддерживаем как вложенные поля, так и прямые)
+                const currentVal = data.current !== undefined ? data.current : (data.cur !== undefined ? data.cur : null);
+                if (currentVal !== null && !isNaN(currentVal)) {
+                    document.getElementById('current-val').innerText = Number(currentVal).toFixed(2);
+                }
+            } catch (e) {
+                console.error('WS Parse Error', e);
+            }
+        };
+
+        ws.onclose = () => {
+            const badge = document.getElementById('conn-status');
+            badge.innerText = 'OFFLINE';
+            badge.className = 'status-badge';
+            setTimeout(initWebSocket, 2000);
+        };
+    }
+
+    // Отправка команд управления через WebSocket
+    function sendCmd(action) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            // Отправляем универсальные ключи (и action, и cmd на случай разной логики бэкенда)
+            ws.send(JSON.stringify({ action: action, cmd: action.toLowerCase() }));
+        } else {
+            alert('Нет подключения к контроллеру!');
+        }
+    }
+
+    // Сохранение конфигурации
     document.getElementById('configForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -387,11 +522,8 @@
 
             if (res.ok) {
                 showToast('Настройки сохранены! Перезагрузка контроллера...');
-                document.getElementById('configForm').style.opacity = '0.5';
-                
-                setTimeout(() => {
-                    location.reload();
-                }, 3000);
+                document.querySelector('.container').style.opacity = '0.5';
+                setTimeout(() => { location.reload(); }, 3000);
             } else {
                 alert('Ошибка сохранения');
             }
@@ -407,66 +539,41 @@
         setTimeout(() => toast.style.display = 'none', 2500);
     }
 
-    window.onload = loadConfig;
-</script>
+    // Единый запуск при загрузке страницы
+    window.addEventListener('load', () => {
+        loadConfig();
+        initWebSocket();
+    });
 
-<!-- Панель ручного управления и отладки (для установщика) -->
-<div class="card">
-  <h2>Отладка и Управление</h2>
-  
-  <!-- Вывод тока -->
-  <div style="font-size: 1.2rem; margin-bottom: 15px;">
-    Текущий ток: <strong id="current-val" style="color: #007bff;">0.00</strong> A
-  </div>
-
-  <!-- Кнопки управления -->
-  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-    <button onclick="sendCmd('up')" style="background: #28a745; color: white; padding: 10px 15px;">▲ Вверх</button>
-    <button onclick="sendCmd('stop')" style="background: #dc3545; color: white; padding: 10px 15px;">⏹ Стоп</button>
-    <button onclick="sendCmd('down')" style="background: #17a2b8; color: white; padding: 10px 15px;">▼ Вниз</button>
-    <button onclick="sendCmd('reboot')" style="background: #6c757d; color: white; padding: 10px 15px; margin-left: auto;">🔄 Перезагрузка</button>
-  </div>
-</div>
-
-<script>
-  let socket;
-
-  function initWebSocket() {
-    // Автоматически подключается к ws://IP_АДРЕС/ws
-    const wsUri = `ws://${window.location.host}/ws`;
-    socket = new WebSocket(wsUri);
-
-    socket.onopen = () => console.log('WebSocket connected');
-    
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        
-        // Обновление значения тока в реальном времени
-        if (data.type === 'telemetry') {
-          document.getElementById('current-val').innerText = data.current.toFixed(2);
+    // Надежная перезагрузка через HTTP
+async function rebootDevice() {
+    if (confirm('Перезагрузить контроллер?')) {
+        try {
+            await fetch('/api/reboot', { method: 'POST' });
+            showToast('Перезагрузка...');
+            setTimeout(() => { location.reload(); }, 4000);
+        } catch (e) {
+            alert('Ошибка сети при перезагрузке');
         }
-      } catch (e) {
-        console.error('WS Parse Error', e);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log('WS disconnected, retrying in 2s...');
-      setTimeout(initWebSocket, 2000); // Автоподключение при обрыве
-    };
-  }
-
-  function sendCmd(cmdName) {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ cmd: cmdName }));
-    } else {
-      alert('Нет подключения к контроллеру!');
     }
-  }
+}
 
-  // Запуск сокета при загрузке страницы
-  window.addEventListener('load', initWebSocket);
+// Сброс настроек к дефолтным
+async function resetToDefaults() {
+    if (confirm('ВНИМАНИЕ! Все настройки будут сброшены к значениям по умолчанию. Продолжить?')) {
+        try {
+            const res = await fetch('/api/config/reset', { method: 'POST' });
+            if (res.ok) {
+                showToast('Настройки сброшены! Перезагрузка...');
+                setTimeout(() => { location.reload(); }, 4000);
+            } else {
+                alert('Ошибка сброса настроек');
+            }
+        } catch (e) {
+            alert('Ошибка сети');
+        }
+    }
+}
 </script>
 
 </body>

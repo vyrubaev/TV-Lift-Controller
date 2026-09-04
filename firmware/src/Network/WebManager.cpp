@@ -313,6 +313,22 @@ void WebManager::setupRoutes() {
         }
     });
 
+    m_server.on("/api/reboot", HTTP_POST, [](AsyncWebServerRequest *request){
+        request->send(200, "application/json", "{\"status\":\"rebooting\"}");
+        delay(500);
+        ESP.restart();
+    });
+
+    m_server.on("/api/config/reset", HTTP_POST, [](AsyncWebServerRequest *request){
+    // Вызываем вашу функцию инициализации дефолтных значений из класса конфига
+        DeviceConfig::loadDefaults(); 
+        DeviceConfig::save(); // Сохраняем их в энергонезависимую память (Preferences / LittleFS)
+        
+        request->send(200, "application/json", "{\"status\":\"reset_ok\"}");
+        delay(500);
+        ESP.restart();
+}   );
+
     // Чтение конфигурации
     m_server.on("/api/config", HTTP_GET, [](AsyncWebServerRequest *request) {
         DynamicJsonDocument doc(1024);
