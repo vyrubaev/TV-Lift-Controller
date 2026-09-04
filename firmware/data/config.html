@@ -410,5 +410,64 @@
     window.onload = loadConfig;
 </script>
 
+<!-- Панель ручного управления и отладки (для установщика) -->
+<div class="card">
+  <h2>Отладка и Управление</h2>
+  
+  <!-- Вывод тока -->
+  <div style="font-size: 1.2rem; margin-bottom: 15px;">
+    Текущий ток: <strong id="current-val" style="color: #007bff;">0.00</strong> A
+  </div>
+
+  <!-- Кнопки управления -->
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <button onclick="sendCmd('up')" style="background: #28a745; color: white; padding: 10px 15px;">▲ Вверх</button>
+    <button onclick="sendCmd('stop')" style="background: #dc3545; color: white; padding: 10px 15px;">⏹ Стоп</button>
+    <button onclick="sendCmd('down')" style="background: #17a2b8; color: white; padding: 10px 15px;">▼ Вниз</button>
+    <button onclick="sendCmd('reboot')" style="background: #6c757d; color: white; padding: 10px 15px; margin-left: auto;">🔄 Перезагрузка</button>
+  </div>
+</div>
+
+<script>
+  let socket;
+
+  function initWebSocket() {
+    // Автоматически подключается к ws://IP_АДРЕС/ws
+    const wsUri = `ws://${window.location.host}/ws`;
+    socket = new WebSocket(wsUri);
+
+    socket.onopen = () => console.log('WebSocket connected');
+    
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        // Обновление значения тока в реальном времени
+        if (data.type === 'telemetry') {
+          document.getElementById('current-val').innerText = data.current.toFixed(2);
+        }
+      } catch (e) {
+        console.error('WS Parse Error', e);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log('WS disconnected, retrying in 2s...');
+      setTimeout(initWebSocket, 2000); // Автоподключение при обрыве
+    };
+  }
+
+  function sendCmd(cmdName) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ cmd: cmdName }));
+    } else {
+      alert('Нет подключения к контроллеру!');
+    }
+  }
+
+  // Запуск сокета при загрузке страницы
+  window.addEventListener('load', initWebSocket);
+</script>
+
 </body>
 </html>

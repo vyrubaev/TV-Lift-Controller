@@ -6,45 +6,58 @@
 #include <AsyncTCP.h>
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
-#include <DNSServer.h>       // Подключаем DNS-сервер для Captive Portal
-#include <ESPmDNS.h>         // Подключаем mDNS для обращения по имени tv-lift.local
-#include <LittleFS.h> // Добавляем LittleFS
-#include <Preferences.h>     // Подключаем работу с энергонезависимой памятью NVS
+#include <DNSServer.h>       
+#include <ESPmDNS.h>         
+#include <LittleFS.h> 
+#include <Preferences.h>     
 #include "Elevator/Elevator.h"
 
 enum class WifiState {
-    CONNECTING_STA, // Пытаемся подключиться к домашнему Wi-Fi
-    AP_MODE,        // Работаем в режиме Точки Доступа (Portal)
-    STA_MODE        // Успешно подключены к домашней сети
+    CONNECTING_STA, // Попытка подключения к домашнему Wi-Fi
+    AP_MODE,        // Режим точки доступа (Captive Portal)
+    STA_MODE        // Успешно подключены к Wi-Fi
 };
 
 class WebManager {
 public:
     WebManager();
+    
+    // Инициализация файловой системы, Wi-Fi и роутеров
     void init(Elevator* elevatorPtr); 
-    void update(); // ВЫЗЫВАТЬ В main loop() ОБЯЗАТЕЛЬНО!
 
-    // Метод для сброса настроек Wi-Fi (например, по длинному нажатию физической кнопки)
+    // ЕДИНЫЙ метод обновления, вызываемый в main loop()
+    void update(); 
+
+    // Сброс настроек Wi-Fi и запуск AP-режима
     void resetWifiSettings();
+
+    // Отправка строки во все подключенные WebSocket-клиенты (например, для логов)
+    void broadcastWs(const String& payload);
 
 private:
     AsyncWebServer m_server{80};
     AsyncWebSocket m_ws{"/ws"};
-    DNSServer      m_dnsServer;   // Объект DNS-сервера
-    Preferences    m_prefs;       // Объект для работы с NVS памятью
+    DNSServer      m_dnsServer;   
+    Preferences    m_prefs;       
 
     WifiState      m_wifiState{WifiState::CONNECTING_STA};
     uint32_t       m_lastBroadcastMs{0};
     String         m_ssid;
     String         m_password;
 
-    Elevator* m_elevator{nullptr}; // Храним ссылку на лифт
+    Elevator*      m_elevator{nullptr}; 
 
-    void broadcastStatus();
+    // Внутренние методы настройки
     void loadCredentials();
     void saveCredentials(const String& ssid, const String& pass);
     void startAPMode();
     void startSTAMode();
+    
     void setupRoutes();
     void setupCaptivePortalRoutes();    
+    void setupWebSocket();
+
+    // Обработчики и рассылка
+    void handleWsCommand(uint8_t* data, size_t len);
+    void broadcastStatus();
 };
