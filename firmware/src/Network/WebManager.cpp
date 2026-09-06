@@ -393,10 +393,10 @@ void WebManager::setupRoutes() {
             if (jsonObj.containsKey("overcurrentTimeoutMs"))       DeviceConfig::overcurrentTimeoutMs       = jsonObj["overcurrentTimeoutMs"];
             if (jsonObj.containsKey("MAX_FORWARD_TIME_MS"))        DeviceConfig::MAX_FORWARD_TIME_MS        = jsonObj["MAX_FORWARD_TIME_MS"];
             if (jsonObj.containsKey("MAX_REVERSE_TIME_MS"))        DeviceConfig::MAX_REVERSE_TIME_MS        = jsonObj["MAX_REVERSE_TIME_MS"];
-            if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))     DeviceConfig::FORWARD_LIMIT_RUN_ON_MS     = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
-            if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))     DeviceConfig::REVERSE_LIMIT_RUN_ON_MS     = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
+            if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))    DeviceConfig::FORWARD_LIMIT_RUN_ON_MS     = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
+            if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))    DeviceConfig::REVERSE_LIMIT_RUN_ON_MS     = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
             if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))     DeviceConfig::MAX_LIFT_ENCODER_TICKS     = jsonObj["MAX_LIFT_ENCODER_TICKS"];
-            if (jsonObj.containsKey("OTA_INTERVAL_MS"))            DeviceConfig::otaUpdateIntervalMs        = jsonObj["OTA_UPDATE_INTERVAL_MS"];
+            if (jsonObj.containsKey("OTA_UPDATE_INTERVAL_MS"))     DeviceConfig::otaUpdateIntervalMs        = jsonObj["OTA_UPDATE_INTERVAL_MS"];
 
             auto parseIrCode = [](JsonVariant v) -> uint32_t {
                 if (v.is<const char*>()) {
