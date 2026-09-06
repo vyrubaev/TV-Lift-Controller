@@ -174,6 +174,12 @@ Elevator::PendingCommand Elevator::getNextCommand()
         return { webType, CommandSource::WEB };
     }
 
+    // Проверяем команды из CLI (Serial-консоли)
+    PendingCommand::Type cliType = m_cliPendingType.exchange(PendingCommand::Type::NONE, std::memory_order_relaxed);
+    if (cliType != PendingCommand::Type::NONE) {
+        return { cliType, CommandSource::CLI };
+    }
+
     return { PendingCommand::Type::NONE, CommandSource::NONE };
 }
 

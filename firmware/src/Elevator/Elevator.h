@@ -58,7 +58,12 @@ public:
     void postWebCommand(PendingCommand::Type type) {
         m_webPendingType.store(type, std::memory_order_relaxed);
     }
+    // 3. Добавляем метод для CLI команд
+    void postCliCommand(PendingCommand::Type type) {
+    m_cliPendingType.store(type, std::memory_order_relaxed);
+}
 
+    
     // Геттер для получения текущего состояния (например, для Web/CLI)
     ElevatorState getState() const { return m_state; }
     const char* sourceToString(CommandSource src);
@@ -69,6 +74,9 @@ private:
 
     // Потокобезопасная переменная для Web-команды
     std::atomic<PendingCommand::Type> m_webPendingType{PendingCommand::Type::NONE};
+    // Потокобезопасная переменная для CLI-команды
+    std::atomic<PendingCommand::Type> m_cliPendingType{PendingCommand::Type::NONE};
+
 
     PendingCommand getNextCommand();
     void executeCommand(const PendingCommand& cmd);

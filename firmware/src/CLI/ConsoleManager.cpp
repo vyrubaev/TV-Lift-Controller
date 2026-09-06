@@ -1,5 +1,6 @@
 #include "CLI/ConsoleManager.h"
 #include "Core/Core.h"
+#include "Logger/Logger.h"
 
 ConsoleManager::ConsoleManager() {
     m_elevator = nullptr;
@@ -8,7 +9,7 @@ ConsoleManager::ConsoleManager() {
 
 void ConsoleManager::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
-    Serial.println("\n[CLI] Консоль управления лифтом запущенна.");
+    Logger::info("[CLI] Консоль управления лифтом запущенна.");
     printHelp();
 }
 
@@ -32,7 +33,7 @@ void ConsoleManager::update() {
             // Защита от переполнения буфера бесконечным вводным мусором
             if (m_inputBuffer.length() > 64) {
                 m_inputBuffer = "";
-                Serial.println("[CLI] Ошибка: Слишком длинная команда!");
+                Logger::warning("[CLI] Ошибка: Слишком длинная команда!");
             }
         }
     }
@@ -50,20 +51,17 @@ void ConsoleManager::processCommand(const String& cmd) {
     } 
     else if (upperCmd == "UP") {
         if (m_elevator) {
-            m_elevator->postWebCommand(Elevator::PendingCommand::Type::UP);
-            Serial.println("[CLI] Команда выполнена: Движение ВВЕРХ");
+            m_elevator->postCliCommand(Elevator::PendingCommand::Type::UP);
         }
     } 
     else if (upperCmd == "DOWN") {
         if (m_elevator) {
-            m_elevator->postWebCommand(Elevator::PendingCommand::Type::DOWN);
-            Serial.println("[CLI] Команда выполнена: Движение ВНИЗ");
+            m_elevator->postCliCommand(Elevator::PendingCommand::Type::DOWN);
         }
     } 
     else if (upperCmd == "STOP") {
         if (m_elevator) {
-            m_elevator->postWebCommand(Elevator::PendingCommand::Type::STOP);
-            Serial.println("[CLI] Команда выполнена: СТОП");
+            m_elevator->postCliCommand(Elevator::PendingCommand::Type::STOP);
         }
     } 
     else if (upperCmd == "STATUS" || upperCmd == "STATE") {
@@ -76,12 +74,10 @@ void ConsoleManager::processCommand(const String& cmd) {
         }
     } 
     else if (upperCmd == "REBOOT") {
-        Serial.println("[CLI] Перезагрузка контроллера...");
-        delay(200);
         Core::reboot();
     } 
     else {
-        Serial.println("[CLI] Неизвестная команда. Введите HELP для справки.");
+        Logger::error("[CLI] Неизвестная команда. Введите HELP для справки.");
     }
 }
 
