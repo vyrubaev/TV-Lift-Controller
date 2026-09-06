@@ -183,6 +183,7 @@ Elevator::PendingCommand Elevator::getNextCommand()
 void Elevator::executeCommand(const PendingCommand& cmd)
 {
     if (OtaUpdater::isUpdating()) {
+        Logger::warning("Command ignored: OTA update in progress!");
         return; // Игнорируем любые команды, пока идет OTA!
 }
 
