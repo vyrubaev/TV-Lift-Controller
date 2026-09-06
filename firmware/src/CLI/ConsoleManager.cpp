@@ -28,6 +28,7 @@ void ConsoleManager::update() {
             m_inputBuffer = ""; // Очищаем буфер для следующей команды
         } else {
             m_inputBuffer += incomingChar;
+            Serial.print(incomingChar); // <--- ЭХО: выводим символ на экран при вводе
             // Защита от переполнения буфера бесконечным вводным мусором
             if (m_inputBuffer.length() > 64) {
                 m_inputBuffer = "";
