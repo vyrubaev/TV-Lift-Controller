@@ -27,19 +27,15 @@ void OtaUpdater::checkForUpdates() {
         return;
     }
 
-    // Блокируем проверку, если лифт передан и сейчас движется
-    if (m_elevator) {
-        ElevatorState state = m_elevator->getState();
-        if (state == ElevatorState::MOVING_UP || state == ElevatorState::MOVING_DOWN) {
-            Logger::warning("OTA: Лифт в движении. Проверка обновлений отложена до остановки.");
-            return;
-        }
+    // Жесткая проверка: если лифт вообще существует и движется — сразу выход
+    if (m_elevator && m_elevator->isMoving()) {
+        Logger::warning("OTA: Лифт в движении. Проверка обновлений отложена.");
+        return;
     }
 
     String targetBinUrl = "";
     bool needUpdate = false;
 
-    // 1. Сначала полностью отрабатываем с манифестом и закрываем соединение
     {
         HTTPClient http;
         http.begin(m_checkUrl);
@@ -58,29 +54,17 @@ void OtaUpdater::checkForUpdates() {
                     Logger::info(logBuf);
                     targetBinUrl = String(binUrl); 
                     needUpdate = true;
-                } else {
-                    snprintf(logBuf, sizeof(logBuf), "OTA: Актуальная версия: %s", DeviceConfig::VERSION);
-                    Logger::info(logBuf);
                 }
-            } else {
-                snprintf(logBuf, sizeof(logBuf), "OTA: Ошибка парсинга JSON: %s", error.c_str());
-                Logger::error(logBuf);
             }
-        } else {
-            snprintf(logBuf, sizeof(logBuf), "OTA: Сервер обновлений временно недоступен. Ошибка: %d", httpCode);
-            Logger::error(logBuf);
         }
         http.end(); 
     }
 
-    // 2. Если обновление нужно — проверяем безопасность еще раз перед прошивкой и запускаем OTA
+    // Финальная проверка перед самой записью во флеш
     if (needUpdate && targetBinUrl.length() > 0) {
-        if (m_elevator) {
-            ElevatorState state = m_elevator->getState();
-            if (state == ElevatorState::MOVING_UP || state == ElevatorState::MOVING_DOWN) {
-                Logger::error("OTA ОТМЕНЕНА: Лифт начал движение прямо перед загрузкой прошивки!");
-                return;
-            }
+        if (m_elevator && m_elevator->isMoving()) {
+            Logger::error("OTA ОТМЕНЕНА: Лифт начал движение перед загрузкой!");
+            return;
         }
         performOTA(targetBinUrl.c_str());
     }

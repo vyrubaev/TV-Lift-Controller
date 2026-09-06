@@ -50,6 +50,7 @@ public:
     void moveUp(CommandSource src = CommandSource::NONE);
     void moveDown(CommandSource src = CommandSource::NONE);
     void stop(CommandSource src = CommandSource::NONE);
+    bool isMoving() const; // Проверка, движется ли лифт в данный момент чтобы не обновлять прошивку OTA во время движения
 
     float getCurrentAmps();
 

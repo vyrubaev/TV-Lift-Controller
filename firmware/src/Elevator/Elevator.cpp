@@ -122,6 +122,13 @@ void Elevator::stop(CommandSource src) {
     setState(ElevatorState::STOPPED);
 }
 
+bool Elevator::isMoving() const {
+    // Перечислите здесь ВСЕ состояния, при которых мотор активен
+    return m_state == ElevatorState::MOVING_UP || 
+           m_state == ElevatorState::MOVING_DOWN || 
+           m_state == ElevatorState::RUN_ON; // добавьте ваши рабочие статусы
+}
+
 bool Elevator::isForwardLimitReached() {
     return m_input.forwardLimit();
 }
