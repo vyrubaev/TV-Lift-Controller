@@ -1,5 +1,8 @@
 #include "DeviceConfig.h"
 
+// Создание глобальной переменной в памяти (без extern)
+bool g_isUpdating = false; // Флаг, указывающий, что идет процесс OTA обновления (для блокировки команд лифта)
+
 namespace DeviceConfig {
 
 void loadDefaults() {

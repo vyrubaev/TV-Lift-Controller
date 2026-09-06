@@ -7,11 +7,11 @@
 #include <ArduinoJson.h>
 #include "Logger/Logger.h"
 #include "Config/DeviceConfig.h"
-#include "Elevator/Elevator.h" // Для проверки состояния лифта перед OTA
+#include "Elevator/Elevator.h"
 
 
-// Предварительное объявление класса Elevator для экономии инклудов
-class Elevator;
+extern bool g_isUpdating; // Флаг, указывающий, что идет процесс OTA обновления (для блокировки команд лифта)
+
 
 class OtaUpdater {
 public:
@@ -24,7 +24,7 @@ public:
     void update();     // Вызывается в Core::loop()
     void forceCheck(); // Для принудительного вызова из WebManager
     static bool isUpdating(); // Метод для проверки состояния OTA
-
+    
 private:
     const char* m_checkUrl;
     uint32_t m_checkIntervalMs;

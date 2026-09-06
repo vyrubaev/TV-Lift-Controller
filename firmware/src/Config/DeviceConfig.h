@@ -6,7 +6,7 @@
 namespace DeviceConfig
 {
 // Версия прошивки
-inline const char* VERSION = "1.1.8"; // Обновите версию при каждом изменении прошивки
+inline const char* VERSION = "1.1.9"; // Обновите версию при каждом изменении прошивки
     
 // Единый источник дефолтных значений для сброса и инициализации
 namespace Defaults {
@@ -79,4 +79,6 @@ inline uint32_t otaUpdateIntervalMs = Defaults::OTA_UPDATE_INTERVAL_MS;
 void loadDefaults();
 void load();
 void save();
+
+extern bool g_isUpdating; // Флаг, указывающий, что идет процесс OTA обновления (для блокировки команд лифта)
 }
