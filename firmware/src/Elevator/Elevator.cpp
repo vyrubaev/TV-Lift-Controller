@@ -1,6 +1,7 @@
 #include "Elevator.h"
 #include "../Logger/Logger.h"
 #include <cstdio>
+#include "OTA/OtaUpdater.h" // Для проверки состояния лифта перед OTA
 
 Elevator::Elevator()
     : m_state(ElevatorState::UNKNOWN)
@@ -181,6 +182,10 @@ Elevator::PendingCommand Elevator::getNextCommand()
 // -------------------------------------------------
 void Elevator::executeCommand(const PendingCommand& cmd)
 {
+    if (OtaUpdater::isUpdating()) {
+        return; // Игнорируем любые команды, пока идет OTA!
+}
+
     switch (cmd.type) {
         case PendingCommand::Type::STOP:
             // Сброс OVERCURRENT происходит ТОЛЬКО при вызове STOP

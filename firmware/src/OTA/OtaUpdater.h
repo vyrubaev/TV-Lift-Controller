@@ -23,6 +23,7 @@ public:
     
     void update();     // Вызывается в Core::loop()
     void forceCheck(); // Для принудительного вызова из WebManager
+    static bool isUpdating(); // Метод для проверки состояния OTA
 
 private:
     const char* m_checkUrl;

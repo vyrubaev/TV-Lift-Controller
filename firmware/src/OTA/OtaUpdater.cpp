@@ -1,9 +1,12 @@
 #include "OtaUpdater.h"
 
 static char logBuf[128];
+// Статическая переменная состояния
+static bool s_inOtaProcess = false;
 
 OtaUpdater::OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs)
     : m_checkUrl(checkUrl), m_checkIntervalMs(checkIntervalMs) {}
+
 
 void OtaUpdater::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
@@ -19,6 +22,10 @@ void OtaUpdater::update() {
 
 void OtaUpdater::forceCheck() {
     checkForUpdates();
+}
+
+bool OtaUpdater::isUpdating() {
+    return s_inOtaProcess;
 }
 
 void OtaUpdater::checkForUpdates() {
@@ -83,6 +90,8 @@ bool OtaUpdater::isNewerVersion(const char* serverVersion) {
 }
 
 void OtaUpdater::performOTA(const char* binUrl) {
+    s_inOtaProcess = true; // БЛОКИРУЕМ ВСЁ
+
     WiFiClient client;
     client.setTimeout(60); 
     
@@ -110,4 +119,5 @@ void OtaUpdater::performOTA(const char* binUrl) {
             ESP.restart(); // Жесткий системный рестарт ESP32
             break;
     }
+    s_inOtaProcess = false; // Разблокируем
 }
