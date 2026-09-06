@@ -7,13 +7,21 @@
 #include <ArduinoJson.h>
 #include "Logger/Logger.h"
 #include "Config/DeviceConfig.h"
+#include "Core/core.h"
+#include "Elevator/Elevator.h" // Для проверки состояния лифта перед OTA
+
+
+// Предварительное объявление класса Elevator для экономии инклудов
+class Elevator;
 
 class OtaUpdater {
 public:
-    // По умолчанию URL ведет на ваш Express-сервер
-    OtaUpdater(const char* checkUrl = "http://192.168.88.33:3000/firmware/version.json", uint32_t checkIntervalMs = DeviceConfig::otaUpdateIntervalMs);
+    // Сохраняем вашу оригинальную сигнатуру конструктора с дефолтным URL
+    OtaUpdater(const char* checkUrl = DeviceConfig::otaUrl, uint32_t checkIntervalMs = DeviceConfig::otaUpdateIntervalMs);
     
-    void init();
+    // Перегружаем init, чтобы опционально принимать указатель на лифт (обратная совместимость сохранена)
+    void init(Elevator* elevatorPtr = nullptr);
+    
     void update();     // Вызывается в Core::loop()
     void forceCheck(); // Для принудительного вызова из WebManager
 
@@ -21,6 +29,7 @@ private:
     const char* m_checkUrl;
     uint32_t m_checkIntervalMs;
     uint32_t m_lastCheckMs = 0;
+    Elevator* m_elevator = nullptr; // Указатель на лифт
 
     void checkForUpdates();
     void performOTA(const char* binUrl);
