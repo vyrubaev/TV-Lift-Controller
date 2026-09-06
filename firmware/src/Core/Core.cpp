@@ -4,10 +4,12 @@
 #include "Network/WebManager.h"
 #include "OTA/OtaUpdater.h"
 #include "Config/DeviceConfig.h" 
+#include "CLI/ConsoleManager.h"
 
 Elevator elevator;
 WebManager webManager;
 OtaUpdater otaUpdater;
+ConsoleManager consoleManager; // Объект командной строки
 
 // Состояние отложенной перезагрузки
 static bool s_rebootRequested = false;
@@ -36,14 +38,20 @@ bool Core::init()
 
     // 1. Загружаем конфигурацию
     DeviceConfig::load();
-    printSystemInfo(); 
+    printSystemInfo();
 
     elevator.init();
 
+    // Инициализация командной строки и привязка к объектам
+    consoleManager.init(&elevator); 
+    Logger::info("CLI Manager initialized. Type commands in Serial Monitor.");
+
     // Инициализируем веб-сервер и OTA
+    webManager.init(&elevator);
     Logger::info("WebManager initialization...");
     webManager.init(&elevator);
-    otaUpdater.init();
+    Logger::info("OTA initialization...");
+    otaUpdater.init(&elevator);
 
     // 2. Создаем независимую высокоприоритетную задачу для лифта на ядре 1
     xTaskCreatePinnedToCore(
