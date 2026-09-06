@@ -7,7 +7,7 @@ static char logBuf[128];
 static bool s_inOtaProcess = false;
 
 OtaUpdater::OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs)
-    : m_checkUrl(checkUrl), m_checkIntervalMs(checkIntervalMs) {}
+    : m_checkUrl(checkUrl) {}
 
 
 void OtaUpdater::init(Elevator* elevatorPtr) {
@@ -16,7 +16,7 @@ void OtaUpdater::init(Elevator* elevatorPtr) {
 }
 
 void OtaUpdater::update() {
-    if (WiFi.status() == WL_CONNECTED && (millis() - m_lastCheckMs >= m_checkIntervalMs)) {
+    if (WiFi.status() == WL_CONNECTED && (millis() - m_lastCheckMs >= DeviceConfig::otaUpdateIntervalMs)) {
         m_lastCheckMs = millis();
         checkForUpdates();
     }

@@ -422,7 +422,7 @@
             document.getElementById('irCodeStop').value = data.IR_CODE_STOP ?? '';
 
             document.getElementById('otaUrl').value = data.otaUrl ?? '';
-            document.getElementById('otaInt').value = data.OTA_UPDATE_INTERVAL_MS ?? '';
+            document.getElementById('otaInt').value = data.otaUpdateIntervalMs ?? '';
         } catch (e) {
             console.error('Ошибка загрузки конфигурации:', e);
         }

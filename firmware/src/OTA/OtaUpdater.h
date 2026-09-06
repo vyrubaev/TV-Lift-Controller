@@ -27,7 +27,6 @@ public:
     
 private:
     const char* m_checkUrl;
-    uint32_t m_checkIntervalMs;
     uint32_t m_lastCheckMs = 0;
     Elevator* m_elevator = nullptr; // Указатель на лифт
 

@@ -65,6 +65,13 @@ void load() {
     snprintf(otaUrl, sizeof(otaUrl), "%s", savedOta.c_str());
     otaUpdateIntervalMs = prefs.getULong("OTA_INT", otaUpdateIntervalMs);
 
+    otaUpdateIntervalMs = prefs.getULong("OTA_INT", Defaults::OTA_UPDATE_INTERVAL_MS);
+    
+    // ВЫВОД ПРИ СТАРТЕ:
+    Serial.printf("[Config] Loaded OTA_INT from flash: %u ms\n", (unsigned int)otaUpdateIntervalMs);
+
+    
+
     prefs.end();
 }
 
@@ -101,6 +108,12 @@ void save() {
     prefs.putString("OTA_URL", otaUrl);
     prefs.putULong("OTA_INT", otaUpdateIntervalMs);
 
+    
+
+    prefs.putULong("OTA_INT", otaUpdateIntervalMs);
+
+    // ВЫВОД ПРИ СОХРАНЕНИИ:
+    Serial.printf("[Config] Saved OTA_INT to flash: %u ms\n", (unsigned int)otaUpdateIntervalMs);
     prefs.end();
 }
 

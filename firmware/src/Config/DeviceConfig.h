@@ -19,7 +19,7 @@ namespace Defaults {
     constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
     constexpr uint8_t SOFT_START_MIN_PWM = 1;  // Минимальный ШИМ, при котором мотор начинает крутиться
     constexpr uint32_t SOFT_START_STEP_MS = 100;  // Интервал увеличения ШИМ (мс)
-    constexpr uint8_t SOFT_START_STEP_PWM = 5;  // Шаг прибавки ШИМ
+    constexpr uint8_t SOFT_START_STEP_PWM = 10;  // Шаг прибавки ШИМ
 
     // --- НАСТРОЙКИ ТОКА И ЗАЩИТЫ --- ПРИМЕР! (требуется проверка и калибровка под конкретный мотор и драйвер) !!!
     constexpr float CURRENT_SENSOR_SENSITIVITY = 0.5f;  // Чувствительность датчика тока (Ампер на Вольт) - необходимо уточнить при калибровке под конкретный мотор и драйвер
@@ -29,12 +29,12 @@ namespace Defaults {
     constexpr uint32_t OVERCURRENT_TIMEOUT_MS = 300;    // Время превышения до аварии (мс)
 
     // Максимальное время работы мотора для каждого направления
-    constexpr uint32_t MAX_FORWARD_TIME_MS = 30000; // 30 секунд на подъем (вперед) (мс)
-    constexpr uint32_t MAX_REVERSE_TIME_MS = 30000; // 30 секунд на спуск (назад) (мс)
+    constexpr uint32_t MAX_FORWARD_TIME_MS = 60000; // 30 секунд на подъем (вперед) (мс)
+    constexpr uint32_t MAX_REVERSE_TIME_MS = 60000; // 30 секунд на спуск (назад) (мс)
 
     // Время добега после срабатывания концевика в мсек. 0 = остановить мотор сразу.
-    constexpr uint32_t FORWARD_LIMIT_RUN_ON_MS = 1000; 
-    constexpr uint32_t REVERSE_LIMIT_RUN_ON_MS = 1000; 
+    constexpr uint32_t FORWARD_LIMIT_RUN_ON_MS = 0; 
+    constexpr uint32_t REVERSE_LIMIT_RUN_ON_MS = 0; 
     
     // Конфигурация счетчика оборотов мотора 
     constexpr uint32_t MAX_LIFT_ENCODER_TICKS = 0; // 
