@@ -7,7 +7,6 @@
 #include <ArduinoJson.h>
 #include "Logger/Logger.h"
 #include "Config/DeviceConfig.h"
-#include "Core/core.h"
 #include "Elevator/Elevator.h" // Для проверки состояния лифта перед OTA
 
 

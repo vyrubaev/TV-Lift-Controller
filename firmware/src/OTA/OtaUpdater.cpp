@@ -89,9 +89,6 @@ void OtaUpdater::performOTA(const char* binUrl) {
     snprintf(logBuf, sizeof(logBuf), "OTA: Начинаю загрузку с %s", binUrl);
     Logger::info(logBuf);
 
-    // Настраиваем поведение до вызова update
-    httpUpdate.rebootOnUpdate(false); // Запрещаем автоперезагрузку для корректного вывода логов
-    
     // Вызываем обновлятор ровно один раз
     t_httpUpdate_return ret = httpUpdate.update(client, binUrl);
 
@@ -108,8 +105,9 @@ void OtaUpdater::performOTA(const char* binUrl) {
             break;
 
         case HTTP_UPDATE_OK:
-            Logger::info("OTA: Успешно обновлено! Перезагрузка...");
-            Core::reboot(); // Исправлена опечатка в имени класса (было Сore через русскую С)
+            Logger::info("OTA: Успешно обновлено! Перезагружаю систему...");
+            delay(200); // Даем время логеру вытолкнуть данные в Serial
+            ESP.restart(); // Жесткий системный рестарт ESP32
             break;
     }
 }
