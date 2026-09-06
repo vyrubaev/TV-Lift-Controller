@@ -350,7 +350,7 @@ void WebManager::setupRoutes() {
         doc["FORWARD_LIMIT_RUN_ON_MS"]    = DeviceConfig::FORWARD_LIMIT_RUN_ON_MS;
         doc["REVERSE_LIMIT_RUN_ON_MS"]    = DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
         doc["MAX_LIFT_ENCODER_TICKS"]     = DeviceConfig::MAX_LIFT_ENCODER_TICKS;
-        doc["OTA_INTERVAL_MS"]            = DeviceConfig::otaUpdateIntervalMs;
+        doc["OTA_UPDATE_INTERVAL_MS"]     = DeviceConfig::otaUpdateIntervalMs;
 
         char hexBuffer[11];
         snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_UP);
