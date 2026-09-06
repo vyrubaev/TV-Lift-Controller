@@ -350,7 +350,7 @@ void WebManager::setupRoutes() {
         doc["FORWARD_LIMIT_RUN_ON_MS"]    = DeviceConfig::FORWARD_LIMIT_RUN_ON_MS;
         doc["REVERSE_LIMIT_RUN_ON_MS"]    = DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
         doc["MAX_LIFT_ENCODER_TICKS"]     = DeviceConfig::MAX_LIFT_ENCODER_TICKS;
-        doc["OTA_UPDATE_INTERVAL_MS"]     = DeviceConfig::otaUpdateIntervalMs;
+        doc["otaUpdateIntervalMs"]        = DeviceConfig::otaUpdateIntervalMs;
 
         char hexBuffer[11];
         snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", DeviceConfig::IR_CODE_UP);
@@ -396,7 +396,7 @@ void WebManager::setupRoutes() {
             if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))    DeviceConfig::FORWARD_LIMIT_RUN_ON_MS     = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
             if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))    DeviceConfig::REVERSE_LIMIT_RUN_ON_MS     = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
             if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))     DeviceConfig::MAX_LIFT_ENCODER_TICKS     = jsonObj["MAX_LIFT_ENCODER_TICKS"];
-            if (jsonObj.containsKey("OTA_UPDATE_INTERVAL_MS"))     DeviceConfig::otaUpdateIntervalMs        = jsonObj["OTA_UPDATE_INTERVAL_MS"];
+            if (jsonObj.containsKey("otaUpdateIntervalMs"))     DeviceConfig::otaUpdateIntervalMs        = jsonObj["otaUpdateIntervalMs"];
 
             auto parseIrCode = [](JsonVariant v) -> uint32_t {
                 if (v.is<const char*>()) {
