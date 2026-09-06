@@ -49,9 +49,9 @@ bool Core::init()
     // Инициализируем веб-сервер и OTA
     webManager.init(&elevator);
     Logger::info("WebManager initialization...");
-    webManager.init(&elevator);
-    Logger::info("OTA initialization...");
     otaUpdater.init(&elevator);
+    Logger::info("OTA initialization...");
+   
 
     // 2. Создаем независимую высокоприоритетную задачу для лифта на ядре 1
     xTaskCreatePinnedToCore(
@@ -76,6 +76,7 @@ void Core::loop()
     // не смогут заблокировать физическую безопасность лифта.
     webManager.update();
     otaUpdater.update();
+    consoleManager.update();
 
     if (s_rebootRequested && (millis() - s_rebootStartMs >= 1000)) {
         Logger::info("Executing scheduled system reboot now...");
