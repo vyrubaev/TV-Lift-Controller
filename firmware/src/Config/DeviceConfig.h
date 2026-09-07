@@ -16,8 +16,8 @@ namespace Defaults {
     constexpr uint8_t NODE_ID = 1; // Идентификатор узла (для master/slave конфигурации, по умолчанию 1) для мультимоторных систем, где несколько плат управляют разными моторами лифта. Каждый узел должен иметь уникальный идентификатор (1, 2, 3 и т.д.).
 
     // --- СКОРОСТЬ МОТОРА ---
-    constexpr uint8_t MOTOR_SPEED = 180; // range 0-255 
-    constexpr uint8_t SOFT_START_MIN_PWM = 1;  // Минимальный ШИМ, при котором мотор начинает крутиться
+    constexpr uint8_t MOTOR_SPEED = 255; // range 0-255 
+    constexpr uint8_t SOFT_START_MIN_PWM = 10;  // Минимальный ШИМ, при котором мотор начинает крутиться
     constexpr uint32_t SOFT_START_STEP_MS = 100;  // Интервал увеличения ШИМ (мс)
     constexpr uint8_t SOFT_START_STEP_PWM = 10;  // Шаг прибавки ШИМ
 
@@ -29,8 +29,8 @@ namespace Defaults {
     constexpr uint32_t OVERCURRENT_TIMEOUT_MS = 300;    // Время превышения до аварии (мс)
 
     // Максимальное время работы мотора для каждого направления
-    constexpr uint32_t MAX_FORWARD_TIME_MS = 60000; // 30 секунд на подъем (вперед) (мс)
-    constexpr uint32_t MAX_REVERSE_TIME_MS = 60000; // 30 секунд на спуск (назад) (мс)
+    constexpr uint32_t MAX_FORWARD_TIME_MS = 60000; // 60 секунд на подъем (вперед) (мс)
+    constexpr uint32_t MAX_REVERSE_TIME_MS = 60000; // 60 секунд на спуск (назад) (мс)
 
     // Время добега после срабатывания концевика в мсек. 0 = остановить мотор сразу.
     constexpr uint32_t FORWARD_LIMIT_RUN_ON_MS = 0; 

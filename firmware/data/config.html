@@ -195,186 +195,186 @@
 <body>
 
 <div class="container">
-    <h1>Настройки TV Lift</h1>
+    <h1>Settings TV Lift</h1>
 
     <!-- Панель отладки, статуса и ручного управления -->
     <div class="debug-panel">
         <div class="status-row">
-            <span>Связь WebSocket:</span>
+            <span>Link:</span>
             <span id="conn-status" class="status-badge">OFFLINE</span>
         </div>
         <div class="status-row">
-            <span>Статус лифта:</span>
+            <span>Lift Status:</span>
             <strong id="state-val" style="color: var(--accent);">...</strong>
         </div>
         <div class="status-row">
-            <span>Текущий ток:</span>
+            <span>Current (A):</span>
             <span><strong id="current-val" style="color: #2196f3;">0.00</strong> A</span>
         </div>
 
         <div class="control-btns">
-            <button class="ctrl-btn btn-up" onclick="sendCmd('UP')">▲ Вверх</button>
-            <button class="ctrl-btn btn-stop" onclick="sendCmd('STOP')">⏹ Стоп</button>
-            <button class="ctrl-btn btn-down" onclick="sendCmd('DOWN')">▼ Вниз</button>
-            <button class="ctrl-btn btn-reboot" onclick="rebootDevice()" style="background: #6c757d;">🔄 Перезагрузка</button>
-            <button class="ctrl-btn" onclick="resetToDefaults()" style="background: #b71c1c; grid-column: span 3; margin-top: 4px;">⚠️ Сбросить настройки по умолчанию</button>
+            <button class="ctrl-btn btn-up" onclick="sendCmd('UP')">▲ UP</button>
+            <button class="ctrl-btn btn-stop" onclick="sendCmd('STOP')">⏹ STOP</button>
+            <button class="ctrl-btn btn-down" onclick="sendCmd('DOWN')">▼ DOWN</button>
+            <button class="ctrl-btn btn-reboot" onclick="rebootDevice()" style="background: #6c757d;">🔄 REBOOT</button>
+            <button class="ctrl-btn" onclick="resetToDefaults()" style="background: #b71c1c; grid-column: span 3; margin-top: 4px;">⚠️ DEFAULT SETTINGS</button>
         </div>
     </div>
 
     <form id="configForm">
         <div class="row">
             <div class="form-group">
-                <label>Тип установки</label>
+                <label>Installation type</label>
                 <select id="mountType">
                     <option value="0">FLOOR</option>
                     <option value="1">CEILING</option>
                     <option value="2">WALL</option>
                 </select>
-                <div class="hint">Настройка типа лифта (по умолчанию CEILING)</div>
+                <div class="hint">TV lift installation type (default CEILING)</div>
             </div>
             <div class="form-group">
-                <label>Режим работы</label>
+                <label>Operating mode</label>
                 <select id="isMaster">
                     <option value="true">Master</option>
                     <option value="false">Slave</option>
                 </select>
-                <div class="hint">true = master, false = slave</div>
+                <div class="hint">Setting up the elevator to operate in multi-motor mode ( Master or Slave )</div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>ID узла</label>
+                <label>Motor ID</label>
                 <input type="number" id="nodeId" min="1" max="255">
-                <div class="hint">Идентификатор платы в CAN-сети</div>
+                <div class="hint">Board ID in the CAN network</div>
             </div>
             <div class="form-group">
-                <label>Скорость мотора</label>
+                <label>Motor speed</label>
                 <input type="number" id="motorSpeed" min="0" max="255">
-                <div class="hint">Основная скорость ШИМ (0–255)</div>
+                <div class="hint">Motor speed in PWM (0–255)</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Maximum current ( Максимальный ток ) (A)</label>
+            <label>Maximum current (A)</label>
             <input type="number" step="0.1" id="maxMotorCurrentAmps">
-            <div class="hint">Максимальный допустимый рабочий ток</div>
+            <div class="hint">Maximum permissible working current</div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>Таймаут старта (мс)</label>
+                <label>Start timeout (ms)</label>
                 <input type="number" id="startCurrentTimeoutMs">
-                <div class="hint">Время игнорирования броска тока при старте</div>
+                <div class="hint">Start-up surge current ignoring time</div>
             </div>
              <div class="form-group">
-                <label>Таймаут перегрузки (мс)</label>
+                <label>Overcurrent timeout (ms)</label>
                 <input type="number" id="overcurrentTimeoutMs">
-                <div class="hint">Время удержания перегрузки до аварийной остановки</div>
+                <div class="hint">Overcurrent holding time before emergency stop</div>
             </div>
         </div>    
 
         <div class="row">
             <div class="form-group">
-                <label>Мин. ШИМ старта</label>
+                <label>Min. PWM start</label>
                 <input type="number" id="softStartMinPwm" min="0" max="255">
-                <div class="hint">Минимальный ШИМ для старта мотора</div>
+                <div class="hint">Minimum PWM for slow motor start</div>
             </div>
             <div class="form-group">
-                <label>Шаг ШИМ</label>
+                <label>Step PWM</label>
                 <input type="number" id="softStartStepPwm" min="1" max="50">
-                <div class="hint">Шаг прибавки ШИМ при софт-старте</div>
+                <div class="hint">PWM step increase during slow motor start</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Интервал шага ШИМ (мс)</label>
+            <label>PWM step time interval (ms)</label>
             <input type="number" id="softStartStepMs">
-            <div class="hint">Интервал увеличения ШИМ в миллисекундах</div>
+            <div class="hint">PWM ramp-up interval in milliseconds for slow motor start</div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>Чувствительность датчика</label>
+                <label>Current sensor sensitivity</label>
                 <input type="number" step="0.001" id="currentSensorSensitivity">
-                <div class="hint">Ампер на Вольт (например, 0.185 для ACS712-05B)</div>
+                <div class="hint">Current sensor sensitivity - Amps per Volt (e.g. 0.185 for ACS712-05B)</div>
             </div>
             <div class="form-group">
-                <label>Смещение датчика (В)</label>
+                <label>Current sensor offset (V)</label>
                 <input type="number" step="0.01" id="currentSensorOffsetV">
-                <div class="hint">Напряжение датчика тока при 0А</div>
+                <div class="hint">current sensor voltage reading at 0A (V)</div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>Макс. время вверх (мс)</label>
+                <label>Maximum UP time (ms)</label>
                 <input type="number" id="maxForwardTimeMs">
-                <div class="hint">Предельное время движения мотора вверх</div>
+                <div class="hint">Maximum time for motor upward movement</div>
             </div>
             <div class="form-group">
-                <label>Макс. время вниз (мс)</label>
+                <label>Maximum DOWN time (ms)</label>
                 <input type="number" id="maxReverseTimeMs">
-                <div class="hint">Предельное время движения мотора вниз</div>
+                <div class="hint">Maximum time for motor reverse movement</div>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>Добег вверх (мс)</label>
+                <label>Upward run-on (ms) ATTENTION!!!</label>
                 <input type="number" id="forwardLimitRunOnMs">
-                <div class="hint">Время добега после срабатывания концевика вверх</div>
+                <div class="hint">Motor movement time after UPWARD limit switch activation! CAUTION!!! - Do not set high values!!! May result in DESTRUCTION of the elevator!/div>
             </div>
             <div class="form-group">
-                <label>Добег вниз (мс)</label>
+                <label>Reverse run-on (ms)</label>
                 <input type="number" id="reverseLimitRunOnMs">
-                <div class="hint">Время добега после срабатывания концевика вниз</div>
+                <div class="hint">Motor movement time after REVERSE limit switch activation! CAUTION!!! - Do not set high values!!! May result in DESTRUCTION of the elevator!</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Макс. тиков энкодера</label>
+            <label>Max encoder ticks</label>
             <input type="number" id="maxLiftEncoderTicks">
-            <div class="hint">Конфигурация счетчика оборотов/тиков мотора</div>
+            <div class="hint">Setting the motor encoder value when moving forward to stop. For example, if there is no limit switch.</div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>ИК код UP</label>
+                <label>IR remote code UP</label>
                 <input type="text" id="irCodeUp">
-                <div class="hint">HEX-код кнопки подъема</div>
+                <div class="hint">The hex code for the elevator UP button</div>
             </div>
             <div class="form-group">
-                <label>ИК код DOWN</label>
+                <label>IR remote code DOWN</label>
                 <input type="text" id="irCodeDown">
-                <div class="hint">HEX-код кнопки спуска</div>
+                <div class="hint">The hex code for the elevator DOWN button</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label>ИК код STOP</label>
+            <label>IR remote code STOP</label>
             <input type="text" id="irCodeStop">
-            <div class="hint">HEX-код кнопки остановки</div>
+            <div class="hint">The hex code for the elevator STOP button</div>
         </div>
 
         <div class="row">
             <div class="form-group">
-                <label>Адрес OTA</label>
+                <label>URL for firmware update</label>
                 <input type="url" id="otaUrl">
-                <div class="hint">URL-адрес для обновления прошивки</div>
+                <div class="hint">URL for firmware OTA update</div>
             </div>
             <div class="form-group">
-                <label>Период OTA</label>
+                <label>OTA check interval (ms)</label>
                 <input type="number" id="otaInt">
-                <div class="hint">Интервал проверки обновлений (мсек)</div>
+                <div class="hint">OTA check interval</div>
             </div>
         </div>
 
-        <button type="submit" class="btn-save">Сохранить</button>
+        <button type="submit" class="btn-save">Save settings</button>
     </form>
 </div>
 
-<div id="toast" class="toast">Настройки сохранены!</div>
+<div id="toast" class="toast">Settings saved!</div>
 
 <script>
     let ws;
@@ -424,7 +424,7 @@
             document.getElementById('otaUrl').value = data.otaUrl ?? '';
             document.getElementById('otaInt').value = data.otaUpdateIntervalMs ?? '';
         } catch (e) {
-            console.error('Ошибка загрузки конфигурации:', e);
+            console.error('Configuration loading error:', e);
         }
     }
 
@@ -468,7 +468,7 @@
         if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ action: action, cmd: action.toLowerCase() }));
         } else {
-            alert('Нет подключения к контроллеру!');
+            alert('No connection to the TV-lift controller!');
         }
     }
 
@@ -513,11 +513,11 @@
             });
 
             if (res.ok) {
-                showToast('Настройки сохранены! Перезагрузка контроллера...');
+                showToast('Settings saved! Restarting controller...');
                 document.querySelector('.container').style.opacity = '0.5';
                 setTimeout(() => { location.reload(); }, 3000);
             } else {
-                alert('Ошибка сохранения');
+                alert('Saving error');
             }
         } catch (e) {
             alert('Ошибка сети');
@@ -537,29 +537,29 @@
     });
 
     async function rebootDevice() {
-        if (confirm('Перезагрузить контроллер?')) {
+        if (confirm('Reboot controller?')) {
             try {
                 await fetch('/api/reboot', { method: 'POST' });
-                showToast('Перезагрузка...');
+                showToast('Reboot...');
                 setTimeout(() => { location.reload(); }, 4000);
             } catch (e) {
-                alert('Ошибка сети при перезагрузке');
+                alert('Network error during reboot');
             }
         }
     }
 
     async function resetToDefaults() {
-        if (confirm('ВНИМАНИЕ! Все настройки будут сброшены к значениям по умолчанию. Продолжить?')) {
+        if (confirm('ATTENTION! All settings will be reset to default values. Continue?')) {
             try {
                 const res = await fetch('/api/config/reset', { method: 'POST' });
                 if (res.ok) {
-                    showToast('Настройки сброшены! Перезагрузка...');
+                    showToast('Settings reset! Restarting...');
                     setTimeout(() => { location.reload(); }, 4000);
                 } else {
-                    alert('Ошибка сброса настроек');
+                    alert('Factory reset error');
                 }
             } catch (e) {
-                alert('Ошибка сети');
+                alert('Network error during factory reset');
             }
         }
     }
