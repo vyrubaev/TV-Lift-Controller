@@ -16,7 +16,7 @@ namespace Defaults {
     constexpr uint8_t NODE_ID = 1; // Идентификатор узла (для master/slave конфигурации, по умолчанию 1) для мультимоторных систем, где несколько плат управляют разными моторами лифта. Каждый узел должен иметь уникальный идентификатор (1, 2, 3 и т.д.).
 
     // --- СКОРОСТЬ МОТОРА ---
-    constexpr uint8_t MOTOR_SPEED = 255; // range 0-255 
+    constexpr uint8_t MOTOR_SPEED = 200; // range 0-255 
     constexpr uint8_t SOFT_START_MIN_PWM = 10;  // Минимальный ШИМ, при котором мотор начинает крутиться
     constexpr uint32_t SOFT_START_STEP_MS = 100;  // Интервал увеличения ШИМ (мс)
     constexpr uint8_t SOFT_START_STEP_PWM = 10;  // Шаг прибавки ШИМ

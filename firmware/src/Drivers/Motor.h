@@ -56,7 +56,6 @@ private:
 
     static constexpr uint32_t PWM_FREQUENCY = 20000;
     static constexpr uint8_t PWM_RESOLUTION = 8;
-    uint8_t m_speed;
 
     uint8_t  m_currentPwm{0};      // Текущий ШИМ, подаваемый на мотор
     uint32_t m_lastRampMs{0};      // Время последнего шага нарастания

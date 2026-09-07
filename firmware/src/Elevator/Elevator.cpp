@@ -64,7 +64,7 @@ void Elevator::setState(ElevatorState newState) {
             Logger::error("Elevator status: EMERGENCY FAULT");
             break;
         case ElevatorState::TIMEOUT:
-            Logger::error("Elevator status: TIMEOUT");
+            Logger::warning("Elevator status: TIMEOUT");
             break;    
         default:
             break;

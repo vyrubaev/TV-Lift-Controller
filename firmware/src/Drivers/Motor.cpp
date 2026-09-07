@@ -13,8 +13,7 @@ std::atomic<bool> Motor::s_isEmergency{false};
 volatile int32_t Motor::s_encoderPosition = 0; // Инициализация счетчика
 
 Motor::Motor()
-    : m_speed(DeviceConfig::MOTOR_SPEED),
-      m_state(MotorState::STOPPED)
+    :m_state(MotorState::STOPPED)
 {
 }
 
@@ -142,10 +141,16 @@ void Motor::update() {
             }
         }
         // Плавный разгон
-        if (m_currentPwm < m_speed) {
+        if (m_currentPwm < DeviceConfig::MOTOR_SPEED) {
             if (now - m_lastRampMs >= DeviceConfig::SOFT_START_STEP_MS) {
                 m_lastRampMs = now;
-                m_currentPwm = std::min<uint8_t>(m_speed, m_currentPwm + DeviceConfig::SOFT_START_STEP_PWM);
+                // Считаем безопасно в int
+                int nextPwm = m_currentPwm + DeviceConfig::SOFT_START_STEP_PWM;
+                if (nextPwm > DeviceConfig::MOTOR_SPEED) nextPwm = DeviceConfig::MOTOR_SPEED;
+                if (nextPwm > 255) nextPwm = 255;
+                
+                m_currentPwm = (uint8_t)nextPwm;
+
                 ledcWrite(BoardConfig::MOTOR1_PWM, m_currentPwm);
             }
         }
@@ -160,6 +165,9 @@ void Motor::update() {
             
             char logBuffer[64];
             snprintf(logBuffer, sizeof(logBuffer), "Motor current: %.2f A", currentAmps);
+            Logger::info(logBuffer);
+
+            snprintf(logBuffer, sizeof(logBuffer), "Motor PWM: %u", m_currentPwm);
             Logger::info(logBuffer);
         }
     }
@@ -381,17 +389,6 @@ void Motor::clearEmergency()
 MotorState Motor::getState()
 {
     return m_state;
-}
-
-void Motor::setSpeed(uint8_t speed)
-{
-    m_speed = speed;
-    Logger::debug("Motor speed changed");
-}
-
-uint8_t Motor::getSpeed()
-{
-    return m_speed;
 }
 
 void IRAM_ATTR Motor::encoderISR() {
