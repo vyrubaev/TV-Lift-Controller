@@ -10642,328 +10642,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Isolator:PC817"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U"
-				(at -5.08 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "PC817"
-				(at 0 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "Package_DIP:DIP-4_W7.62mm"
-				(at -5.08 -5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(justify left)
-				)
-			)
-			(property "Datasheet" "http://www.soselectronic.cz/a_info/resource/d/pc817.pdf"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Description" "DC Optocoupler, Vce 35V, CTR 50-300%, DIP-4"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "NPN DC Optocoupler"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "DIP*W7.62mm*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "PC817_0_1"
-				(rectangle
-					(start -5.08 3.81)
-					(end 5.08 -3.81)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5.08 2.54) (xy -2.54 2.54) (xy -2.54 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.175 -0.635) (xy -1.905 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -0.635) (xy -2.54 -2.54) (xy -5.08 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -0.635) (xy -3.175 0.635) (xy -1.905 0.635) (xy -2.54 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.508 0.508) (xy 0.762 0.508) (xy 0.381 0.381) (xy 0.381 0.635) (xy 0.762 0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.508 -0.508) (xy 0.762 -0.508) (xy 0.381 -0.635) (xy 0.381 -0.381) (xy 0.762 -0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 1.905) (xy 2.54 -1.905) (xy 2.54 -1.905)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 0.635) (xy 4.445 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.048 -1.651) (xy 3.556 -1.143) (xy 4.064 -2.159) (xy 3.048 -1.651) (xy 3.048 -1.651)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 2.54) (xy 5.08 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 -2.54) (xy 2.54 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 -2.54) (xy 5.08 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "PC817_1_1"
-				(pin passive line
-					(at -7.62 2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -7.62 -2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 7.62 -2.54 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 7.62 2.54 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Jumper:Jumper_3_Bridged12"
 			(pin_names
 				(offset 0)
@@ -11674,328 +11352,6 @@
 					)
 					(fill
 						(type none)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "PC817_1"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U"
-				(at -5.08 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "PC817"
-				(at 0 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "Package_DIP:DIP-4_W7.62mm"
-				(at -5.08 -5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-						(italic yes)
-					)
-					(justify left)
-				)
-			)
-			(property "Datasheet" "http://www.soselectronic.cz/a_info/resource/d/pc817.pdf"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Description" "DC Optocoupler, Vce 35V, CTR 50-300%, DIP-4"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "NPN DC Optocoupler"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "DIP*W7.62mm*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "PC817_1_0_1"
-				(rectangle
-					(start -5.08 3.81)
-					(end 5.08 -3.81)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5.08 2.54) (xy -2.54 2.54) (xy -2.54 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.175 -0.635) (xy -1.905 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -0.635) (xy -2.54 -2.54) (xy -5.08 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -0.635) (xy -3.175 0.635) (xy -1.905 0.635) (xy -2.54 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.508 0.508) (xy 0.762 0.508) (xy 0.381 0.381) (xy 0.381 0.635) (xy 0.762 0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.508 -0.508) (xy 0.762 -0.508) (xy 0.381 -0.635) (xy 0.381 -0.381) (xy 0.762 -0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 1.905) (xy 2.54 -1.905) (xy 2.54 -1.905)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.54 0.635) (xy 4.445 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.048 -1.651) (xy 3.556 -1.143) (xy 4.064 -2.159) (xy 3.048 -1.651) (xy 3.048 -1.651)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 2.54) (xy 5.08 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 -2.54) (xy 2.54 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.445 -2.54) (xy 5.08 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "PC817_1_1_1"
-				(pin passive line
-					(at -7.62 2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -7.62 -2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 7.62 -2.54 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 7.62 2.54 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
 					)
 				)
 			)
@@ -12950,309 +12306,6 @@
 						)
 					)
 					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Regulator_Switching:CRE1S0505SC"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U9"
-				(at 0 12.7 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "b0505s-1we"
-				(at 0 10.16 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 -10.16 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 -12.7 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "5V to 5V 200mA DC-DC Converter with 1kV isolation, SIP-4"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "Converter*DCDC*Murata*CRE1xxxxxxSC*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "CRE1S0505SC_0_1"
-				(rectangle
-					(start -10.16 7.62)
-					(end 10.16 -7.62)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 7.366) (xy -0.635 6.096)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 4.826) (xy -0.635 3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 2.286) (xy -0.635 1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 -0.254) (xy -0.635 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 -2.794) (xy -0.635 -4.064)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.635 -5.334) (xy -0.635 -6.604)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 5.334) (xy 0.635 6.604)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 2.794) (xy 0.635 4.064)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 0.254) (xy 0.635 1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 -2.286) (xy 0.635 -1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 -4.826) (xy 0.635 -3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 -7.366) (xy 0.635 -6.096)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "CRE1S0505SC_1_1"
-				(pin power_in line
-					(at -12.7 -5.08 0)
-					(length 2.54)
-					(name "-VIN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -12.7 5.08 0)
-					(length 2.54)
-					(name "+VIN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 12.7 -5.08 180)
-					(length 2.54)
-					(name "-VOUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 12.7 5.08 180)
-					(length 2.54)
-					(name "+VOUT"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -14552,12 +13605,6 @@
 		(uuid "85ed4635-9840-470b-9007-f3cf1b497e6f")
 	)
 	(junction
-		(at 207.01 156.21)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8630fd08-87ce-4f9d-8a91-9bc71707a76e")
-	)
-	(junction
 		(at 182.88 34.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14654,12 +13701,6 @@
 		(uuid "b65d41ec-3c2b-4e71-b4d3-d4c2b95e6cd2")
 	)
 	(junction
-		(at 241.3 137.16)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b9be636f-a410-4d5f-87ff-26f1d7bdb5cb")
-	)
-	(junction
 		(at 199.39 144.78)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14738,12 +13779,6 @@
 		(uuid "d2f481ee-b32c-4f36-8b50-0e78bac0408e")
 	)
 	(junction
-		(at 207.01 137.16)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d311faa0-eb0a-4253-bf53-5a206b19b173")
-	)
-	(junction
 		(at 92.71 165.1)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -14820,12 +13855,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "fac01e66-d799-4eba-86ec-d25dfa542dbf")
-	)
-	(junction
-		(at 207.01 147.32)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fe1795c1-1c39-4d36-b28f-940da88556c7")
 	)
 	(junction
 		(at 233.68 71.12)
@@ -15065,16 +14094,6 @@
 	)
 	(wire
 		(pts
-			(xy 236.22 124.46) (xy 241.3 124.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0dbba301-bf25-4a8c-b72b-0549d81a799b")
-	)
-	(wire
-		(pts
 			(xy 191.77 146.05) (xy 191.77 144.78)
 		)
 		(stroke
@@ -15085,7 +14104,7 @@
 	)
 	(wire
 		(pts
-			(xy 208.28 114.3) (xy 210.82 114.3)
+			(xy 233.68 114.3) (xy 247.65 114.3)
 		)
 		(stroke
 			(width 0)
@@ -15132,16 +14151,6 @@
 			(type default)
 		)
 		(uuid "146a6046-1b88-4fe4-8c7f-72ebed65b958")
-	)
-	(wire
-		(pts
-			(xy 236.22 114.3) (xy 247.65 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "146bba1e-c73d-4e8b-b79d-d36ab60aa840")
 	)
 	(wire
 		(pts
@@ -15402,16 +14411,6 @@
 			(type default)
 		)
 		(uuid "28389f53-fd06-47ce-a673-ed6256a8c1e9")
-	)
-	(wire
-		(pts
-			(xy 210.82 124.46) (xy 207.01 124.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "295614e6-ba01-42d9-8a21-114881e81075")
 	)
 	(wire
 		(pts
@@ -15945,16 +14944,6 @@
 	)
 	(wire
 		(pts
-			(xy 233.68 147.32) (xy 241.3 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "54827185-d62d-4f1f-8de3-be2f91c1aa07")
-	)
-	(wire
-		(pts
 			(xy 264.16 38.1) (xy 264.16 50.8)
 		)
 		(stroke
@@ -15972,16 +14961,6 @@
 			(type default)
 		)
 		(uuid "55c34ead-1ca3-440f-bb2a-c30050ef300f")
-	)
-	(wire
-		(pts
-			(xy 207.01 147.32) (xy 207.01 156.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "55f33983-6611-4e9c-9ff9-a67c8a7e10fb")
 	)
 	(wire
 		(pts
@@ -16055,7 +15034,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 144.78) (xy 218.44 144.78)
+			(xy 214.63 144.78) (xy 233.68 144.78)
 		)
 		(stroke
 			(width 0)
@@ -16195,16 +15174,6 @@
 	)
 	(wire
 		(pts
-			(xy 233.68 132.08) (xy 254 132.08)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6490b5f2-afe3-43f0-ae53-8d2360bf8fc4")
-	)
-	(wire
-		(pts
 			(xy 81.28 119.38) (xy 81.28 124.46)
 		)
 		(stroke
@@ -16222,16 +15191,6 @@
 			(type default)
 		)
 		(uuid "655799a9-12ed-4eb2-833c-2d454f470a73")
-	)
-	(wire
-		(pts
-			(xy 218.44 137.16) (xy 207.01 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "65a02726-be6e-4fc2-80d7-7801fc4ab521")
 	)
 	(wire
 		(pts
@@ -16405,16 +15364,6 @@
 	)
 	(wire
 		(pts
-			(xy 218.44 144.78) (xy 218.44 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7a6d33b4-edca-4264-a5eb-c6e358bac2ec")
-	)
-	(wire
-		(pts
 			(xy 162.56 187.96) (xy 160.02 187.96)
 		)
 		(stroke
@@ -16502,16 +15451,6 @@
 			(type default)
 		)
 		(uuid "88c92bfb-c45d-4172-b02c-91aa9bc8b360")
-	)
-	(wire
-		(pts
-			(xy 241.3 137.16) (xy 241.3 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8a0838f5-b1f3-4c45-b0ab-b83c92541af4")
 	)
 	(wire
 		(pts
@@ -16745,7 +15684,7 @@
 	)
 	(wire
 		(pts
-			(xy 217.17 132.08) (xy 218.44 132.08)
+			(xy 217.17 132.08) (xy 254 132.08)
 		)
 		(stroke
 			(width 0)
@@ -16915,16 +15854,6 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 124.46) (xy 207.01 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "addc9545-fc8e-491f-a720-efb390ab80a3")
-	)
-	(wire
-		(pts
 			(xy 247.65 129.54) (xy 259.08 129.54)
 		)
 		(stroke
@@ -16962,16 +15891,6 @@
 			(type default)
 		)
 		(uuid "b0bfac1b-af91-4183-9dff-7562a758a393")
-	)
-	(wire
-		(pts
-			(xy 241.3 124.46) (xy 241.3 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b0dc15f3-6973-45bd-b4de-67ec4e0021e0")
 	)
 	(wire
 		(pts
@@ -17125,16 +16044,6 @@
 	)
 	(wire
 		(pts
-			(xy 207.01 147.32) (xy 218.44 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4566401-9c44-41f2-bfaa-f2d3940143b1")
-	)
-	(wire
-		(pts
 			(xy 160.02 172.72) (xy 160.02 187.96)
 		)
 		(stroke
@@ -17235,6 +16144,16 @@
 	)
 	(wire
 		(pts
+			(xy 233.68 144.78) (xy 233.68 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d3e64c92-6456-4848-8e46-f3e9bb50e448")
+	)
+	(wire
+		(pts
 			(xy 246.38 71.12) (xy 256.54 71.12)
 		)
 		(stroke
@@ -17292,16 +16211,6 @@
 			(type default)
 		)
 		(uuid "dcce2376-856a-4c3d-9beb-2b0930b06e58")
-	)
-	(wire
-		(pts
-			(xy 207.01 137.16) (xy 207.01 147.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dce14137-9665-43fa-9310-1b7b4622bf71")
 	)
 	(wire
 		(pts
@@ -17452,16 +16361,6 @@
 			(type default)
 		)
 		(uuid "edadb362-23dd-4b36-b6e0-c92f6ed21621")
-	)
-	(wire
-		(pts
-			(xy 233.68 137.16) (xy 241.3 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "eef1131d-91f7-48b4-99a7-6a99f872eb51")
 	)
 	(wire
 		(pts
@@ -18345,7 +17244,7 @@
 			(uuid "2d40e922-7d27-4363-8950-bce2d92b9cfc")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C16")
 					(unit 1)
@@ -18437,7 +17336,7 @@
 			(uuid "5956022a-7518-4c1e-8cde-07a7f8858866")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D7")
 					(unit 1)
@@ -18520,7 +17419,7 @@
 			(uuid "83f980b1-6add-4abc-ac1b-ca3d906c6e88")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J6")
 					(unit 1)
@@ -18644,7 +17543,7 @@
 			(uuid "1833a436-9692-4b88-8e24-d1cd84ecf3be")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U1")
 					(unit 1)
@@ -18721,7 +17620,7 @@
 			(uuid "4b118553-4b66-4c8f-9f99-ba32a40da9e1")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR020")
 					(unit 1)
@@ -18785,7 +17684,7 @@
 			)
 		)
 		(property "Description" "ESP32-WROOM-32E-N16"
-			(at 92.202 49.784 0)
+			(at 100.33 62.23 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18912,7 +17811,7 @@
 			(uuid "66c3a687-082c-41aa-aa69-35b9d553fb7c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U4")
 					(unit 1)
@@ -18989,7 +17888,7 @@
 			(uuid "847c1903-3806-46e8-96fc-2e9e203bc943")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR056")
 					(unit 1)
@@ -19068,7 +17967,7 @@
 			(uuid "d40d26f2-8920-4e70-813a-fa76b5fa24c4")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D1")
 					(unit 1)
@@ -19146,7 +18045,7 @@
 			(uuid "ad498c6f-12d5-4f6e-b283-14fdb4c5c7db")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR09")
 					(unit 1)
@@ -19223,7 +18122,7 @@
 			(uuid "7d92c289-2114-426f-b322-ee33e157ec82")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR037")
 					(unit 1)
@@ -19301,7 +18200,7 @@
 			(uuid "a258c6b3-2b03-442f-ac13-d2332a4daac7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR05")
 					(unit 1)
@@ -19381,7 +18280,7 @@
 			(uuid "43eed658-32da-4f32-bf41-863f2e271d18")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R28")
 					(unit 1)
@@ -19461,7 +18360,7 @@
 			(uuid "eddf0941-5034-44bd-add3-8c196e2d012c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C18")
 					(unit 1)
@@ -19538,7 +18437,7 @@
 			(uuid "92365510-24cf-4b3a-aee5-15f01aad761f")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR015")
 					(unit 1)
@@ -19617,7 +18516,7 @@
 			(uuid "acd6502e-5815-46a6-8e0f-06e51d1550ce")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR049")
 					(unit 1)
@@ -19695,7 +18594,7 @@
 			(uuid "c1da6345-be2c-462d-a1cc-fae15dd02e42")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR046")
 					(unit 1)
@@ -19773,7 +18672,7 @@
 			(uuid "d2e7c4d6-39af-4a55-bbe9-07f31864f6b9")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR019")
 					(unit 1)
@@ -19851,7 +18750,7 @@
 			(uuid "05b1f824-a0b6-44bf-9916-7a16c3fa1c0b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R2")
 					(unit 1)
@@ -19929,7 +18828,7 @@
 			(uuid "8e0cb707-0d6e-4b76-8c35-e324f4a4a1aa")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR038")
 					(unit 1)
@@ -19940,7 +18839,7 @@
 	(symbol
 		(lib_name "+5V_1")
 		(lib_id "power:+5V")
-		(at 208.28 114.3 0)
+		(at 233.68 114.3 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -19951,7 +18850,7 @@
 		(fields_autoplaced yes)
 		(uuid "23264409-944f-47e6-b942-8b5689b645fb")
 		(property "Reference" "#PWR034"
-			(at 208.28 118.11 0)
+			(at 233.68 118.11 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19962,7 +18861,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 208.28 109.474 0)
+			(at 233.68 109.474 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -19972,7 +18871,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 208.28 114.3 0)
+			(at 233.68 114.3 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19983,7 +18882,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 208.28 114.3 0)
+			(at 233.68 114.3 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19994,7 +18893,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 208.28 114.3 0)
+			(at 233.68 114.3 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -20007,7 +18906,7 @@
 			(uuid "9a62632f-32ea-42e4-be41-75b651aa390d")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR034")
 					(unit 1)
@@ -20085,7 +18984,7 @@
 			(uuid "91dd1533-9dcb-4514-96af-722296a79009")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR039")
 					(unit 1)
@@ -20162,7 +19061,7 @@
 			(uuid "ee6cca31-7add-4ff3-bed4-15af9774ee0d")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR012")
 					(unit 1)
@@ -20241,7 +19140,7 @@
 			(uuid "b0f1e9d6-20e3-443d-aaae-d188e980ea4e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R15")
 					(unit 1)
@@ -20255,7 +19154,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
@@ -20302,7 +19201,7 @@
 				)
 			)
 		)
-		(property "Description" "Jumper, 3-pole, pins 1+2 closed/bridged"
+		(property "Description" "C5360899"
 			(at 121.92 31.75 0)
 			(hide yes)
 			(show_name no)
@@ -20323,7 +19222,7 @@
 			(uuid "61351f85-5b96-4765-85be-54b5fa298879")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "JP4")
 					(unit 1)
@@ -20403,7 +19302,7 @@
 			(uuid "980cc6ae-74fe-477b-8f4e-40ac42d8087f")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C24")
 					(unit 1)
@@ -20481,7 +19380,7 @@
 			(uuid "005805db-e90f-49b2-8d75-fd3e88641d4c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "TP3")
 					(unit 1)
@@ -20561,7 +19460,7 @@
 			(uuid "e61ef2af-edf9-4e77-81ff-bea378801734")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C13")
 					(unit 1)
@@ -20639,7 +19538,7 @@
 			(uuid "975de0e0-6548-4ad7-a1f8-ee2dbaa656e8")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C4")
 					(unit 1)
@@ -20749,7 +19648,7 @@
 			(uuid "519d4b00-1e04-4534-8ad2-11a1fde00346")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "Q2")
 					(unit 1)
@@ -20829,7 +19728,7 @@
 			(uuid "c56d91fc-e2df-4bb9-b80d-da5a1d035baa")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C11")
 					(unit 1)
@@ -20909,98 +19808,9 @@
 			(uuid "780409ac-24f0-458f-ad2d-f1cc05a50bbe")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R26")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_name "PC817_1")
-		(lib_id "Isolator:PC817")
-		(at 226.06 134.62 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "34b37ec4-2037-4afa-af81-1547befc14a8")
-		(property "Reference" "U7"
-			(at 229.616 129.54 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PC817"
-			(at 224.282 129.54 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_DIP:DIP-4_W7.62mm"
-			(at 231.14 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "http://www.soselectronic.cz/a_info/resource/d/pc817.pdf"
-			(at 226.06 134.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" ""
-			(at 226.06 134.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "37513a64-a8c5-4fd8-9945-5064a5b18636")
-		)
-		(pin "2"
-			(uuid "6b02a6ee-0aad-4018-a6a7-384989412a9e")
-		)
-		(pin "3"
-			(uuid "36b10c0f-bbb9-4828-b3bb-794c97d9600a")
-		)
-		(pin "4"
-			(uuid "26a26bc5-b0eb-4e2b-af87-8e19f5351a1a")
-		)
-		(instances
-			(project "controller_Tv_Lift"
-				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "U7")
 					(unit 1)
 				)
 			)
@@ -21077,7 +19887,7 @@
 			(uuid "0a713abe-5e44-437f-a356-c4c74f91cc13")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR041")
 					(unit 1)
@@ -21155,7 +19965,7 @@
 			(uuid "5cb2745f-6dd8-4116-9f5c-b896adbdf123")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR032")
 					(unit 1)
@@ -21236,7 +20046,7 @@
 			(uuid "b6b42495-4cb8-4e3c-8a1d-24688627114b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J4")
 					(unit 1)
@@ -21314,7 +20124,7 @@
 			(uuid "074a84c4-a5d4-4590-ba76-f760aafb14db")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR047")
 					(unit 1)
@@ -21394,7 +20204,7 @@
 			(uuid "50e0dc37-b049-46ba-bed3-d77fe8f06e22")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C12")
 					(unit 1)
@@ -21472,7 +20282,7 @@
 			(uuid "13b5a928-ff6e-4d64-8c66-6899897bc249")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R21")
 					(unit 1)
@@ -21555,7 +20365,7 @@
 			(uuid "54b96cf2-e183-43c5-9783-e8c4ccccea08")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J3")
 					(unit 1)
@@ -21633,7 +20443,7 @@
 			(uuid "8f4e0e0f-5b3d-4bfc-9c76-f684f79afcfc")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR033")
 					(unit 1)
@@ -21710,7 +20520,7 @@
 			(uuid "cf1a2b7c-f66d-499d-b68f-3ddc30eac31e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR013")
 					(unit 1)
@@ -21788,7 +20598,7 @@
 			(uuid "ea817ed4-3034-4276-a983-2ffcab90574e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C7")
 					(unit 1)
@@ -21880,7 +20690,7 @@
 			(uuid "f8a43081-3a90-4a31-b3ab-c5f64aa03514")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D6")
 					(unit 1)
@@ -21958,7 +20768,7 @@
 			(uuid "88950b64-668e-4fd2-a2a6-cbb437f05747")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "H1")
 					(unit 1)
@@ -22035,7 +20845,7 @@
 			(uuid "16d984b9-d7ed-4e41-a949-1da579b73164")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR011")
 					(unit 1)
@@ -22116,7 +20926,7 @@
 			(uuid "339f5b15-90e8-470d-8b25-8660bd0dc463")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J2")
 					(unit 1)
@@ -22197,7 +21007,7 @@
 			(uuid "792081c0-7bd0-4cca-8b9b-b386336385ae")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R19")
 					(unit 1)
@@ -22276,7 +21086,7 @@
 			(uuid "31984812-462a-45eb-8251-317fd870c0d8")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R20")
 					(unit 1)
@@ -22357,7 +21167,7 @@
 			(uuid "8086f3aa-f06d-47da-9ce3-17314b09235e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R1")
 					(unit 1)
@@ -22437,7 +21247,7 @@
 			(uuid "1b7c20a9-130d-4db1-93e6-cc971726e20e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R13")
 					(unit 1)
@@ -22515,7 +21325,7 @@
 			(uuid "e07b2c5e-8e75-4923-abfe-4cbdcd4faace")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C23")
 					(unit 1)
@@ -22596,7 +21406,7 @@
 			(uuid "e4ab8689-c9ad-48a5-873b-c499be1521ab")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "LED1")
 					(unit 1)
@@ -22674,7 +21484,7 @@
 			(uuid "27824e02-fa38-453c-80df-4fb27dea24c3")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "TP5")
 					(unit 1)
@@ -22754,7 +21564,7 @@
 			(uuid "1c6979a8-cde2-4919-b90d-83b71de8e38d")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "SW4")
 					(unit 1)
@@ -22834,7 +21644,7 @@
 			(uuid "383afd05-10df-422c-96ae-e3f292b8d7fe")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R14")
 					(unit 1)
@@ -22915,7 +21725,7 @@
 			(uuid "aa4596c3-ca73-43cb-a269-1fd0bc1d2fef")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R4")
 					(unit 1)
@@ -22993,7 +21803,7 @@
 			(uuid "a87b8740-19ea-48b0-8ddb-feef2972c1d0")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR02")
 					(unit 1)
@@ -23071,7 +21881,7 @@
 			(uuid "8fcc8d8e-1097-47f2-b837-a05353f875a7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R23")
 					(unit 1)
@@ -23146,7 +21956,7 @@
 			)
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "H4")
 					(unit 1)
@@ -23226,7 +22036,7 @@
 			(uuid "f21f46a2-b1d1-4974-bfff-32688cc7702b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C19")
 					(unit 1)
@@ -23307,7 +22117,7 @@
 			(uuid "aedd299d-8ab9-45f8-8e46-1979afb1fb36")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R17")
 					(unit 1)
@@ -23321,7 +22131,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
@@ -23368,7 +22178,7 @@
 				)
 			)
 		)
-		(property "Description" "Jumper, 3-pole, pins 1+2 closed/bridged"
+		(property "Description" "C5360899"
 			(at 111.76 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -23389,7 +22199,7 @@
 			(uuid "36d96f0f-f663-4f2f-91a7-dc00bd6f001b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "JP3")
 					(unit 1)
@@ -23467,7 +22277,7 @@
 			(uuid "d089ec8f-70b7-4584-b625-1da0ff782f3b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR052")
 					(unit 1)
@@ -23545,7 +22355,7 @@
 			(uuid "86faa0d3-0a25-48eb-b1d3-9ccc95ec0823")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR035")
 					(unit 1)
@@ -23625,7 +22435,7 @@
 			(uuid "cb67ad46-44db-4329-8662-6b127d82f77e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C6")
 					(unit 1)
@@ -23703,7 +22513,7 @@
 			(uuid "7f8067a5-c283-4513-a9aa-51a8b844134b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR01")
 					(unit 1)
@@ -23780,7 +22590,7 @@
 			(uuid "4d2004d6-b013-41e2-82eb-7c394af17bf7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR028")
 					(unit 1)
@@ -23856,7 +22666,7 @@
 			(uuid "8677fa8c-78ad-4d65-acf9-84c582d1d852")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR050")
 					(unit 1)
@@ -23934,7 +22744,7 @@
 			(uuid "9ea01042-8a29-4d2a-a2c5-b909770fe2a2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR029")
 					(unit 1)
@@ -24014,7 +22824,7 @@
 			(uuid "f3cdd57f-cbd3-4d55-a412-2d38269056c3")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "SW3")
 					(unit 1)
@@ -24096,7 +22906,7 @@
 			(uuid "f93ec07b-0ea2-4f4b-9c48-c58cccab5249")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "SW1")
 					(unit 1)
@@ -24174,7 +22984,7 @@
 			(uuid "6c286e49-8214-4961-b0b2-547e6f3bc885")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR017")
 					(unit 1)
@@ -24252,7 +23062,7 @@
 			(uuid "b4b71ec4-bf4c-457a-83b3-b195faa1487b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "TP4")
 					(unit 1)
@@ -24329,7 +23139,7 @@
 			(uuid "2fd10088-270e-431c-aebb-c473e9a7c2f5")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR08")
 					(unit 1)
@@ -24409,7 +23219,7 @@
 			(uuid "051875b9-b37e-4e0c-a67f-b1d6db33d2a9")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C22")
 					(unit 1)
@@ -24486,7 +23296,7 @@
 			(uuid "f79f27b5-3f2f-48a3-812c-102b397b793e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR018")
 					(unit 1)
@@ -24564,7 +23374,7 @@
 			(uuid "a1f66091-25a6-4e7d-ace9-efe718e8f36d")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR024")
 					(unit 1)
@@ -24641,7 +23451,7 @@
 			(uuid "2052b8cd-e28b-4de8-b86f-891010696629")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR022")
 					(unit 1)
@@ -24719,7 +23529,7 @@
 			(uuid "a7dc81b3-43be-4ea6-aa4b-d3d6ccd4858f")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR027")
 					(unit 1)
@@ -24800,7 +23610,7 @@
 			(uuid "5cd28725-af56-4917-86cd-823238747ecc")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C21")
 					(unit 1)
@@ -24877,7 +23687,7 @@
 			(uuid "8616ef74-19ae-4bb1-8595-71547cb8cd5c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR025")
 					(unit 1)
@@ -24956,7 +23766,7 @@
 			(uuid "edd280af-ca90-47f5-bee8-ae1901eddb81")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR042")
 					(unit 1)
@@ -25037,7 +23847,7 @@
 			(uuid "1a33d88a-0d4d-426c-95ec-089b70cfed3d")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C10")
 					(unit 1)
@@ -25118,7 +23928,7 @@
 			(uuid "1a9f38dc-0b05-4de9-945c-a70dddd27f87")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R18")
 					(unit 1)
@@ -25196,7 +24006,7 @@
 			(uuid "773cee46-fd3b-42b8-abcf-39fffe74bd5f")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R16")
 					(unit 1)
@@ -25274,7 +24084,7 @@
 			(uuid "ad2e75f4-4a55-469c-a133-bf392ce3d59b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C26")
 					(unit 1)
@@ -25354,7 +24164,7 @@
 			(uuid "f902fdc3-4e45-4d8f-939a-a86a4753b580")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R27")
 					(unit 1)
@@ -25436,7 +24246,7 @@
 			(uuid "1e0ab69c-6309-4ed4-8743-f2df111fb0ac")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D8")
 					(unit 1)
@@ -25520,7 +24330,7 @@
 			(uuid "5261feae-7cd2-4260-9282-02854c41b0ef")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J5")
 					(unit 1)
@@ -25598,7 +24408,7 @@
 			(uuid "f4fb0f31-be7d-4833-bf24-7894f2e916ce")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR030")
 					(unit 1)
@@ -25680,7 +24490,7 @@
 			(uuid "da41a53d-60f2-43b8-8628-f560b3c38fab")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "SW2")
 					(unit 1)
@@ -25760,7 +24570,7 @@
 			(uuid "1a9d48a2-2c10-497c-8ef5-26803d389c08")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C3")
 					(unit 1)
@@ -25837,7 +24647,7 @@
 			(uuid "9d4ddeb7-af39-4355-ab2f-187222543a38")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR036")
 					(unit 1)
@@ -25920,7 +24730,7 @@
 			(uuid "2b901620-8230-40c8-b773-926f8f6318f7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J11")
 					(unit 1)
@@ -26002,7 +24812,7 @@
 			(uuid "088b95cc-cf85-4b0e-a9e9-3e12be6d14c7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J9")
 					(unit 1)
@@ -26080,7 +24890,7 @@
 			(uuid "a99b150d-500a-479d-bef1-c1ab85ff3962")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "TP2")
 					(unit 1)
@@ -26156,7 +24966,7 @@
 			)
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "H2")
 					(unit 1)
@@ -26235,7 +25045,7 @@
 			(uuid "ab61ee80-effe-401b-9c81-f701d613dc24")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R9")
 					(unit 1)
@@ -26317,7 +25127,7 @@
 			(uuid "5ce38d7c-dc7c-4d41-97ad-c7eb0f0e34eb")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U2")
 					(unit 1)
@@ -26399,7 +25209,7 @@
 			(uuid "cbe0a10a-0e0e-48ae-9f20-294c711fe329")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J12")
 					(unit 1)
@@ -26477,97 +25287,9 @@
 			(uuid "98417d49-b065-4ebe-b89c-964cbe2b7680")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR044")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Isolator:PC817")
-		(at 226.06 144.78 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "a0531590-886b-4b10-9d7f-69622234cc89")
-		(property "Reference" "U8"
-			(at 229.616 139.954 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PC817"
-			(at 224.282 139.7 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_DIP:DIP-4_W7.62mm"
-			(at 231.14 149.86 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "http://www.soselectronic.cz/a_info/resource/d/pc817.pdf"
-			(at 226.06 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" ""
-			(at 226.06 144.78 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "67c69639-2fe6-42c1-a918-3721519e337f")
-		)
-		(pin "2"
-			(uuid "537dd475-a4db-4c22-b622-13141f8e75ea")
-		)
-		(pin "3"
-			(uuid "4d9aa4b7-eefe-40c9-b4bb-78e4718fb987")
-		)
-		(pin "4"
-			(uuid "ad9c61e8-e0c0-46c8-b6a1-e18bd35f7ee9")
-		)
-		(instances
-			(project "controller_Tv_Lift"
-				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "U8")
 					(unit 1)
 				)
 			)
@@ -26643,7 +25365,7 @@
 			(uuid "405cdf38-5dd7-4d02-a0a4-6c321bfb41b6")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR026")
 					(unit 1)
@@ -26672,7 +25394,7 @@
 				)
 			)
 		)
-		(property "Value" "C5249699"
+		(property "Value" "C492610"
 			(at 71.12 167.64 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26682,7 +25404,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:Fuseholder_Blade_Mini_Keystone_3568"
+		(property "Footprint" "Fuse:Fuseholder_XF-506P_mini_blade_C492610"
 			(at 71.12 170.18 0)
 			(hide yes)
 			(show_name no)
@@ -26704,7 +25426,7 @@
 				)
 			)
 		)
-		(property "Description" "Fuse_Mini_10A"
+		(property "Description" "C492610"
 			(at 71.12 170.18 0)
 			(hide yes)
 			(show_name no)
@@ -26722,7 +25444,7 @@
 			(uuid "a3aef14c-d65a-4fa0-9800-5fb4e9ac3c8b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "F1")
 					(unit 1)
@@ -26802,7 +25524,7 @@
 			(uuid "2346b042-3818-4a51-98c8-d7c28650a59b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C20")
 					(unit 1)
@@ -26882,7 +25604,7 @@
 			(uuid "bae83f67-834e-47aa-b62f-213c1224bc87")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C8")
 					(unit 1)
@@ -26964,7 +25686,7 @@
 			(uuid "3d16c9aa-76ca-44a7-b445-1417ce131289")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D3")
 					(unit 1)
@@ -27043,7 +25765,7 @@
 			(uuid "984396ae-409b-4298-8e45-e0ab93368789")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R10")
 					(unit 1)
@@ -27122,7 +25844,7 @@
 			(uuid "96952f8f-9993-49ec-a7a5-6c1d1b74494e")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "NT2")
 					(unit 1)
@@ -27200,7 +25922,7 @@
 			(uuid "4635402a-7fc6-4a0e-b5f0-64c495fe91ce")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR055")
 					(unit 1)
@@ -27278,95 +26000,9 @@
 			(uuid "adf462a4-045b-4fec-aaa7-8445d61ea4c8")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Regulator_Switching:CRE1S0505SC")
-		(at 223.52 119.38 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a8665b58-cf08-4ef3-a5bb-0f9e1b724780")
-		(property "Reference" "U9"
-			(at 223.52 106.68 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "b0505s-1we"
-			(at 223.52 109.22 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Converter_DCDC:Converter_DCDC_RECOM_R-78S-0.1_THT"
-			(at 223.52 129.54 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "Isolated DC-DC Converter, 5V Input to 5V Output, 1 Watt, Case SIP-4. Manufacturer Part Number: Mornsun B0505S-1WR3"
-			(at 223.52 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "5V to 5V 200mA DC-DC Converter with 1kV isolation, SIP-4"
-			(at 223.52 119.38 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "c8d8b427-17c3-4120-a302-43c6f49205ec")
-		)
-		(pin "2"
-			(uuid "f2e0a481-a387-4cf3-a870-be7efd6d61d3")
-		)
-		(pin "3"
-			(uuid "d2875f14-4975-4f1c-8f84-72f4537bdea6")
-		)
-		(pin "4"
-			(uuid "416bb402-3325-430e-9b10-c96733424cd6")
-		)
-		(instances
-			(project "controller_Tv_Lift"
-				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
-					(reference "U9")
 					(unit 1)
 				)
 			)
@@ -27443,7 +26079,7 @@
 			(uuid "39c78127-1168-48d9-ac3b-63bec3cdf6c2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "TP1")
 					(unit 1)
@@ -27617,7 +26253,7 @@
 			(uuid "156e51c9-fcc7-46a5-9aed-f49eb2ef6a0c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U10")
 					(unit 1)
@@ -27697,7 +26333,7 @@
 			(uuid "f4edb37f-81b3-4fc5-870b-1d88b3d428b1")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C15")
 					(unit 1)
@@ -27760,7 +26396,7 @@
 				)
 			)
 		)
-		(property "Description" "C55109499 YASPI0645S-680MS"
+		(property "Description" "C55109499"
 			(at 143.256 163.576 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27777,7 +26413,7 @@
 			(uuid "6cc03a3e-6840-4e01-b54b-58e5026f894b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "L1")
 					(unit 1)
@@ -27857,7 +26493,7 @@
 			(uuid "34f63316-4eef-41fe-b695-e742461568f7")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C14")
 					(unit 1)
@@ -27938,7 +26574,7 @@
 			(uuid "5aed451b-ed3d-4056-9a7c-3f77824e7b29")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R6")
 					(unit 1)
@@ -28017,7 +26653,7 @@
 			(uuid "a019bca5-a805-4289-8942-c2d6465c5cac")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R22")
 					(unit 1)
@@ -28095,7 +26731,7 @@
 			(uuid "7f8b9e42-8386-440f-9e99-0d8a6f6cebf2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR03")
 					(unit 1)
@@ -28174,7 +26810,7 @@
 			(uuid "3dda452a-42c4-47c6-8e0b-1c2ebe49d472")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR043")
 					(unit 1)
@@ -28254,7 +26890,7 @@
 			(uuid "afeb9a79-d350-402c-80c3-95269a8afbb8")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J10")
 					(unit 1)
@@ -28334,7 +26970,7 @@
 			(uuid "3a7a8cbd-1258-4cff-b842-737ce27c728b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R7")
 					(unit 1)
@@ -28415,7 +27051,7 @@
 			(uuid "ed2eb918-5bcb-4ef4-938a-543d8c8caa70")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C9")
 					(unit 1)
@@ -28491,7 +27127,7 @@
 			(uuid "277119ad-0cc3-446c-9fb7-ff4577f434b4")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR014")
 					(unit 1)
@@ -28572,7 +27208,7 @@
 			(uuid "df43231b-653b-408a-b984-bcd7751b8401")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U6")
 					(unit 1)
@@ -28655,7 +27291,7 @@
 			(uuid "dc101535-f3a7-4638-8aed-a070e078d4c0")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J8")
 					(unit 1)
@@ -28735,7 +27371,7 @@
 			(uuid "8124221f-d521-4ba5-980a-8b30a7996682")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C1")
 					(unit 1)
@@ -28814,7 +27450,7 @@
 			(uuid "947a9020-51aa-4792-a795-e9a9ebf319a2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R5")
 					(unit 1)
@@ -28894,7 +27530,7 @@
 			(uuid "342bdcc6-4360-48ed-ae0d-256dd1aec066")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R25")
 					(unit 1)
@@ -28972,7 +27608,7 @@
 			(uuid "f2735184-1d46-4c6e-8a94-645e17055470")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C2")
 					(unit 1)
@@ -29050,7 +27686,7 @@
 			(uuid "8e08a894-11b1-4f5e-8651-e71e09a0101c")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR010")
 					(unit 1)
@@ -29151,7 +27787,7 @@
 			(uuid "a7900fc3-5d74-4750-92f8-ff2c6b9f43a4")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D4")
 					(unit 1)
@@ -29237,7 +27873,7 @@
 			(uuid "6ee562d5-940a-44ac-9e5d-bc9987e06d75")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J7")
 					(unit 1)
@@ -29350,7 +27986,7 @@
 			(uuid "b4791b84-6793-4a6c-8d65-b6bf07c9070a")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "J1")
 					(unit 1)
@@ -29431,7 +28067,7 @@
 			(uuid "bf031f0b-a7e9-4f2d-8a28-d11454a9bf91")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R12")
 					(unit 1)
@@ -29511,7 +28147,7 @@
 			(uuid "c2903975-ae14-4e0e-b8c8-eb3063b229d2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C25")
 					(unit 1)
@@ -29588,7 +28224,7 @@
 			(uuid "75c13c23-0845-4ca3-bcac-7bbc25948c92")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR04")
 					(unit 1)
@@ -29668,7 +28304,7 @@
 			(uuid "0d585287-94bf-4bd9-ba11-484ab4a2c58a")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R11")
 					(unit 1)
@@ -29746,7 +28382,7 @@
 			(uuid "8207127e-5db4-4dd6-aabd-d3d5a8884665")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R3")
 					(unit 1)
@@ -29824,7 +28460,7 @@
 			(uuid "c047042e-09be-466d-a044-65ed8d923512")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR048")
 					(unit 1)
@@ -29904,7 +28540,7 @@
 			(uuid "5fac9cca-d976-453f-bbca-07a3cc55a882")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "C17")
 					(unit 1)
@@ -29995,7 +28631,7 @@
 			(uuid "9c8b3454-ba11-4a36-85fb-24d0c3a46f8b")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "LED2")
 					(unit 1)
@@ -30075,7 +28711,7 @@
 			(uuid "04eea7fc-c4f0-4b9a-a06c-1f28e8486340")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "R8")
 					(unit 1)
@@ -30152,7 +28788,7 @@
 			(uuid "b1f9f66e-ee54-43a9-b02f-3081845d5f1a")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR06")
 					(unit 1)
@@ -30228,7 +28864,7 @@
 			(uuid "a746ca73-2867-49ac-9251-4e2a6d3464c2")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR051")
 					(unit 1)
@@ -30318,7 +28954,7 @@
 			(uuid "97cae572-3fb2-450e-99f6-4b702e731e30")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U5")
 					(unit 1)
@@ -30416,7 +29052,7 @@
 			(uuid "bed472ae-1167-4b23-a1ef-1430c8e93372")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "U3")
 					(unit 1)
@@ -30494,7 +29130,7 @@
 			(uuid "766bcb58-e693-403d-9e02-5e9658b4780a")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR016")
 					(unit 1)
@@ -30572,7 +29208,7 @@
 			(uuid "0a6a14b3-df4d-47f7-b71c-98730b63de15")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR045")
 					(unit 1)
@@ -30648,7 +29284,7 @@
 			(uuid "bff79adb-fedb-4fea-a25c-841395e5bd86")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR031")
 					(unit 1)
@@ -30726,7 +29362,7 @@
 			(uuid "a890bafc-997c-4d9c-9ed7-d0c5b8d582df")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "H3")
 					(unit 1)
@@ -30803,7 +29439,7 @@
 			(uuid "aedec8b5-d3f6-49a6-ab1a-2c36fd624765")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR07")
 					(unit 1)
@@ -30904,7 +29540,7 @@
 			(uuid "83f63e23-345f-4364-bb94-347377e3adef")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "D5")
 					(unit 1)
@@ -30983,7 +29619,7 @@
 			(uuid "15b29f8d-7a98-4170-a3b9-c5868abeccaf")
 		)
 		(instances
-			(project "controller_Tv_Lift"
+			(project "Tv_Lift_easy"
 				(path "/906b0219-e8e2-4a64-a5ea-d0350d472c53"
 					(reference "#PWR040")
 					(unit 1)

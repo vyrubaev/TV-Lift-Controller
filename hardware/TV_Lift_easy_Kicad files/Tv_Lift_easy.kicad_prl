@@ -1,6 +1,6 @@
 {
   "board": {
-    "active_layer": 0,
+    "active_layer": 27,
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
@@ -21,7 +21,7 @@
       "footprints": true,
       "graphics": true,
       "keepouts": true,
-      "lockedItems": true,
+      "lockedItems": false,
       "otherItems": true,
       "pads": true,
       "text": true,
@@ -37,16 +37,23 @@
       "grid",
       "footprints_front",
       "footprints_back",
+      "footprint_values",
       "footprint_references",
       "tracks",
+      "drc_errors",
+      "drawing_sheet",
       "bitmaps",
       "pads",
       "zones",
+      "drc_warnings",
+      "drc_exclusions",
+      "locked_item_shadows",
+      "conflict_shadows",
       "shapes",
       "board_outline_area",
       "ly_points"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffdd6b",
+    "visible_layers": "ffffffff_ffffffff_ffffffff_ffffffab",
     "zone_display_mode": 0
   },
   "git": {
@@ -56,7 +63,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "controller_Tv_Lift.kicad_prl",
+    "filename": "Tv_Lift_easy.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {
@@ -119,19 +126,7 @@
   "project": {
     "files": [
       {
-        "name": "controller_Tv_Lift.kicad_pcb",
-        "open": false,
-        "window": {
-          "display": 0,
-          "maximized": true,
-          "pos_x": 0,
-          "pos_y": 38,
-          "size_x": 1470,
-          "size_y": 789
-        }
-      },
-      {
-        "name": "controller_Tv_Lift.kicad_sch",
+        "name": "Tv_Lift_easy.kicad_sch",
         "open": false,
         "window": {
           "display": 0,
@@ -140,6 +135,18 @@
           "pos_y": 38,
           "size_x": 1470,
           "size_y": 782
+        }
+      },
+      {
+        "name": "Tv_Lift_easy.kicad_pcb",
+        "open": false,
+        "window": {
+          "display": 0,
+          "maximized": true,
+          "pos_x": 0,
+          "pos_y": 38,
+          "size_x": 1470,
+          "size_y": 847
         }
       }
     ]

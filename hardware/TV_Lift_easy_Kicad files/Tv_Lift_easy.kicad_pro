@@ -40,8 +40,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.4,
-          "height": 0.8,
-          "width": 0.8
+          "height": 0.6,
+          "width": 0.6
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -536,7 +536,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "controller_Tv_Lift.kicad_pro",
+    "filename": "Tv_Lift_easy.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -660,7 +660,7 @@
       "method": 0,
       "sort_order": 0
     },
-    "bom_export_filename": "${PROJECTNAME}_BOM.csv",
+    "bom_export_filename": "BOM.csv",
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
@@ -803,8 +803,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "controller_Tv_Lift.kicad_sch",
-        "name": "controller_Tv_Lift",
+        "filename": "Tv_Lift_easy.kicad_sch",
+        "name": "Tv_Lift_easy",
         "uuid": "906b0219-e8e2-4a64-a5ea-d0350d472c53"
       }
     ],
@@ -814,7 +814,7 @@
   "sheets": [
     [
       "906b0219-e8e2-4a64-a5ea-d0350d472c53",
-      "controller_Tv_Lift"
+      "Tv_Lift_easy"
     ]
   ],
   "text_variables": {},
