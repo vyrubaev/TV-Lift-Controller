@@ -272,10 +272,13 @@ void WebManager::setupCaptivePortalRoutes() {
 <head><meta charset="UTF-8"><title>Настройка TV-Lift</title></head>
 <body style="background:#121212;color:#fff;font-family:sans-serif;padding:20px;text-align:center;">
     <h2>Настройка Wi-Fi TV-Lift</h2>
-    <form action="/save" method="POST">
-        <select id="networks" name="ssid" style="width:100%;padding:10px;margin:10px 0;"><option>Поиск сетей...</option></select>
-        <input type="password" name="pass" placeholder="Пароль от Wi-Fi" required style="width:100%;padding:10px;margin:10px 0;">
-        <button type="submit" style="width:100%;padding:10px;background:#4CAF50;color:#fff;border:none;">Сохранить</button>
+    <form action="/save" method="POST" onsubmit="this.querySelector('button').innerText='Сохранение...'">
+        <select id="networks" name="ssid" style="width:280px;padding:10px;margin:10px 0;background:#222;color:#fff;border:1px solid #444;"><option>Поиск сетей...</option></select><br>
+        <div style="display:inline-block;width:280px;position:relative;margin:10px 0;">
+            <input type="password" id="p" name="pass" placeholder="Пароль от Wi-Fi" required style="width:100%;padding:10px;box-sizing:border-box;background:#222;color:#fff;border:1px solid #444;padding-right:35px;">
+            <span onclick="let t=document.getElementById('p');t.type=t.type==='password'?'text':'password';this.innerText=t.type==='password'?'👁':'👁‍🗨';" style="position:absolute;right:8px;top:10px;cursor:pointer;color:#888;">👁</span>
+        </div><br>
+        <button type="submit" style="width:280px;padding:10px;background:#4CAF50;color:#fff;border:none;cursor:pointer;margin-top:10px;">Сохранить</button>
     </form>
     <script>
         fetch('/scan').then(r => r.json()).then(data => {
