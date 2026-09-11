@@ -350,13 +350,20 @@
                 <div class="hint">The hex code for the elevator DOWN button</div>
             </div>
         </div>
+        <div class="row">
+            <div class="form-group">
+                <label>IR code STOP</label>
+                <input type="text" id="irCodeStop">
+                <div class="hint">The hex code for the elevator STOP button</div>
+            </div>
 
-        <div class="form-group">
-            <label>IR code STOP</label>
-            <input type="text" id="irCodeStop">
-            <div class="hint">The hex code for the elevator STOP button</div>
+            <div class="form-group">
+                <label>Last IR code (live)</label>
+                <div id="ir-val" style="background-color: var(--input-bg); border: 1px solid var(--border-color); color: #4CAF50; padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; font-family: monospace; height: 43px; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">0x00000000</div>
+                <div class="hint">Real-time captured IR code from remote</div>
+            </div>
+            
         </div>
-
         <div class="row">
             <div class="form-group">
                 <label>URL for firmware update</label>
@@ -368,6 +375,7 @@
                 <input type="number" id="otaInt">
                 <div class="hint">OTA check interval</div>
             </div>
+
         </div>
 
         <button type="submit" class="btn-save">Save settings</button>
@@ -563,6 +571,18 @@
             }
         }
     }
+
+    // Каждые 600 миллисекунд браузер автоматически запрашивает свежий ИК код у ESP32
+    setInterval(() => {
+        fetch('/get-ir')
+            .then(response => response.json())
+            .then(data => {
+                // Подставляем полученный от контроллера код в тег <span>
+                document.getElementById('ir-val').innerText = data.code;
+            })
+            .catch(() => {}); // Игнорируем сетевые ошибки, если плата на секунду занята
+    }, 600);
+
 </script>
 
 </body>

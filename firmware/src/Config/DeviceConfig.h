@@ -74,6 +74,7 @@ inline uint32_t IR_CODE_STOP = Defaults::IR_CODE_STOP;
 inline uint32_t IR_CODE_REPEAT = Defaults::IR_CODE_REPEAT;
 inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
 inline uint32_t otaUpdateIntervalMs = Defaults::OTA_UPDATE_INTERVAL_MS;
+inline volatile uint32_t LAST_IR_CODE = 0; // Сюда будем сохранять последний полученный ИК код
 
 // Прототипы функций
 void loadDefaults();

@@ -25,7 +25,8 @@ void IRReceiver::update() {
         snprintf(hexBuf, sizeof(hexBuf), "0x%X", rawCode);
         
         IRCommand cmd = parseCode(rawCode);
-
+        DeviceConfig::LAST_IR_CODE = rawCode; // Сохраняем последний принятый ИК-код в глобальной переменной для доступа через веб-интерфейс
+        
         // Логируем только если распознали команду или получили новый код
         if (cmd != IRCommand::NONE) {
             String logMessage = "IR Signal received: " + String(hexBuf);

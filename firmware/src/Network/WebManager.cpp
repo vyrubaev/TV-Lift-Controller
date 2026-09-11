@@ -316,6 +316,13 @@ void WebManager::setupRoutes() {
         }
     });
 
+    m_server.on("/get-ir", HTTP_GET, [](AsyncWebServerRequest *request){
+        char jsonBuffer[32];
+        // Переводим число в красивый Hex-формат "0x11EEA857" «на лету»
+        snprintf(jsonBuffer, sizeof(jsonBuffer), "{\"code\":\"0x%08X\"}", (unsigned int)DeviceConfig::LAST_IR_CODE);
+        request->send(200, "application/json", jsonBuffer);
+    });
+
     m_server.on("/api/reboot", HTTP_POST, [](AsyncWebServerRequest *request){
         request->send(200, "application/json", "{\"status\":\"rebooting\"}");
         delay(500);
