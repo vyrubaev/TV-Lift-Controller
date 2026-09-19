@@ -64,9 +64,21 @@ void Motor::update() {
 
     // 1. Аппаратная авария с фильтрацией помех (5 мс)
     if (isEmergency()) {
+        // ОБЯЗАТЕЛЬНО сбрасываем целевое состояние, чтобы мотор не поехал сам после снятия аварии!
+        m_targetState = MotorState::STOPPED;
+        
         if (digitalRead(BoardConfig::MOTOR1_DIAG) == HIGH) {
+            // Пин снова HIGH (авария ушла / провод убрали)
             s_isEmergency.store(false, std::memory_order_relaxed);
             m_diagFaultStartMs = 0;
+
+            restoreHardware();
+
+            if (m_state == MotorState::EMERGENCY_STOP) {
+                m_state = MotorState::STOPPED;
+            }
+
+            Logger::info("Emergency automatically cleared: DIAG is HIGH, PWM re-attached.");
         } 
         else {
             if (m_diagFaultStartMs == 0) {
@@ -93,6 +105,7 @@ void Motor::update() {
         if (isDeadTimePassed) {
             m_moveStartMs = now;
             m_overcurrentStartMs = 0;
+            //ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); // Восстанавливаем ШИМ, если он был отключен из-за аварии
 
             if (m_targetState == MotorState::FORWARD) {
                 digitalWrite(BoardConfig::MOTOR1_INB, LOW);
@@ -258,27 +271,12 @@ void Motor::setFaultLED(bool enable) {
     }
 }
 
-void Motor::clearOverCurrent() {
-    if (m_isHardFault || isEmergency()) {
-        Logger::warning("Cannot clear overcurrent: HARD FAULT requires power reboot!");
-        return;
-    }
-
-    if (m_state == MotorState::OVERCURRENT) {
-        setFaultLED(false);
-        m_state = MotorState::STOPPED;
-        m_overcurrentStartMs = 0;
-        Logger::info("OVERCURRENT cleared by user command.");
-    }
-}
-
 void Motor::forward() { 
     if (m_targetState == MotorState::FORWARD) return;
 
-    ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); // Восстанавливаем ШИМ, если он был отключен из-за аварии
-
-    if (m_state == MotorState::OVERCURRENT || isEmergency()) {
-        Logger::warning("Motor forward blocked: active FAULT!");
+    // Блокируем, если есть активная авария или мотор находится в режиме аварийного стопа
+    if (m_state == MotorState::OVERCURRENT || isEmergency() || m_state == MotorState::EMERGENCY_STOP) {
+        Logger::warning("Motor forward blocked: active FAULT or Emergency Stop state!");
         return;
     }
 
@@ -296,10 +294,8 @@ void Motor::forward() {
 void Motor::reverse() {   
     if (m_targetState == MotorState::REVERSE) return;
 
-    ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); //
-
-    if (m_state == MotorState::OVERCURRENT || isEmergency()) {
-        Logger::warning("Motor reverse blocked: active FAULT!");
+    if (m_state == MotorState::OVERCURRENT || isEmergency() || m_state == MotorState::EMERGENCY_STOP) {
+        Logger::warning("Motor reverse blocked: active FAULT or Emergency Stop state!");
         return;
     }
 
@@ -336,8 +332,6 @@ void Motor::stop()
 
 void IRAM_ATTR Motor::emergencyStopFromISR()
 {
-    gpio_matrix_out(BoardConfig::MOTOR1_PWM, SIG_GPIO_OUT_IDX, false, false);
-
     uint32_t lowMask = 0;
     uint32_t highMask = 0;
 
@@ -373,20 +367,35 @@ void Motor::clearEmergency()
         return;
     }
 
+    pinMode(BoardConfig::MOTOR1_PWM, OUTPUT); // Восстанавливаем режим пина PWM после аварийного отключения
+
     if (!m_isHardFault) {
         s_isEmergency.store(false, std::memory_order_relaxed);
 
-        ledcAttach(
-            BoardConfig::MOTOR1_PWM,
-            PWM_FREQUENCY,
-            PWM_RESOLUTION
-        );
+        restoreHardware();
 
         if (m_state == MotorState::EMERGENCY_STOP) {
             m_state = MotorState::STOPPED;
         }
 
         Logger::info("Emergency status cleared and PWM re-attached.");
+    }
+}
+
+void Motor::clearOverCurrent() {
+    if (m_isHardFault || isEmergency()) {
+        Logger::warning("Cannot clear overcurrent: HARD FAULT requires power reboot!");
+        return;
+    }
+
+    if (m_state == MotorState::OVERCURRENT) {
+        setFaultLED(false);
+        m_state = MotorState::STOPPED;
+        m_overcurrentStartMs = 0;
+        // СБРАСЫВАЕМ СЧЕТЧИКИ ПОПЫТОК ПРИ УСПЕШНОМ СБРОСЕ ПОЛЬЗОВАТЕЛЕМ:
+        m_overcurrentRetryCount = 0;
+        m_firstOvercurrentMs = 0;
+        Logger::info("OVERCURRENT cleared by user command.");
     }
 }
 
@@ -422,4 +431,17 @@ void Motor::setMaxEncoderTicks(int32_t maxTicks) {
 
 int32_t Motor::getMaxEncoderTicks() const {
     return m_maxEncoderTicks;
+}
+
+void Motor::restoreHardware() {
+    pinMode(BoardConfig::MOTOR1_PWM, OUTPUT);
+    pinMode(BoardConfig::MOTOR1_INA, OUTPUT);
+    pinMode(BoardConfig::MOTOR1_INB, OUTPUT);
+
+    ledcAttach(
+        BoardConfig::MOTOR1_PWM,
+        PWM_FREQUENCY,
+        PWM_RESOLUTION
+    );
+    ledcWrite(BoardConfig::MOTOR1_PWM, 0);
 }

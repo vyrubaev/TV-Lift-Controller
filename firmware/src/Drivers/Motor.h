@@ -30,10 +30,11 @@ public:
 
     bool isEmergency() const; // Проверка, случалась ли авария
     void clearEmergency(); // Сброс флага аварии (если нужно восстановить работу)   
+    void clearOverCurrent(); // Сброс флага перегрузки по току (если нужно восстановить работу)
     void resetEncoder(); // Сброс счетчика в 0 (будем вызывать от концевиков)
     
     // Получить текущие импульсы
-    int32_t getEncoderPosition() const;
+    int32_t getEncoderPosition() const; 
     int32_t getMaxEncoderTicks() const; // Получить текущий настроенный предел
     void setMaxEncoderTicks(int32_t maxTicks); // Задать максимальный предел счетчика (0 — отключено)
 
@@ -43,7 +44,6 @@ public:
     // Защита и диагностика
     float getCurrentAmps();
     bool isOverCurrent() const { return m_state == MotorState::OVERCURRENT; }
-    void clearOverCurrent();
 
     // Управление светодиодом аварии  (для индикации состояния аварии)
     void setFaultLED(bool enable);
@@ -77,6 +77,8 @@ private:
     static std::atomic<bool> s_isEmergency; // Флаг аварийной остановки, доступный из ISR
 
     bool m_isHardFault = false; // Блокировка до перезагрузки по питанию
+
+    void restoreHardware(); // Восстановление аппаратного ШИМ после аварийного отключения
 
     void checkOvercurrent();
     float readCurrentSensor();

@@ -24,6 +24,7 @@ void Elevator::init()
     m_motor.init();
     m_input.init();
     m_irReceiver.init();
+
 }
 
 const char* Elevator::sourceToString(CommandSource src) {
@@ -191,7 +192,16 @@ void Elevator::executeCommand(const PendingCommand& cmd)
     if (OtaUpdater::isUpdating()) {
         Logger::warning("Command ignored: OTA update in progress!");
         return; // Игнорируем любые команды, пока идет OTA!
-}
+    }
+
+    // БЛОКИРУЕМ любые команды движения, если активна аппаратная авария
+    if (m_motor.isEmergency() || m_state == ElevatorState::EMERGENCY || m_motor.getState() == MotorState::EMERGENCY_STOP) {
+        // Разрешаем только команду STOP для сброса/остановки
+        if (cmd.type != PendingCommand::Type::STOP) {
+            Logger::warning("Command blocked: Elevator is in EMERGENCY fault state!");
+            return;
+        }
+    }
 
     switch (cmd.type) {
         case PendingCommand::Type::STOP:
