@@ -148,6 +148,18 @@
           "size_x": 1470,
           "size_y": 847
         }
+      },
+      {
+        "name": "Tv_Lift_easy.kicad_pro",
+        "open": false,
+        "window": {
+          "display": 0,
+          "maximized": false,
+          "pos_x": 111,
+          "pos_y": 126,
+          "size_x": 941,
+          "size_y": 646
+        }
       }
     ]
   },

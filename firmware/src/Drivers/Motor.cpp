@@ -275,6 +275,8 @@ void Motor::clearOverCurrent() {
 void Motor::forward() { 
     if (m_targetState == MotorState::FORWARD) return;
 
+    ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); // Восстанавливаем ШИМ, если он был отключен из-за аварии
+
     if (m_state == MotorState::OVERCURRENT || isEmergency()) {
         Logger::warning("Motor forward blocked: active FAULT!");
         return;
@@ -293,6 +295,8 @@ void Motor::forward() {
 
 void Motor::reverse() {   
     if (m_targetState == MotorState::REVERSE) return;
+
+    ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); //
 
     if (m_state == MotorState::OVERCURRENT || isEmergency()) {
         Logger::warning("Motor reverse blocked: active FAULT!");

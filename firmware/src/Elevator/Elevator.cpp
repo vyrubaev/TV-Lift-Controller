@@ -261,7 +261,7 @@ void Elevator::update()
     {
         if (millis() - m_moveStartMs >= DeviceConfig::MAX_FORWARD_TIME_MS) 
         {
-            Logger::error("TIMEOUT FAULT: Motor FORWARD max run time exceeded!");
+            Logger::error("TIMEOUT: Motor FORWARD max run time exceeded!");
             stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
             setState(ElevatorState::TIMEOUT);
             return;
@@ -271,7 +271,7 @@ void Elevator::update()
     {
         if (millis() - m_moveStartMs >= DeviceConfig::MAX_REVERSE_TIME_MS) 
         {
-            Logger::error("TIMEOUT FAULT: Motor REVERSE max run time exceeded!");
+            Logger::error("TIMEOUT: Motor REVERSE max run time exceeded!");
             stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
             setState(ElevatorState::TIMEOUT);
             return;
@@ -299,12 +299,12 @@ void Elevator::update()
     {
         if (DeviceConfig::FORWARD_LIMIT_RUN_ON_MS == 0)
         {
-            Logger::warning("FORWARD limit reached");
+            Logger::info("FORWARD limit reached");
             handleLimitReached(LimitRunOnDirection::FORWARD); // Мгновенный стоп + статус
             return;
         }
 
-        Logger::warning("FORWARD limit reached; run-on started");
+        Logger::info("FORWARD limit reached; run-on started");
         m_limitRunOnDirection = LimitRunOnDirection::FORWARD;
         m_limitRunOnStartMs = millis();
         return;
