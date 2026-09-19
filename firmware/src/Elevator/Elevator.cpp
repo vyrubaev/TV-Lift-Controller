@@ -34,6 +34,7 @@ const char* Elevator::sourceToString(CommandSource src) {
         case CommandSource::CLI:    return "CLI";
         case CommandSource::WEB:    return "WEB";
         case CommandSource::APP:    return "APP";
+        case CommandSource::SYSTEM:   return "SYSTEM";
         default:                    return "UNKNOWN";
     }
 }
@@ -254,89 +255,89 @@ void Elevator::update()
     m_motor.update();
 
     // 1. Проверка АВАРИИ
-    if (m_motor.isEmergency())
+    if (m_motor.isEmergency() || m_motor.isOverCurrent())
     {
-        if (m_motor.getState() != MotorState::EMERGENCY_STOP)
-        {
-            Logger::error("EMERGENCY FAULT: Motor driver reported error via DIAGNOSTIC pin!");
+        if (m_state != ElevatorState::EMERGENCY) {
+            Logger::error("EMERGENCY FAULT: Motor driver error or overcurrent detected!");
             m_limitRunOnDirection = LimitRunOnDirection::NONE;
             m_motor.stop();
             setState(ElevatorState::EMERGENCY);
+            
+            // Сбрасываем атомарные задачи веб-интерфейса и CLI
+            m_webPendingType.store(PendingCommand::Type::NONE, std::memory_order_relaxed);
+            m_cliPendingType.store(PendingCommand::Type::NONE, std::memory_order_relaxed);
+            
+            // Безопасно очищаем ИК-буфер одним вызовом (без риска зависнуть в while)
+            m_irReceiver.getCommand();
         }
+        
+        // Забираем любые команды через единый диспетчер.
+        // Реагируем только на STOP для сброса аварии, остальное игнорируем.
+        PendingCommand cmd = getNextCommand();
+        if (cmd.type == PendingCommand::Type::STOP) {
+            executeCommand(cmd);
+        }
+        
+        return; // Блокируем остальной update() во время аварии
+    }
+
+    // Если авария ушла, а лифт висел в EMERGENCY — возвращаем в STOPPED
+    if (m_state == ElevatorState::EMERGENCY) {
+        Logger::info("Emergency fault resolved: elevator reset to STOPPED state.");
+        setState(ElevatorState::STOPPED);
+    }
+
+    // 2. Проверка тайм-аута движения (штатная остановка)
+    if (m_motor.getState() == MotorState::FORWARD && (millis() - m_moveStartMs >= DeviceConfig::MAX_FORWARD_TIME_MS)) {
+        Logger::warning("TIMEOUT: Motor FORWARD max run time exceeded!");
+        stop(CommandSource::SYSTEM);
+        setState(ElevatorState::TIMEOUT);
+        return;
+    }
+    else if (m_motor.getState() == MotorState::REVERSE && (millis() - m_moveStartMs >= DeviceConfig::MAX_REVERSE_TIME_MS)) 
+    {
+        Logger::warning("TIMEOUT: Motor REVERSE max run time exceeded!");
+        stop(CommandSource::SYSTEM);
+        setState(ElevatorState::TIMEOUT);
         return;
     }
 
-    // 2. ПРОВЕРКА ТАЙМ-АУТА ДВИЖЕНИЯ (Раздельно FORWARD / REVERSE)
-    if (m_motor.getState() == MotorState::FORWARD) 
-    {
-        if (millis() - m_moveStartMs >= DeviceConfig::MAX_FORWARD_TIME_MS) 
-        {
-            Logger::error("TIMEOUT: Motor FORWARD max run time exceeded!");
-            stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
-            setState(ElevatorState::TIMEOUT);
-            return;
-        }
-    } 
-    else if (m_motor.getState() == MotorState::REVERSE) 
-    {
-        if (millis() - m_moveStartMs >= DeviceConfig::MAX_REVERSE_TIME_MS) 
-        {
-            Logger::error("TIMEOUT: Motor REVERSE max run time exceeded!");
-            stop(CommandSource::CLI); // Завершаем движение и сбрасываем таймер
-            setState(ElevatorState::TIMEOUT);
-            return;
-        }
-    }
-
-    // 3. Обработка завершения добега
-    if (m_limitRunOnDirection != LimitRunOnDirection::NONE)
-    {
+    // 3. Обработка добега концевиков
+    if (m_limitRunOnDirection != LimitRunOnDirection::NONE) {
         const uint32_t now = millis();
         uint32_t runOnTimeMs = (m_limitRunOnDirection == LimitRunOnDirection::FORWARD) 
             ? DeviceConfig::FORWARD_LIMIT_RUN_ON_MS 
             : DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
 
-        if (now - m_limitRunOnStartMs >= runOnTimeMs)
-        {
+        if (now - m_limitRunOnStartMs >= runOnTimeMs) {
             Logger::info("Limit run-on completed");
-            handleLimitReached(m_limitRunOnDirection); // Останавливаем и пишем статус OPEN/CLOSED
+            handleLimitReached(m_limitRunOnDirection);
         }
         return;
     }
 
-    // 4. Остановка по концевику при движении FORWARD
-    if (m_input.forwardLimit() && m_motor.getState() == MotorState::FORWARD)
-    {
-        if (DeviceConfig::FORWARD_LIMIT_RUN_ON_MS == 0)
-        {
-            Logger::info("FORWARD limit reached");
-            handleLimitReached(LimitRunOnDirection::FORWARD); // Мгновенный стоп + статус
+    // 4. Проверка срабатывания концевиков
+    if (m_input.forwardLimit() && m_motor.getState() == MotorState::FORWARD) {
+        if (DeviceConfig::FORWARD_LIMIT_RUN_ON_MS == 0) {
+            handleLimitReached(LimitRunOnDirection::FORWARD);
             return;
         }
-
-        Logger::info("FORWARD limit reached; run-on started");
         m_limitRunOnDirection = LimitRunOnDirection::FORWARD;
         m_limitRunOnStartMs = millis();
         return;
     }
 
-    // 5. Остановка по концевику при движении REVERSE
-    if (m_input.reverseLimit() && m_motor.getState() == MotorState::REVERSE)
-    {
-        if (DeviceConfig::REVERSE_LIMIT_RUN_ON_MS == 0)
-        {
-            Logger::warning("REVERSE limit reached");
-            handleLimitReached(LimitRunOnDirection::REVERSE); // Мгновенный стоп + статус
+    if (m_input.reverseLimit() && m_motor.getState() == MotorState::REVERSE) {
+        if (DeviceConfig::REVERSE_LIMIT_RUN_ON_MS == 0) {
+            handleLimitReached(LimitRunOnDirection::REVERSE);
             return;
         }
-
-        Logger::warning("REVERSE limit reached; run-on started");
         m_limitRunOnDirection = LimitRunOnDirection::REVERSE;
         m_limitRunOnStartMs = millis();
         return;
     }
 
-    // 6. Сбор и выполнение новых команд
+    // 5. Штатный сбор и выполнение команд в обычном режиме
     PendingCommand cmd = getNextCommand();
     if (cmd.type != PendingCommand::Type::NONE) {
         executeCommand(cmd);

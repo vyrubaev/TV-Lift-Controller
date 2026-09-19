@@ -18,7 +18,8 @@ enum class CommandSource {
     IR,
     CLI,
     WEB,
-    APP
+    APP,
+    SYSTEM
 };
 
 enum class ElevatorState {
