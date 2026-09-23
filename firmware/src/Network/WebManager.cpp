@@ -8,6 +8,16 @@ static const byte  DNS_PORT     = 53;
 
 WebManager::WebManager() {}
 
+// Вспомогательный метод для безопасной перезагрузки без блокировки сетевого стека
+static void scheduleReboot(uint32_t delayMs = 500) {
+    xTaskCreate([](void* arg) {
+        uint32_t ms = (uint32_t)(uintptr_t)arg;
+        vTaskDelay(pdMS_TO_TICKS(ms));
+        Core::reboot();
+        vTaskDelete(NULL);
+    }, "deferred_reboot", 2048, (void*)(uintptr_t)delayMs, 1, NULL);
+}
+
 void WebManager::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
 
@@ -58,17 +68,12 @@ void WebManager::init(Elevator* elevatorPtr) {
     }
 }
 
-// ЕДИНЫЙ метод loop, вызываемый из Core::loop()
 void WebManager::update() {
     if (m_wifiState == WifiState::AP_MODE) {
-        // Опрашиваем DNS-сервер для Captive Portal
         m_dnsServer.processNextRequest();
     } 
     else if (m_wifiState == WifiState::STA_MODE) {
-        // Очищаем «мертвые» WebSocket соединения для освобождения RAM
         m_ws.cleanupClients();
-        
-        // Периодическая отправка статуса/телеметрии в WebSocket
         broadcastStatus();
     }
 }
@@ -103,7 +108,6 @@ void WebManager::handleWsCommand(uint8_t* data, size_t len) {
         return;
     }
 
-    // Поддержка команд управления лифтом
     if (doc.containsKey("action") && m_elevator) {
         const char* action = doc["action"];
         if (strcmp(action, "UP") == 0) {
@@ -118,7 +122,7 @@ void WebManager::handleWsCommand(uint8_t* data, size_t len) {
         const char* cmd = doc["cmd"];
         if (strcmp(cmd, "reboot") == 0) {
             Logger::info("[WebSocket] Запрошена перезагрузка");
-            Core::reboot();
+            scheduleReboot(200);
         }
     }
 }
@@ -127,7 +131,10 @@ void WebManager::broadcastStatus() {
     if (!m_elevator || m_ws.count() == 0) return;
 
     uint32_t now = millis();
-    if (now - m_lastBroadcastMs < 100) return; // Ограничение частоты: 10 Гц (100 мс)
+    bool isMoving = (m_elevator->getState() != ElevatorState::STOPPED);
+    uint32_t interval = isMoving ? 100 : 1000; // 10 Гц в движении, 1 Гц в покое
+
+    if (now - m_lastBroadcastMs < interval) return;
 
     // Проверяем переполнение очередей клиентов
     for (auto& client : m_ws.getClients()) {
@@ -139,9 +146,15 @@ void WebManager::broadcastStatus() {
     m_lastBroadcastMs = now;
 
     StaticJsonDocument<128> doc;
-    doc["st"] = static_cast<int>(m_elevator->getState());
-
+    doc["st"]  = static_cast<int>(m_elevator->getState());
     doc["cur"] = m_elevator->getCurrentAmps();
+    
+    // Если есть свежий ИК-код — добавляем его в этот же пакет
+    if (DeviceConfig::LAST_IR_CODE != 0) {
+        char hexBuffer[12];
+        snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", (unsigned int)DeviceConfig::LAST_IR_CODE);
+        doc["ir"] = hexBuffer;
+    }
 
     String jsonString;
     serializeJson(doc, jsonString);
@@ -171,13 +184,11 @@ void WebManager::startSTAMode() {
 
     if (WiFi.status() == WL_CONNECTED) {
         m_wifiState = WifiState::STA_MODE;
-        char logBuf[96];
 
         snprintf(logBuf, sizeof(logBuf), "[WiFi] Успешно подключено! IP: %s", WiFi.localIP().toString().c_str());
-    Logger::info(logBuf);
+        Logger::info(logBuf);
 
         if (MDNS.begin(MDNS_HOSTNAME)) {
-            char logBuf[96];
             snprintf(logBuf, sizeof(logBuf), "[mDNS] Адрес: http://%s.local", MDNS_HOSTNAME);
             Logger::info(logBuf);
             MDNS.addService("http", "tcp", 80);
@@ -258,8 +269,7 @@ void WebManager::setupCaptivePortalRoutes() {
             this->saveCredentials(newSsid, newPass);
 
             request->send(200, "text/html", "<html><body><h2>Сохранено!</h2><p>Перезагрузка...</p></body></html>");
-            delay(1000);
-            ESP.restart();
+            scheduleReboot(1000); // Отложенная перезагрузка
         } else {
             request->send(400, "text/plain", "Bad Request");
         }
@@ -299,7 +309,6 @@ void WebManager::setupCaptivePortalRoutes() {
 }
 
 void WebManager::setupRoutes() {
-    // Статика из LittleFS
     m_server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
         if (LittleFS.exists("/index.html")) {
             request->send(LittleFS, "/index.html", "text/html");
@@ -318,28 +327,23 @@ void WebManager::setupRoutes() {
 
     m_server.on("/get-ir", HTTP_GET, [](AsyncWebServerRequest *request){
         char jsonBuffer[32];
-        // Переводим число в красивый Hex-формат "0x11EEA857" «на лету»
         snprintf(jsonBuffer, sizeof(jsonBuffer), "{\"code\":\"0x%08X\"}", (unsigned int)DeviceConfig::LAST_IR_CODE);
         request->send(200, "application/json", jsonBuffer);
     });
 
     m_server.on("/api/reboot", HTTP_POST, [](AsyncWebServerRequest *request){
         request->send(200, "application/json", "{\"status\":\"rebooting\"}");
-        delay(500);
-        Core::reboot(); // Перезагрузка через Core
+        scheduleReboot(500);
     });
 
     m_server.on("/api/config/reset", HTTP_POST, [](AsyncWebServerRequest *request){
-    // Вызываем вашу функцию инициализации дефолтных значений из класса конфига
         DeviceConfig::loadDefaults(); 
-        DeviceConfig::save(); // Сохраняем их в энергонезависимую память (Preferences / LittleFS)
+        DeviceConfig::save();
         
         request->send(200, "application/json", "{\"status\":\"reset_ok\"}");
-        delay(500);
-        Core::reboot(); // Перезагружаем устройство, чтобы применить дефолтные настройки
-}   );
+        scheduleReboot(500);
+    });
 
-    // Чтение конфигурации
     m_server.on("/api/config", HTTP_GET, [](AsyncWebServerRequest *request) {
         DynamicJsonDocument doc(1024);
         
@@ -380,7 +384,6 @@ void WebManager::setupRoutes() {
         request->send(200, "application/json", response);
     });
 
-    // Сохранение конфигурации
     AsyncCallbackJsonWebHandler* handleSaveConfig = new AsyncCallbackJsonWebHandler(
         "/api/config", 
         [](AsyncWebServerRequest *request, JsonVariant &json) {
@@ -430,7 +433,7 @@ void WebManager::setupRoutes() {
             DeviceConfig::save();
             request->send(200, "application/json", "{\"status\":\"ok\"}");
 
-            Core::reboot(); 
+            scheduleReboot(500);
         }
     );
     m_server.addHandler(handleSaveConfig);
