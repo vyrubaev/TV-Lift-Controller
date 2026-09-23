@@ -73,7 +73,7 @@ private:
     bool m_isOvercurrentFault = false;        // Маркер, что авария именно токовая (для сброса)
 
     void setOvercurrentLED(bool enable);
-    void checkOvercurrent();
+    void checkOvercurrent(float);
     float readCurrentSensor();
     void registerStopClick();
     bool tryClearFault();
@@ -83,4 +83,5 @@ private:
     uint16_t m_adcBuffer[ADC_SAMPLES_COUNT] = {0};
     uint32_t m_adcSum = 0;
     uint8_t m_adcIndex = 0;
+    float m_cachedCurrentAmps = 0.0f;
 };
