@@ -1,19 +1,17 @@
 #include "Motor.h"
 #include <Arduino.h>
-#include <string>
-#include <cmath>
-#include <algorithm>
+#include <cstring>
 #include "../Config/BoardConfig.h"
 #include "../Config/DeviceConfig.h"
 #include "Logger/Logger.h"
 #include <soc/gpio_struct.h>
 #include <rom/gpio.h>
 
-std::atomic<bool> Motor::s_isEmergency{false}; 
-volatile int32_t Motor::s_encoderPosition = 0; // Инициализация счетчика
+std::atomic<bool> Motor::s_hardwareFault{false}; 
+std::atomic<int32_t> Motor::s_encoderPosition{0};
 
 Motor::Motor()
-    :m_state(MotorState::STOPPED)
+    : m_state(MotorState::STOPPED)
 {
 }
 
@@ -21,16 +19,23 @@ void Motor::init()
 {
     pinMode(BoardConfig::MOTOR1_INA, OUTPUT);
     pinMode(BoardConfig::MOTOR1_INB, OUTPUT);
+    pinMode(BoardConfig::MOTOR1_DIAG, INPUT_PULLUP);
+    pinMode(BoardConfig::IR_TRANSMITTER_PIN, OUTPUT);
+    digitalWrite(BoardConfig::IR_TRANSMITTER_PIN, LOW);
 
+    pinMode(BoardConfig::ENC_A, INPUT);
+    pinMode(BoardConfig::ENC_B, INPUT);
+    pinMode(BoardConfig::MOTOR1_CURR_SENS, INPUT);
+    analogReadResolution(12);
+
+    // Инициализация PWM (совместимо с ESP32 Core v3.x)
     ledcAttach(
         BoardConfig::MOTOR1_PWM,
         PWM_FREQUENCY,
         PWM_RESOLUTION
     );
-
+    
     stop();
-
-    pinMode(BoardConfig::MOTOR1_DIAG, INPUT_PULLUP);
 
     if (digitalRead(BoardConfig::MOTOR1_DIAG) == LOW) 
     {
@@ -43,13 +48,6 @@ void Motor::init()
         FALLING
     );
 
-    pinMode(BoardConfig::MOTOR1_CURR_SENS, INPUT); // пин для чтения данных по силе тока
-    analogReadResolution(12);
-
-    // Настройка пинов энкодера
-    pinMode(BoardConfig::ENC_A, INPUT); // Важно: INPUT, т.к. GPIO 36/39 не поддерживают INPUT_PULLUP
-    pinMode(BoardConfig::ENC_B, INPUT);
-
     attachInterrupt(
         digitalPinToInterrupt(BoardConfig::ENC_A),
         Motor::encoderISR,
@@ -59,53 +57,42 @@ void Motor::init()
     setMaxEncoderTicks(DeviceConfig::MAX_LIFT_ENCODER_TICKS); 
 }
 
+void IRAM_ATTR Motor::emergencyStopFromISR()
+{
+    // Отключение HW PWM и мгновенный сброс управляющих выводов
+    gpio_matrix_out(BoardConfig::MOTOR1_PWM, SIG_GPIO_OUT_IDX, false, false);
+
+    uint32_t lowMask = 0;
+    if (BoardConfig::MOTOR1_INA < 32) lowMask |= (1UL << BoardConfig::MOTOR1_INA);
+    if (BoardConfig::MOTOR1_INB < 32) lowMask |= (1UL << BoardConfig::MOTOR1_INB);
+    if (BoardConfig::MOTOR1_PWM < 32) lowMask |= (1UL << BoardConfig::MOTOR1_PWM);
+
+    if (lowMask > 0) GPIO.out_w1tc = lowMask;
+
+    s_hardwareFault.store(true, std::memory_order_relaxed);
+}
+
 void Motor::update() {
-    const uint32_t now = millis(); // Единый снимок времени на итерацию 
+    const uint32_t now = millis();
 
-    // 1. Аппаратная авария с фильтрацией помех (5 мс)
+    // 1. Блокировка при аварии
     if (isEmergency()) {
-        // ОБЯЗАТЕЛЬНО сбрасываем целевое состояние, чтобы мотор не поехал сам после снятия аварии!
-        m_targetState = MotorState::STOPPED;
-        
-        if (digitalRead(BoardConfig::MOTOR1_DIAG) == HIGH) {
-            // Пин снова HIGH (авария ушла / провод убрали)
-            s_isEmergency.store(false, std::memory_order_relaxed);
-            m_diagFaultStartMs = 0;
-
-            restoreHardware();
-
-            if (m_state == MotorState::EMERGENCY_STOP) {
-                m_state = MotorState::STOPPED;
-            }
-
-            Logger::info("Emergency automatically cleared: DIAG is HIGH, PWM re-attached.");
-        } 
-        else {
-            if (m_diagFaultStartMs == 0) {
-                m_diagFaultStartMs = now;
-            } 
-            else if (now - m_diagFaultStartMs >= 5) {
-                if (m_state != MotorState::EMERGENCY_STOP) {
-                    m_state = MotorState::EMERGENCY_STOP;
-                    Logger::error("HARD FAULT: Motor driver reported DIAG ERROR (confirmed 5ms)!");
-                    return;
-                }
-            }
+        // Если была попытка запустить мотор (m_targetState не STOPPED)
+        if (m_targetState != MotorState::STOPPED || m_state != MotorState::STOPPED) {
+            Logger::warning("Motor action ignored: Active EMERGENCY condition!");
+            stop(); // Полный сброс PWM и целевого состояния
         }
-    } else {
-        m_diagFaultStartMs = 0;
+        return; 
     }
 
-    // 2. Dead Time и запуск
+    // 2. Dead Time и запуск движения
     if (m_targetState != MotorState::STOPPED && m_state != m_targetState) {
-
         bool isDeadTimePassed = (m_deadTimeStartMs == 0) || 
                                 ((now - m_deadTimeStartMs) >= BoardConfig::MOTOR_DEAD_TIME_MS);
 
         if (isDeadTimePassed) {
             m_moveStartMs = now;
             m_overcurrentStartMs = 0;
-            //ledcAttach(BoardConfig::MOTOR1_PWM, PWM_FREQUENCY, PWM_RESOLUTION); // Восстанавливаем ШИМ, если он был отключен из-за аварии
 
             if (m_targetState == MotorState::FORWARD) {
                 digitalWrite(BoardConfig::MOTOR1_INB, LOW);
@@ -129,95 +116,76 @@ void Motor::update() {
         return; 
     }
 
-
-
-    // 3. Управление в движении
-
+    // 3. Управление в процессе движения
     if (m_state == MotorState::FORWARD || m_state == MotorState::REVERSE) {
 
-        // --- ПРОВЕРКА ПРОГРАММНЫХ ОГРАНИЧИТЕЛЕЙ (SOFT LIMITS) ---
+        // Ограничения по энкодеру
         if (m_maxEncoderTicks > 0) {
             int32_t currentPos = getEncoderPosition();
 
-            // Если едем ВПЕРЕД и достигли/превысили максимум — останавливаемся
             if (m_state == MotorState::FORWARD && currentPos >= m_maxEncoderTicks) {
                 stop();
                 Logger::warning("Motor STOPPED: Reached MAX Encoder Soft Limit!");
                 return;
             }
 
-            // Если едем НАЗАД и ушли ниже или в 0 — останавливаемся
             if (m_state == MotorState::REVERSE && currentPos <= 0) {
                 stop();
                 Logger::warning("Motor STOPPED: Reached MIN (0) Encoder Soft Limit!");
                 return;
             }
         }
-        // Плавный разгон
+
+        // Плавный разгон (Soft Start)
         if (m_currentPwm < DeviceConfig::MOTOR_SPEED) {
             if (now - m_lastRampMs >= DeviceConfig::SOFT_START_STEP_MS) {
                 m_lastRampMs = now;
-                // Считаем безопасно в int
                 int nextPwm = m_currentPwm + DeviceConfig::SOFT_START_STEP_PWM;
                 if (nextPwm > DeviceConfig::MOTOR_SPEED) nextPwm = DeviceConfig::MOTOR_SPEED;
                 if (nextPwm > 255) nextPwm = 255;
                 
                 m_currentPwm = (uint8_t)nextPwm;
-
                 ledcWrite(BoardConfig::MOTOR1_PWM, m_currentPwm);
             }
         }
 
         // Защита по току
         checkOvercurrent();
-    
-        // Логирование раз в секунду
-        if (now - m_lastCurrentLogMs >= 1000) {
-            m_lastCurrentLogMs = now;
-            float currentAmps = getCurrentAmps();
-            
-            char logBuffer[64];
-            snprintf(logBuffer, sizeof(logBuffer), "Motor current: %.2f A", currentAmps);
-            Logger::info(logBuffer);
 
-            snprintf(logBuffer, sizeof(logBuffer), "Motor PWM: %u", m_currentPwm);
-            Logger::info(logBuffer);
+        if (DeviceConfig::DEBUG_ENABLED) {
+            if (now - m_lastCurrentLogMs >= 500) {
+                m_lastCurrentLogMs = now;
+                Serial.println(getCurrentAmps(), 2); 
+            }
         }
     }
-}
-
-float Motor::readCurrentSensor() 
-{
-    constexpr uint8_t SAMPLES_COUNT = 8;
-    uint32_t rawSum = 0;
-
-    for (uint8_t i = 0; i < SAMPLES_COUNT; ++i) {
-        rawSum += analogRead(BoardConfig::MOTOR1_CURR_SENS);
-    }
-    uint32_t rawAverage = rawSum / SAMPLES_COUNT;
-
-    uint32_t voltageMv = (rawAverage * 3300) / 4095;
-    float voltageV = voltageMv / 1000.0f;
-    float netVoltageV = voltageV - DeviceConfig::CURRENT_SENSOR_OFFSET_V;
-
-    if (netVoltageV <= 0.0f) {
-        return 0.0f;
-    }
-
-    return netVoltageV / DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
 }
 
 float Motor::getCurrentAmps() {
     return readCurrentSensor();
 }
 
+float Motor::readCurrentSensor() {
+    // Делаем ровно ОДИН замер за тик (занимает ~10 мкс вместо ~100 мкс)
+    uint16_t newSample = analogRead(BoardConfig::MOTOR1_CURR_SENS);
+
+    // Обновляем кольцевой буфер (Moving Average)
+    m_adcSum -= m_adcBuffer[m_adcIndex];
+    m_adcBuffer[m_adcIndex] = newSample;
+    m_adcSum += newSample;
+    m_adcIndex = (m_adcIndex + 1) % ADC_SAMPLES_COUNT;
+
+    float avgAdc = (float)m_adcSum / ADC_SAMPLES_COUNT;
+    float voltageV = (avgAdc * 3.3f) / 4095.0f;
+    float netVoltageV = voltageV - DeviceConfig::CURRENT_SENSOR_OFFSET_V;
+    
+    if (netVoltageV <= 0.0f) return 0.0f;
+
+    return netVoltageV / DeviceConfig::CURRENT_SENSOR_SENSITIVITY;
+}
+
 void Motor::checkOvercurrent() {
     const uint32_t now = millis();
-
-    static uint32_t lastCheckMs = 0;
-    if (now - lastCheckMs < 10) return;
-    lastCheckMs = now;
-
     float currentAmps = readCurrentSensor();
 
     bool isStarting = (now - m_moveStartMs < DeviceConfig::startCurrentTimeoutMs);
@@ -229,62 +197,27 @@ void Motor::checkOvercurrent() {
             m_overcurrentStartMs = now;
         } 
         else if (now - m_overcurrentStartMs >= DeviceConfig::overcurrentTimeoutMs) {
-            ledcWrite(BoardConfig::MOTOR1_PWM, 0);
-            digitalWrite(BoardConfig::MOTOR1_INA, LOW);
-            digitalWrite(BoardConfig::MOTOR1_INB, LOW);
+            stop(); // Корректная остановка мотора
 
-            m_state = MotorState::OVERCURRENT;
-            m_targetState = MotorState::STOPPED;
-            setFaultLED(true); 
+            m_isEmergency = true;
+            m_isOvercurrentFault = true;
+            setOvercurrentLED(true); 
 
-            if (m_firstOvercurrentMs == 0 || (now - m_firstOvercurrentMs > 60000)) {
-                m_firstOvercurrentMs = now;
-                m_overcurrentRetryCount = 1;
-            } else {
-                m_overcurrentRetryCount++;
-            }
-
-            Logger::error("OVERCURRENT FAULT: Motor current exceeded limit!");
-
-            if (m_overcurrentRetryCount > 3) {
-                m_isHardFault = true;
-                Logger::error("CRITICAL FAULT: Too many overcurrent events in 1 min!");
-            }
+            char logBuf[128];
+            snprintf(logBuf, sizeof(logBuf), "OVERCURRENT FAULT! Current: %.2fA (Limit: %.2fA)", 
+                     currentAmps, activeLimit);
+            Logger::error(logBuf);
         }
     } else {
         m_overcurrentStartMs = 0;
     }
 }
 
-void Motor::setFaultLED(bool enable) {
-    if (enable) {
-        detachInterrupt(digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG));
-        pinMode(BoardConfig::MOTOR1_DIAG, OUTPUT);
-        digitalWrite(BoardConfig::MOTOR1_DIAG, LOW);
-    } else {
-        pinMode(BoardConfig::MOTOR1_DIAG, INPUT_PULLUP);
-        attachInterrupt(
-            digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG),
-            Motor::emergencyStopFromISR,
-            FALLING
-        );
-    }
-}
-
 void Motor::forward() { 
     if (m_targetState == MotorState::FORWARD) return;
 
-    // Блокируем, если есть активная авария или мотор находится в режиме аварийного стопа
-    if (m_state == MotorState::OVERCURRENT || isEmergency() || m_state == MotorState::EMERGENCY_STOP) {
-        Logger::warning("Motor forward blocked: active FAULT or Emergency Stop state!");
-        return;
-    }
-
     if (m_state == MotorState::REVERSE) {
         stop(); 
-        m_deadTimeStartMs = millis(); 
-    } else {
-        m_deadTimeStartMs = 0; 
     }
 
     m_targetState = MotorState::FORWARD;
@@ -294,16 +227,8 @@ void Motor::forward() {
 void Motor::reverse() {   
     if (m_targetState == MotorState::REVERSE) return;
 
-    if (m_state == MotorState::OVERCURRENT || isEmergency() || m_state == MotorState::EMERGENCY_STOP) {
-        Logger::warning("Motor reverse blocked: active FAULT or Emergency Stop state!");
-        return;
-    }
-
     if (m_state == MotorState::FORWARD) {
         stop(); 
-        m_deadTimeStartMs = millis(); 
-    } else {
-        m_deadTimeStartMs = 0; 
     }
 
     m_targetState = MotorState::REVERSE;
@@ -318,108 +243,84 @@ void Motor::stop()
 
     m_currentPwm = 0;
     m_moveStartMs = 0;
+    m_deadTimeStartMs = millis(); // Зафиксировали время для паузы (Dead Time)
     m_targetState = MotorState::STOPPED;
+    m_state = MotorState::STOPPED;
 
-    if (s_isEmergency.load(std::memory_order_relaxed)) {
-        m_state = MotorState::EMERGENCY_STOP;
-    } 
-    else if (m_state != MotorState::OVERCURRENT) {
-        m_state = MotorState::STOPPED;
+    if (isEmergency()) {
+        registerStopClick();
     }
     
     Logger::debug("Motor stop executed");
 }
 
-void IRAM_ATTR Motor::emergencyStopFromISR()
-{
-    uint32_t lowMask = 0;
-    uint32_t highMask = 0;
+void Motor::registerStopClick() {
+    uint32_t now = millis();
+    m_stopClickTimes[m_stopClickIndex] = now;
+    m_stopClickIndex = (m_stopClickIndex + 1) % 3;
 
-    const uint8_t pins[3] = { BoardConfig::MOTOR1_INA, BoardConfig::MOTOR1_INB, BoardConfig::MOTOR1_PWM };
-    
-    for (uint8_t i = 0; i < 3; i++) {
-        uint8_t pin = pins[i];
-        if (pin < 32) {
-            lowMask |= (1UL << pin);
-        } else if (pin < 40) {
-            highMask |= (1UL << (pin - 32));
-        }
+    uint32_t oldestClick = m_stopClickTimes[m_stopClickIndex];
+
+    if (oldestClick > 0 && (now - oldestClick <= 2000)) {
+        Logger::warning("Motor: 3x STOP detected within 2 seconds! Processing fault recovery...");
+        tryClearFault();
     }
-
-    if (lowMask > 0)  GPIO.out_w1tc = lowMask;
-    if (highMask > 0) GPIO.out1_w1tc.val = highMask;
-
-    s_isEmergency.store(true, std::memory_order_relaxed);
 }
 
-bool Motor::isEmergency() const
-{
-    return s_isEmergency.load(std::memory_order_relaxed);
-}
-
-void Motor::clearEmergency()
-{   
-    // Перед проверкой уровня сбрасываем режимы пинов
-    setFaultLED(false);
-
+bool Motor::tryClearFault() {
+    // 1. Проверка аппаратного FAULT: если пин DIAG всё еще LOW, сбросить нельзя
     if (digitalRead(BoardConfig::MOTOR1_DIAG) == LOW) {
-        Logger::warning("Cannot clear emergency: motor driver Error! (DIAG pin is still LOW)");
-        return;
+        Logger::error("CLEAR REJECTED: Driver Hardware Fault line is still active (DIAG LOW)!");
+        return false;
     }
+    
+    // Если линия DIAG восстановилась в HIGH — снимаем флаг HW Fault
+    s_hardwareFault.store(false, std::memory_order_relaxed);
 
-    pinMode(BoardConfig::MOTOR1_PWM, OUTPUT); // Восстанавливаем режим пина PWM после аварийного отключения
+    // 2. Сброс OVERCURRENT
+    if (m_isOvercurrentFault) {
+        uint32_t now = millis();
 
-    if (!m_isHardFault) {
-        s_isEmergency.store(false, std::memory_order_relaxed);
-
-        restoreHardware();
-
-        if (m_state == MotorState::EMERGENCY_STOP) {
-            m_state = MotorState::STOPPED;
+        if (m_firstOvercurrentMs == 0 || (now - m_firstOvercurrentMs > 60000)) {
+            m_firstOvercurrentMs = now;
+            m_overcurrentResetCount = 0;
         }
 
-        Logger::info("Emergency status cleared and PWM re-attached.");
-    }
-}
+        if (m_overcurrentResetCount >= 3) {
+            Logger::error("HARD LOCK: Exceeded 3 Overcurrent resets in 1 minute! Reboot required.");
+            return false;
+        }
 
-void Motor::clearOverCurrent() {
-    if (m_isHardFault || isEmergency()) {
-        Logger::warning("Cannot clear overcurrent: HARD FAULT requires power reboot!");
-        return;
+        m_overcurrentResetCount++;
+        m_isEmergency = false;
+        m_isOvercurrentFault = false;
+        setOvercurrentLED(false);
+
+        memset(m_stopClickTimes, 0, sizeof(m_stopClickTimes));
+
+        char logBuf[128];
+        snprintf(logBuf, sizeof(logBuf), "OVERCURRENT cleared by 3x STOP (%d/3 resets in 60s).", m_overcurrentResetCount);
+        Logger::info(logBuf);
+        return true;
     }
 
-    if (m_state == MotorState::OVERCURRENT) {
-        setFaultLED(false);
-        m_state = MotorState::STOPPED;
-        m_overcurrentStartMs = 0;
-        // СБРАСЫВАЕМ СЧЕТЧИКИ ПОПЫТОК ПРИ УСПЕШНОМ СБРОСЕ ПОЛЬЗОВАТЕЛЕМ:
-        m_overcurrentRetryCount = 0;
-        m_firstOvercurrentMs = 0;
-        Logger::info("OVERCURRENT cleared by user command.");
-    }
-}
-
-MotorState Motor::getState()
-{
-    return m_state;
+    return false;
 }
 
 void IRAM_ATTR Motor::encoderISR() {
-    // Читаем B-фазу для определения направления
     if (digitalRead(BoardConfig::ENC_B) == HIGH) {
-        s_encoderPosition = s_encoderPosition + 1;
+        s_encoderPosition.fetch_add(1, std::memory_order_relaxed);
     } else {
-        s_encoderPosition = s_encoderPosition - 1;
+        s_encoderPosition.fetch_sub(1, std::memory_order_relaxed);
     }
 }
 
-void Motor::resetEncoder() { 
-    s_encoderPosition = 0; // сброс счетчика энкодера при достижении определенного концевика
-    Logger::info("Encoder position reset to 0.");
+int32_t Motor::getEncoderPosition() const {
+    return s_encoderPosition.load(std::memory_order_relaxed);
 }
 
-int32_t Motor::getEncoderPosition() const {
-    return s_encoderPosition;
+void Motor::resetEncoder() {
+    s_encoderPosition.store(0, std::memory_order_relaxed);
 }
 
 void Motor::setMaxEncoderTicks(int32_t maxTicks) {
@@ -433,15 +334,6 @@ int32_t Motor::getMaxEncoderTicks() const {
     return m_maxEncoderTicks;
 }
 
-void Motor::restoreHardware() {
-    pinMode(BoardConfig::MOTOR1_PWM, OUTPUT);
-    pinMode(BoardConfig::MOTOR1_INA, OUTPUT);
-    pinMode(BoardConfig::MOTOR1_INB, OUTPUT);
-
-    ledcAttach(
-        BoardConfig::MOTOR1_PWM,
-        PWM_FREQUENCY,
-        PWM_RESOLUTION
-    );
-    ledcWrite(BoardConfig::MOTOR1_PWM, 0);
+void Motor::setOvercurrentLED(bool enable) {
+    digitalWrite(BoardConfig::IR_TRANSMITTER_PIN, enable ? HIGH : LOW);
 }

@@ -12,7 +12,16 @@ namespace BoardConfig
     constexpr uint32_t CPU_FREQUENCY_MHZ = 240;
 
     // -------------------------
-    // Motor 1
+    // Parametrs
+    // -------------------------
+
+    constexpr uint8_t MOTOR_DEFAULT_SPEED = 180; // range 0-255
+    constexpr uint32_t MOTOR_DEAD_TIME_MS = 50; // Пауза при смене направления (мс)
+
+    // -------- PinOut --------
+
+    // -------------------------
+    // Motor 
     // -------------------------
 
     constexpr uint8_t MOTOR1_INA = 16;
@@ -21,17 +30,12 @@ namespace BoardConfig
     constexpr uint8_t MOTOR1_DIAG = 33; // пин DIAG с драйвера мотора, который сигнализирует о неисправности драйвера
     constexpr uint8_t MOTOR1_CURR_SENS = 32; //пин для измерения тока мотора с выхода драйвера мотора
 
-    constexpr uint8_t MOTOR_DEFAULT_SPEED = 180; // range 0-255
-    constexpr uint32_t MOTOR_DEAD_TIME_MS = 50; // Пауза при смене направления (мс)
-    
-
     // -------------------------
     // ENCODERS
     // -------------------------
 
     constexpr uint8_t ENC_A = 36; // Physical pin 4 of ESP32-WROOM-32D
     constexpr uint8_t ENC_B = 39; // Physical pin 5 of ESP32-WROOM-32D
-
 
     // -------------------------
     // Dry contacts
@@ -74,4 +78,8 @@ namespace BoardConfig
     constexpr uint8_t ETH_RX0 = 25;
     constexpr uint8_t ETH_TX0 = 19;
 
+
+
+
+    
 }

@@ -6,7 +6,7 @@
 namespace DeviceConfig
 {
 // Версия прошивки
-inline const char* VERSION = "1.1.21"; // Обновите версию при каждом изменении прошивки
+inline const char* VERSION = "1.1.22"; // Обновите версию при каждом изменении прошивки
     
 // Единый источник дефолтных значений для сброса и инициализации
 namespace Defaults {
@@ -14,6 +14,7 @@ namespace Defaults {
     constexpr uint8_t MOUNT_TYPE = 1; // 0 = FLOOR, 1 = CEILING, 2 = WALL  Настройка типа лифта (по умолчанию CEILING, т.к. чаще всего используется потолочный вариант)
     constexpr bool IS_MASTER = true; // true = master, false = slave
     constexpr uint8_t NODE_ID = 1; // Идентификатор узла (для master/slave конфигурации, по умолчанию 1) для мультимоторных систем, где несколько плат управляют разными моторами лифта. Каждый узел должен иметь уникальный идентификатор (1, 2, 3 и т.д.).
+    constexpr bool DEBUG_ENABLED = true; // Разрешить/запретить вывод отладочных сообщений (по умолчанию false)
 
     // --- СКОРОСТЬ МОТОРА ---
     constexpr uint8_t MOTOR_SPEED = 200; // range 0-255 
@@ -47,13 +48,14 @@ namespace Defaults {
 
     // Адрес для обновления прошивки OTA 
     const char OTA_URL[] = "http://192.168.88.33:3000/firmware/version.json"; // URL для проверки обновлений прошивки (можно указать локальный сервер или внешний URL)
-    constexpr uint32_t OTA_UPDATE_INTERVAL_MS = 5000; // Интервал проверки обновлений (мс) 
+    constexpr uint32_t OTA_UPDATE_INTERVAL_MS = 60000; // Интервал проверки обновлений (мс) 
 }
 
 // Рабочие переменные (используются по всему коду как DeviceConfig::...)
 inline uint8_t MOUNT_TYPE = Defaults::MOUNT_TYPE;
 inline bool IS_MASTER = Defaults::IS_MASTER;
 inline uint8_t NODE_ID = Defaults::NODE_ID;
+inline bool DEBUG_ENABLED = Defaults::DEBUG_ENABLED;
 inline uint8_t MOTOR_SPEED = Defaults::MOTOR_SPEED;
 inline uint8_t SOFT_START_MIN_PWM = Defaults::SOFT_START_MIN_PWM;
 inline uint32_t SOFT_START_STEP_MS = Defaults::SOFT_START_STEP_MS;

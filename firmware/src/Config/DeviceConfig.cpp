@@ -9,6 +9,7 @@ void loadDefaults() {
     MOUNT_TYPE = Defaults::MOUNT_TYPE;
     IS_MASTER = Defaults::IS_MASTER;
     NODE_ID = Defaults::NODE_ID;
+    DEBUG_ENABLED = Defaults::DEBUG_ENABLED;
     MOTOR_SPEED = Defaults::MOTOR_SPEED;
     SOFT_START_MIN_PWM = Defaults::SOFT_START_MIN_PWM;
     SOFT_START_STEP_MS = Defaults::SOFT_START_STEP_MS;
@@ -38,6 +39,7 @@ void load() {
     MOUNT_TYPE = prefs.getUChar("MOUNT_TYPE", MOUNT_TYPE);
     IS_MASTER  = prefs.getBool("IS_MASTER", IS_MASTER);
     NODE_ID    = prefs.getUChar("NODE_ID", NODE_ID);
+    DEBUG_ENABLED = prefs.getBool("DEBUG_ENABLED", DEBUG_ENABLED);
 
     MOTOR_SPEED        = prefs.getUChar("MOTOR_SPEED", MOTOR_SPEED);
     SOFT_START_MIN_PWM = prefs.getUChar("SS_MIN_PWM", SOFT_START_MIN_PWM);
@@ -82,6 +84,7 @@ void save() {
     prefs.putUChar("MOUNT_TYPE", MOUNT_TYPE);
     prefs.putBool("IS_MASTER", IS_MASTER);
     prefs.putUChar("NODE_ID", NODE_ID);
+    prefs.putBool("DEBUG_ENABLED", DEBUG_ENABLED);
 
     prefs.putUChar("MOTOR_SPEED", MOTOR_SPEED);
     prefs.putUChar("SS_MIN_PWM", SOFT_START_MIN_PWM);

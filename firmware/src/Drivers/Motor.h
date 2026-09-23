@@ -1,17 +1,14 @@
 #pragma once
 
 #include <Arduino.h>
-#include <atomic> // Для безопасного обмена флагами между ISR и main thread
-
+#include <atomic>
 
 enum class MotorState
 {
     STOPPED,
     FORWARD,
     REVERSE,
-    DEAD_TIME, // состояние для переключения мотора  от одного направленимя к другому чтобы ключи драйвера успели переключиться 
-    EMERGENCY_STOP,
-    OVERCURRENT
+    DEAD_TIME
 };
 
 class Motor
@@ -20,67 +17,70 @@ public:
     Motor();
 
     void init();
-    void update(); // - ВНИМАНИЕ- проверить!!! Вызывать в main loop! или может в Core::loop() для проверки аварийных условий и защиты по току - ВНИМАНИЕ- проверить!!!
+    void update();
     void forward();
     void reverse();
     void stop();
+
+    MotorState getState() const { return m_state; }
+
     void setSpeed(uint8_t speed);
     uint8_t getSpeed();
-    MotorState getState();
-
-    bool isEmergency() const; // Проверка, случалась ли авария
-    void clearEmergency(); // Сброс флага аварии (если нужно восстановить работу)   
-    void clearOverCurrent(); // Сброс флага перегрузки по току (если нужно восстановить работу)
-    void resetEncoder(); // Сброс счетчика в 0 (будем вызывать от концевиков)
     
-    // Получить текущие импульсы
-    int32_t getEncoderPosition() const; 
-    int32_t getMaxEncoderTicks() const; // Получить текущий настроенный предел
-    void setMaxEncoderTicks(int32_t maxTicks); // Задать максимальный предел счетчика (0 — отключено)
+    // Энкодер
+    int32_t getEncoderPosition() const;
+    int32_t getMaxEncoderTicks() const;
+    void setMaxEncoderTicks(int32_t maxTicks);
+    void resetEncoder();
 
-
-    IRAM_ATTR static void emergencyStopFromISR(); // Обработчик прерывания для аварийной остановки мотора
-
-    // Защита и диагностика
+    // Защита и ток
+    IRAM_ATTR static void emergencyStopFromISR();
     float getCurrentAmps();
-    bool isOverCurrent() const { return m_state == MotorState::OVERCURRENT; }
 
-    // Управление светодиодом аварии  (для индикации состояния аварии)
-    void setFaultLED(bool enable);
+    // ЕДИНЫЙ ФЛАГ АВАРИИ ДЛЯ ВНЕШНИХ МОДУЛЕЙ (Elevator)
+    bool isEmergency() const { return m_isEmergency || s_hardwareFault.load(std::memory_order_relaxed); }
 
 private:
     MotorState m_state = MotorState::STOPPED;
-    MotorState m_targetState{MotorState::STOPPED}; // Куда едем после паузы
-
-    //static constexpr uint8_t PWM_CHANNEL = 0;
+    MotorState m_targetState = MotorState::STOPPED;
 
     static constexpr uint32_t PWM_FREQUENCY = 20000;
-    static constexpr uint8_t PWM_RESOLUTION = 8;
+    static constexpr uint8_t  PWM_RESOLUTION = 8;
 
-    uint8_t  m_currentPwm{0};      // Текущий ШИМ, подаваемый на мотор
-    uint32_t m_lastRampMs{0};      // Время последнего шага нарастания
-
-    uint32_t m_deadTimeStartMs{0};     // Время начала паузы для отсчета интервала физического переключения ключей драйвера 
-    uint32_t m_lastCurrentLogMs = 0; // Таймер периодического вывода тока (мс)
+    uint8_t  m_currentPwm{0};
+    uint32_t m_lastRampMs{0};
+    uint32_t m_deadTimeStartMs{0};
+    uint32_t m_lastCurrentLogMs = 0;
     
-        // Переменные таймера защиты по току
-    uint32_t m_moveStartMs = 0; // время старта движения мотора (для защиты по току)
-    uint32_t m_overcurrentStartMs = 0; // время первого обнаружения перегрухки по току
-    uint32_t m_diagFaultStartMs = 0; // время первого обнаружения аварии DIAG
-    uint32_t m_firstOvercurrentMs = 0; // таймер для отслеживания минуты в течении которой вохможно максимум 3 сброса OVERCURRENT (мс)
-    uint8_t m_overcurrentRetryCount = 0; // счетчик перегрузок по току чтобы польхователь мог сбросить перезрузку 3 раза
+    // Защита по току
+    uint32_t m_moveStartMs = 0;
+    uint32_t m_overcurrentStartMs = 0;
+    uint32_t m_firstOvercurrentMs = 0;
+    uint8_t  m_overcurrentResetCount = 0; // Сбросов токовой защиты
 
-    static volatile int32_t s_encoderPosition; // Счётчик импульсов (volatile, так как меняется в ISR)
-    static void IRAM_ATTR encoderISR(); // Обработчик прерывания энкодера
-    int32_t m_maxEncoderTicks = 0; // 0 означает, что ограничение по счетчику энкодера отключено
+    // Паттерн 3х STOP за 2 сек
+    uint32_t m_stopClickTimes[3] = {0, 0, 0};
+    uint8_t  m_stopClickIndex = 0;
+
+    // Энкодер
+    static std::atomic<int32_t> s_encoderPosition; 
+    static void IRAM_ATTR encoderISR();
+    int32_t m_maxEncoderTicks = 0;
    
-    static std::atomic<bool> s_isEmergency; // Флаг аварийной остановки, доступный из ISR
+    // Флаги аварий
+    static std::atomic<bool> s_hardwareFault; // Аппаратная авария по DIAG (от ISR)
+    bool m_isEmergency = false;               // Общий флаг аварии (в т.ч. по току)
+    bool m_isOvercurrentFault = false;        // Маркер, что авария именно токовая (для сброса)
 
-    bool m_isHardFault = false; // Блокировка до перезагрузки по питанию
-
-    void restoreHardware(); // Восстановление аппаратного ШИМ после аварийного отключения
-
+    void setOvercurrentLED(bool enable);
     void checkOvercurrent();
     float readCurrentSensor();
+    void registerStopClick();
+    bool tryClearFault();
 
+    // переменные вычисления силы тока
+    static constexpr uint8_t ADC_SAMPLES_COUNT = 8;
+    uint16_t m_adcBuffer[ADC_SAMPLES_COUNT] = {0};
+    uint32_t m_adcSum = 0;
+    uint8_t m_adcIndex = 0;
 };

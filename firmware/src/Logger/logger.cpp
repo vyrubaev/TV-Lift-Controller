@@ -1,11 +1,13 @@
 #include "Logger.h"
 
+#include "Logger.h"
+#include <Arduino.h>
+#include "Config/DeviceConfig.h" // Подключаем конфиг только здесь!
+
 void Logger::init()
 {
     Serial.begin(115200);
-
     delay(100);
-
     Serial.println();
     Serial.println("================================");
     Serial.println("TV Lift Controller");
@@ -32,7 +34,9 @@ void Logger::error(const char* message)
 }
 
 void Logger::debug(const char* message)
-{
-    Serial.print("[DEBUG] ");
-    Serial.println(message);
+{ 
+    if (DeviceConfig::DEBUG_ENABLED) {
+        Serial.print("[DEBUG] ");
+        Serial.println(message);
+    }
 }

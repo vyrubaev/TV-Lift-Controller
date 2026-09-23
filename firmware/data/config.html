@@ -249,18 +249,26 @@
                 <div class="hint">Board ID in the CAN network</div>
             </div>
             <div class="form-group">
+                <label>Debug mode</label>
+                <select id="debugEnabled">
+                    <option value="true">Enabled</option>
+                    <option value="false">Disabled</option>
+                </select>
+                <div class="hint">Enable/disable debug messages output (default disabled)</div>
+            </div>    
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Maximum current (A)</label>
+                <input type="number" step="0.1" id="maxMotorCurrentAmps">
+                <div class="hint">Maximum permissible working current</div>
+            </div>
+            <div class="form-group">
                 <label>Motor speed</label>
                 <input type="number" id="motorSpeed" min="0" max="255">
                 <div class="hint">Motor speed in PWM (0–255)</div>
             </div>
         </div>
-
-        <div class="form-group">
-            <label>Maximum current (A)</label>
-            <input type="number" step="0.1" id="maxMotorCurrentAmps">
-            <div class="hint">Maximum permissible working current</div>
-        </div>
-
         <div class="row">
             <div class="form-group">
                 <label>Start timeout (ms)</label>
@@ -407,6 +415,7 @@
             document.getElementById('mountType').value = data.MOUNT_TYPE ?? 0;
             document.getElementById('isMaster').value = (data.IS_MASTER ?? true) ? "true" : "false";
             document.getElementById('nodeId').value = data.NODE_ID ?? '';
+            document.getElementById('debugEnabled').value = (data.DEBUG_ENABLED ?? true) ? "true" : "false";
 
             document.getElementById('motorSpeed').value = data.MOTOR_SPEED ?? '';
             document.getElementById('softStartMinPwm').value = data.SOFT_START_MIN_PWM ?? '';
@@ -487,6 +496,7 @@
             MOUNT_TYPE: parseInt(document.getElementById('mountType').value) || 0,
             IS_MASTER: document.getElementById('isMaster').value === "true",
             NODE_ID: parseInt(document.getElementById('nodeId').value) || 0,
+            DEBUG_ENABLED: document.getElementById('debugEnabled').value === "true",
 
             MOTOR_SPEED: parseInt(document.getElementById('motorSpeed').value) || 0,
             SOFT_START_MIN_PWM: parseInt(document.getElementById('softStartMinPwm').value) || 0,

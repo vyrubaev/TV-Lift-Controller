@@ -44,7 +44,7 @@ const char* Elevator::sourceToString(CommandSource src) {
 // -------------------------------------------------
 void Elevator::setState(ElevatorState newState) {
     if (m_state == newState) return;
-    
+
     m_state = newState;
     switch (m_state) {
         case ElevatorState::OPEN:
@@ -103,6 +103,7 @@ void Elevator::moveUp(CommandSource src) {
     Logger::info(logBuffer);
     m_moveStartMs = millis(); // Фиксируем старт
     m_motor.forward();
+    m_limitRunOnDirection = LimitRunOnDirection::NONE; //
     setState(ElevatorState::MOVING_UP);
 }
 
@@ -112,6 +113,7 @@ void Elevator::moveDown(CommandSource src) {
     Logger::info(logBuffer);
     m_moveStartMs = millis(); // Фиксируем старт
     m_motor.reverse();
+    m_limitRunOnDirection = LimitRunOnDirection::NONE; //
     setState(ElevatorState::MOVING_DOWN);
 }
 
@@ -122,14 +124,16 @@ void Elevator::stop(CommandSource src) {
     m_limitRunOnDirection = LimitRunOnDirection::NONE;
     m_moveStartMs = 0; // Сбрасываем таймер
     m_motor.stop();
-    setState(ElevatorState::STOPPED);
+    if (!isForwardLimitReached() && !isReverseLimitReached()) {
+        setState(ElevatorState::STOPPED);
+    }
 }
 
 bool Elevator::isMoving() const {
     // Перечислите здесь ВСЕ состояния, при которых мотор активен
-    return m_state == ElevatorState::MOVING_UP || 
-           m_state == ElevatorState::MOVING_DOWN || 
-           m_state == ElevatorState::RUN_ON; // добавьте ваши рабочие статусы
+    return  m_state == ElevatorState::MOVING_UP || 
+            m_state == ElevatorState::MOVING_DOWN||
+            m_state == ElevatorState::RUN_ON;
 }
 
 bool Elevator::isForwardLimitReached() {
@@ -192,33 +196,24 @@ void Elevator::executeCommand(const PendingCommand& cmd)
 {
     if (OtaUpdater::isUpdating()) {
         Logger::warning("Command ignored: OTA update in progress!");
-        return; // Игнорируем любые команды, пока идет OTA!
+        return;
     }
 
-    // БЛОКИРУЕМ любые команды движения, если активна аппаратная авария
-    if (m_motor.isEmergency() || m_state == ElevatorState::EMERGENCY || m_motor.getState() == MotorState::EMERGENCY_STOP) {
-        // Разрешаем только команду STOP для сброса/остановки
+    // Блокируем UP/DOWN если мотор или элеватор в аварии
+    if (m_motor.isEmergency() || m_state == ElevatorState::EMERGENCY) {
         if (cmd.type != PendingCommand::Type::STOP) {
-            Logger::warning("Command blocked: Elevator is in EMERGENCY fault state!");
+            Logger::warning("Command blocked: Elevator is in EMERGENCY state!");
             return;
         }
     }
 
     switch (cmd.type) {
         case PendingCommand::Type::STOP:
-            // Сброс OVERCURRENT происходит ТОЛЬКО при вызове STOP
-            if (m_motor.isOverCurrent()) {
-                m_motor.clearOverCurrent();
-            }
             stop(cmd.source);
+            
             break;
 
         case PendingCommand::Type::UP:
-            // Если мотор в аварии по току — игнорируем команду UP
-            if (m_motor.isOverCurrent()) {
-                Logger::warning("UP blocked: Motor is in OVERCURRENT fault! Press STOP to reset.");
-                return;
-            }
             if (isForwardLimitReached()) {
                 Logger::warning("UP blocked: FORWARD limit switch is active!");
                 return;
@@ -227,11 +222,6 @@ void Elevator::executeCommand(const PendingCommand& cmd)
             break;
 
         case PendingCommand::Type::DOWN:
-            // Если мотор в аварии по току — игнорируем команду DOWN
-            if (m_motor.isOverCurrent()) {
-                Logger::warning("DOWN blocked: Motor is in OVERCURRENT fault! Press STOP to reset.");
-                return;
-            }
             if (isReverseLimitReached()) {
                 Logger::warning("DOWN blocked: REVERSE limit switch is active!");
                 return;
@@ -254,40 +244,26 @@ void Elevator::update()
     m_irReceiver.update();
     m_motor.update();
 
-    // 1. Проверка АВАРИИ
-    if (m_motor.isEmergency() || m_motor.isOverCurrent())
-    {
+   // 1. ПРОВЕРКА АВАРИИ
+    if (m_motor.isEmergency()) {
         if (m_state != ElevatorState::EMERGENCY) {
-            Logger::error("EMERGENCY FAULT: Motor driver error or overcurrent detected!");
-            m_limitRunOnDirection = LimitRunOnDirection::NONE;
-            m_motor.stop();
             setState(ElevatorState::EMERGENCY);
-            
-            // Сбрасываем атомарные задачи веб-интерфейса и CLI
-            m_webPendingType.store(PendingCommand::Type::NONE, std::memory_order_relaxed);
-            m_cliPendingType.store(PendingCommand::Type::NONE, std::memory_order_relaxed);
-            
-            // Безопасно очищаем ИК-буфер одним вызовом (без риска зависнуть в while)
-            m_irReceiver.getCommand();
         }
-        
-        // Забираем любые команды через единый диспетчер.
-        // Реагируем только на STOP для сброса аварии, остальное игнорируем.
+
+        // Если пришел STOP — транслируем его в мотор (вдруг там идет отсчет 3х нажатий)
         PendingCommand cmd = getNextCommand();
         if (cmd.type == PendingCommand::Type::STOP) {
-            executeCommand(cmd);
+            m_motor.stop();
         }
-        
-        return; // Блокируем остальной update() во время аварии
+        return; // Блокируем всё остальное движение
     }
 
-    // Если авария ушла, а лифт висел в EMERGENCY — возвращаем в STOPPED
-    if (m_state == ElevatorState::EMERGENCY) {
-        Logger::info("Emergency fault resolved: elevator reset to STOPPED state.");
+    // Если мотор вышел из аварии (или её не было)
+    if (m_state == ElevatorState::EMERGENCY && !m_motor.isEmergency()) {
         setState(ElevatorState::STOPPED);
     }
 
-    // 2. Проверка тайм-аута движения (штатная остановка)
+    // 2. Проверка тайм-аута движения
     if (m_motor.getState() == MotorState::FORWARD && (millis() - m_moveStartMs >= DeviceConfig::MAX_FORWARD_TIME_MS)) {
         Logger::warning("TIMEOUT: Motor FORWARD max run time exceeded!");
         stop(CommandSource::SYSTEM);
@@ -302,9 +278,16 @@ void Elevator::update()
         return;
     }
 
-    // 3. Обработка добега концевиков
+    // 3. Обработка добега концевиков (с возможностью прервать по STOP)
     if (m_limitRunOnDirection != LimitRunOnDirection::NONE) {
+        PendingCommand cmd = getNextCommand();
+        if (cmd.type == PendingCommand::Type::STOP) {
+            executeCommand(cmd);
+            return;
+        }
+
         const uint32_t now = millis();
+
         uint32_t runOnTimeMs = (m_limitRunOnDirection == LimitRunOnDirection::FORWARD) 
             ? DeviceConfig::FORWARD_LIMIT_RUN_ON_MS 
             : DeviceConfig::REVERSE_LIMIT_RUN_ON_MS;
@@ -323,6 +306,7 @@ void Elevator::update()
             return;
         }
         m_limitRunOnDirection = LimitRunOnDirection::FORWARD;
+        setState(ElevatorState::RUN_ON);
         m_limitRunOnStartMs = millis();
         return;
     }
@@ -333,6 +317,7 @@ void Elevator::update()
             return;
         }
         m_limitRunOnDirection = LimitRunOnDirection::REVERSE;
+        setState(ElevatorState::RUN_ON);
         m_limitRunOnStartMs = millis();
         return;
     }

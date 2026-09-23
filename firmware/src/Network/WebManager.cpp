@@ -346,6 +346,7 @@ void WebManager::setupRoutes() {
         doc["MOUNT_TYPE"]                 = DeviceConfig::MOUNT_TYPE;
         doc["IS_MASTER"]                  = DeviceConfig::IS_MASTER;
         doc["NODE_ID"]                    = DeviceConfig::NODE_ID;
+        doc["DEBUG_ENABLED"]              = DeviceConfig::DEBUG_ENABLED;
         doc["MOTOR_SPEED"]                = DeviceConfig::MOTOR_SPEED;
         doc["SOFT_START_MIN_PWM"]         = DeviceConfig::SOFT_START_MIN_PWM;
         doc["SOFT_START_STEP_MS"]         = DeviceConfig::SOFT_START_STEP_MS;
@@ -392,6 +393,7 @@ void WebManager::setupRoutes() {
             if (jsonObj.containsKey("MOUNT_TYPE"))                 DeviceConfig::MOUNT_TYPE                 = jsonObj["MOUNT_TYPE"];
             if (jsonObj.containsKey("IS_MASTER"))                  DeviceConfig::IS_MASTER                  = jsonObj["IS_MASTER"];
             if (jsonObj.containsKey("NODE_ID"))                    DeviceConfig::NODE_ID                    = jsonObj["NODE_ID"];
+            if (jsonObj.containsKey("DEBUG_ENABLED"))              DeviceConfig::DEBUG_ENABLED              = jsonObj["DEBUG_ENABLED"];
             if (jsonObj.containsKey("MOTOR_SPEED"))                DeviceConfig::MOTOR_SPEED                = jsonObj["MOTOR_SPEED"];
             if (jsonObj.containsKey("SOFT_START_MIN_PWM"))         DeviceConfig::SOFT_START_MIN_PWM         = jsonObj["SOFT_START_MIN_PWM"];
             if (jsonObj.containsKey("SOFT_START_STEP_MS"))         DeviceConfig::SOFT_START_STEP_MS         = jsonObj["SOFT_START_STEP_MS"];
