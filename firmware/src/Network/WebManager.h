@@ -46,6 +46,7 @@ private:
     String         m_password;
 
     Elevator*      m_elevator{nullptr}; 
+    AsyncCallbackJsonWebHandler* m_handleSaveConfig = nullptr; 
 
     // Внутренние методы настройки
     void loadCredentials();

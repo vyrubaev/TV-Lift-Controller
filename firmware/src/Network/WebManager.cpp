@@ -384,57 +384,60 @@ void WebManager::setupRoutes() {
         request->send(200, "application/json", response);
     });
 
-    AsyncCallbackJsonWebHandler* handleSaveConfig = new AsyncCallbackJsonWebHandler(
-        "/api/config", 
-        [](AsyncWebServerRequest *request, JsonVariant &json) {
-            JsonObject jsonObj = json.as<JsonObject>();
-            if (jsonObj.isNull()) {
-                request->send(400, "application/json", "{\"status\":\"error\",\"message\":\"Invalid JSON\"}");
-                return;
-            }
-
-            if (jsonObj.containsKey("MOUNT_TYPE"))                 DeviceConfig::MOUNT_TYPE                 = jsonObj["MOUNT_TYPE"];
-            if (jsonObj.containsKey("IS_MASTER"))                  DeviceConfig::IS_MASTER                  = jsonObj["IS_MASTER"];
-            if (jsonObj.containsKey("NODE_ID"))                    DeviceConfig::NODE_ID                    = jsonObj["NODE_ID"];
-            if (jsonObj.containsKey("DEBUG_ENABLED"))              DeviceConfig::DEBUG_ENABLED              = jsonObj["DEBUG_ENABLED"];
-            if (jsonObj.containsKey("MOTOR_SPEED"))                DeviceConfig::MOTOR_SPEED                = jsonObj["MOTOR_SPEED"];
-            if (jsonObj.containsKey("SOFT_START_MIN_PWM"))         DeviceConfig::SOFT_START_MIN_PWM         = jsonObj["SOFT_START_MIN_PWM"];
-            if (jsonObj.containsKey("SOFT_START_STEP_MS"))         DeviceConfig::SOFT_START_STEP_MS         = jsonObj["SOFT_START_STEP_MS"];
-            if (jsonObj.containsKey("SOFT_START_STEP_PWM"))        DeviceConfig::SOFT_START_STEP_PWM        = jsonObj["SOFT_START_STEP_PWM"];
-            if (jsonObj.containsKey("CURRENT_SENSOR_SENSITIVITY")) DeviceConfig::CURRENT_SENSOR_SENSITIVITY = jsonObj["CURRENT_SENSOR_SENSITIVITY"];
-            if (jsonObj.containsKey("CURRENT_SENSOR_OFFSET_V"))    DeviceConfig::CURRENT_SENSOR_OFFSET_V    = jsonObj["CURRENT_SENSOR_OFFSET_V"];
-            if (jsonObj.containsKey("startCurrentTimeoutMs"))      DeviceConfig::startCurrentTimeoutMs      = jsonObj["startCurrentTimeoutMs"];
-            if (jsonObj.containsKey("maxMotorCurrentAmps"))        DeviceConfig::maxMotorCurrentAmps        = jsonObj["maxMotorCurrentAmps"];
-            if (jsonObj.containsKey("overcurrentTimeoutMs"))       DeviceConfig::overcurrentTimeoutMs       = jsonObj["overcurrentTimeoutMs"];
-            if (jsonObj.containsKey("MAX_FORWARD_TIME_MS"))        DeviceConfig::MAX_FORWARD_TIME_MS        = jsonObj["MAX_FORWARD_TIME_MS"];
-            if (jsonObj.containsKey("MAX_REVERSE_TIME_MS"))        DeviceConfig::MAX_REVERSE_TIME_MS        = jsonObj["MAX_REVERSE_TIME_MS"];
-            if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))    DeviceConfig::FORWARD_LIMIT_RUN_ON_MS     = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
-            if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))    DeviceConfig::REVERSE_LIMIT_RUN_ON_MS     = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
-            if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))     DeviceConfig::MAX_LIFT_ENCODER_TICKS     = jsonObj["MAX_LIFT_ENCODER_TICKS"];
-            if (jsonObj.containsKey("otaUpdateIntervalMs"))        DeviceConfig::otaUpdateIntervalMs        = jsonObj["otaUpdateIntervalMs"];
-
-            auto parseIrCode = [](JsonVariant v) -> uint32_t {
-                if (v.is<const char*>()) {
-                    const char* str = v.as<const char*>();
-                    return str ? strtoul(str, nullptr, 0) : 0;
+    if (m_handleSaveConfig == nullptr) {
+        m_handleSaveConfig = new AsyncCallbackJsonWebHandler(
+            "/api/config", 
+            [](AsyncWebServerRequest *request, JsonVariant &json) {
+                JsonObject jsonObj = json.as<JsonObject>();
+                if (jsonObj.isNull()) {
+                    request->send(400, "application/json", "{\"status\":\"error\",\"message\":\"Invalid JSON\"}");
+                    return;
                 }
-                return v.as<uint32_t>();
-            };
 
-            if (jsonObj.containsKey("IR_CODE_UP"))     DeviceConfig::IR_CODE_UP     = parseIrCode(jsonObj["IR_CODE_UP"]);
-            if (jsonObj.containsKey("IR_CODE_DOWN"))   DeviceConfig::IR_CODE_DOWN   = parseIrCode(jsonObj["IR_CODE_DOWN"]);
-            if (jsonObj.containsKey("IR_CODE_STOP"))   DeviceConfig::IR_CODE_STOP   = parseIrCode(jsonObj["IR_CODE_STOP"]);
-            if (jsonObj.containsKey("IR_CODE_REPEAT")) DeviceConfig::IR_CODE_REPEAT = parseIrCode(jsonObj["IR_CODE_REPEAT"]);
+                if (jsonObj.containsKey("MOUNT_TYPE"))                 DeviceConfig::MOUNT_TYPE                 = jsonObj["MOUNT_TYPE"];
+                if (jsonObj.containsKey("IS_MASTER"))                  DeviceConfig::IS_MASTER                  = jsonObj["IS_MASTER"];
+                if (jsonObj.containsKey("NODE_ID"))                    DeviceConfig::NODE_ID                    = jsonObj["NODE_ID"];
+                if (jsonObj.containsKey("DEBUG_ENABLED"))              DeviceConfig::DEBUG_ENABLED              = jsonObj["DEBUG_ENABLED"];
+                if (jsonObj.containsKey("MOTOR_SPEED"))                DeviceConfig::MOTOR_SPEED                = jsonObj["MOTOR_SPEED"];
+                if (jsonObj.containsKey("SOFT_START_MIN_PWM"))         DeviceConfig::SOFT_START_MIN_PWM         = jsonObj["SOFT_START_MIN_PWM"];
+                if (jsonObj.containsKey("SOFT_START_STEP_MS"))         DeviceConfig::SOFT_START_STEP_MS         = jsonObj["SOFT_START_STEP_MS"];
+                if (jsonObj.containsKey("SOFT_START_STEP_PWM"))        DeviceConfig::SOFT_START_STEP_PWM        = jsonObj["SOFT_START_STEP_PWM"];
+                if (jsonObj.containsKey("CURRENT_SENSOR_SENSITIVITY")) DeviceConfig::CURRENT_SENSOR_SENSITIVITY = jsonObj["CURRENT_SENSOR_SENSITIVITY"];
+                if (jsonObj.containsKey("CURRENT_SENSOR_OFFSET_V"))    DeviceConfig::CURRENT_SENSOR_OFFSET_V    = jsonObj["CURRENT_SENSOR_OFFSET_V"];
+                if (jsonObj.containsKey("startCurrentTimeoutMs"))      DeviceConfig::startCurrentTimeoutMs      = jsonObj["startCurrentTimeoutMs"];
+                if (jsonObj.containsKey("maxMotorCurrentAmps"))        DeviceConfig::maxMotorCurrentAmps        = jsonObj["maxMotorCurrentAmps"];
+                if (jsonObj.containsKey("overcurrentTimeoutMs"))       DeviceConfig::overcurrentTimeoutMs       = jsonObj["overcurrentTimeoutMs"];
+                if (jsonObj.containsKey("MAX_FORWARD_TIME_MS"))        DeviceConfig::MAX_FORWARD_TIME_MS        = jsonObj["MAX_FORWARD_TIME_MS"];
+                if (jsonObj.containsKey("MAX_REVERSE_TIME_MS"))        DeviceConfig::MAX_REVERSE_TIME_MS        = jsonObj["MAX_REVERSE_TIME_MS"];
+                if (jsonObj.containsKey("FORWARD_LIMIT_RUN_ON_MS"))    DeviceConfig::FORWARD_LIMIT_RUN_ON_MS     = jsonObj["FORWARD_LIMIT_RUN_ON_MS"];
+                if (jsonObj.containsKey("REVERSE_LIMIT_RUN_ON_MS"))    DeviceConfig::REVERSE_LIMIT_RUN_ON_MS     = jsonObj["REVERSE_LIMIT_RUN_ON_MS"];
+                if (jsonObj.containsKey("MAX_LIFT_ENCODER_TICKS"))     DeviceConfig::MAX_LIFT_ENCODER_TICKS     = jsonObj["MAX_LIFT_ENCODER_TICKS"];
+                if (jsonObj.containsKey("otaUpdateIntervalMs"))        DeviceConfig::otaUpdateIntervalMs        = jsonObj["otaUpdateIntervalMs"];
 
-            if (jsonObj.containsKey("otaUrl") && jsonObj["otaUrl"].is<const char*>()) {
-                snprintf(DeviceConfig::otaUrl, sizeof(DeviceConfig::otaUrl), "%s", jsonObj["otaUrl"].as<const char*>());
+                auto parseIrCode = [](JsonVariant v) -> uint32_t {
+                    if (v.is<const char*>()) {
+                        const char* str = v.as<const char*>();
+                        return str ? strtoul(str, nullptr, 0) : 0;
+                    }
+                    return v.as<uint32_t>();
+                };
+
+                if (jsonObj.containsKey("IR_CODE_UP"))     DeviceConfig::IR_CODE_UP     = parseIrCode(jsonObj["IR_CODE_UP"]);
+                if (jsonObj.containsKey("IR_CODE_DOWN"))   DeviceConfig::IR_CODE_DOWN   = parseIrCode(jsonObj["IR_CODE_DOWN"]);
+                if (jsonObj.containsKey("IR_CODE_STOP"))   DeviceConfig::IR_CODE_STOP   = parseIrCode(jsonObj["IR_CODE_STOP"]);
+                if (jsonObj.containsKey("IR_CODE_REPEAT")) DeviceConfig::IR_CODE_REPEAT = parseIrCode(jsonObj["IR_CODE_REPEAT"]);
+
+                if (jsonObj.containsKey("otaUrl") && jsonObj["otaUrl"].is<const char*>()) {
+                    snprintf(DeviceConfig::otaUrl, sizeof(DeviceConfig::otaUrl), "%s", jsonObj["otaUrl"].as<const char*>());
+                }
+
+                DeviceConfig::save();
+                request->send(200, "application/json", "{\"status\":\"ok\"}");
+
+                scheduleReboot(500);
             }
+        );
 
-            DeviceConfig::save();
-            request->send(200, "application/json", "{\"status\":\"ok\"}");
-
-            scheduleReboot(500);
-        }
-    );
-    m_server.addHandler(handleSaveConfig);
+        m_server.addHandler(m_handleSaveConfig);
+    }
 }
