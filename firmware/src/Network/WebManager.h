@@ -48,6 +48,12 @@ private:
     Elevator*      m_elevator{nullptr}; 
     AsyncCallbackJsonWebHandler* m_handleSaveConfig = nullptr; 
 
+    uint32_t m_wifiConnectStartMs = 0; // 
+    const uint32_t WIFI_TIMEOUT_MS = 10000; // 10 секунд на подключение
+
+    bool     m_bootCounterActive = false;
+    uint32_t m_bootTimerMs = 0;
+
     // Внутренние методы настройки
     void loadCredentials();
     void saveCredentials(const String& ssid, const String& pass);

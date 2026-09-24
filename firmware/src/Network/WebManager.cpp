@@ -48,16 +48,9 @@ void WebManager::init(Elevator* elevatorPtr) {
         return;
     }
 
-    // Фоновая задача сброса счетчика перезагрузок через 3 секунды стабильной работы
-    xTaskCreate([](void* arg) {
-        vTaskDelay(pdMS_TO_TICKS(3000));
-        Preferences prefs;
-        prefs.begin("system-cfg", false);
-        prefs.putInt("boot_cnt", 0);
-        prefs.end();
-        Logger::info("[System] Счетчик перезагрузок сброшен");
-        vTaskDelete(NULL);
-    }, "reset_boot_counter", 2048, NULL, 1, NULL);
+    // 👈 ВМЕСТО xTaskCreate: Запоминаем старт и взводим флаг
+    m_bootCounterActive = true;
+    m_bootTimerMs = millis();
 
     // 3. Подключение к сети
     loadCredentials();
@@ -69,7 +62,44 @@ void WebManager::init(Elevator* elevatorPtr) {
 }
 
 void WebManager::update() {
-    if (m_wifiState == WifiState::AP_MODE) {
+
+    // 👈 Безопасный сброс счетчика через 3 секунды стабильной работы в основном потоке
+    if (m_bootCounterActive && (millis() - m_bootTimerMs >= 3000)) {
+        m_bootCounterActive = false;
+        
+        m_prefs.begin("system-cfg", false);
+        m_prefs.putInt("boot_cnt", 0);
+        m_prefs.end();
+        
+        Logger::info("[System] Счетчик перезагрузок успешно сброшен");
+    }
+    // Логика состояния Wi-Fi
+    if (m_wifiState == WifiState::CONNECTING_STA) {
+        // 1. Успешно подключились
+        if (WiFi.status() == WL_CONNECTED) {
+            m_wifiState = WifiState::STA_MODE;
+
+            char logBuf[96];
+            snprintf(logBuf, sizeof(logBuf), "[WiFi] Успешно подключено! IP: %s", WiFi.localIP().toString().c_str());
+            Logger::info(logBuf);
+
+            if (MDNS.begin(MDNS_HOSTNAME)) {
+                snprintf(logBuf, sizeof(logBuf), "[mDNS] Адрес: http://%s.local", MDNS_HOSTNAME);
+                Logger::info(logBuf);
+                MDNS.addService("http", "tcp", 80);
+            }
+
+            setupWebSocket();
+            setupRoutes();
+            m_server.begin();
+        } 
+        // 2. Превышен таймаут (10 секунд)
+        else if (millis() - m_wifiConnectStartMs >= WIFI_TIMEOUT_MS) {
+            Logger::info("[WiFi] Превышено время ожидания! Переход в AP режим...");
+            startAPMode();
+        }
+    }
+    else if (m_wifiState == WifiState::AP_MODE) {
         m_dnsServer.processNextRequest();
     } 
     else if (m_wifiState == WifiState::STA_MODE) {
@@ -135,21 +165,14 @@ void WebManager::broadcastStatus() {
     uint32_t interval = isMoving ? 100 : 1000; // 10 Гц в движении, 1 Гц в покое
 
     if (now - m_lastBroadcastMs < interval) return;
-
-    // Проверяем переполнение очередей клиентов
-    for (auto& client : m_ws.getClients()) {
-        if (client.status() == WS_CONNECTED && client.queueIsFull()) {
-            return; 
-        }
-    }
-
     m_lastBroadcastMs = now;
 
+    // Формируем JSON с данными
     StaticJsonDocument<128> doc;
     doc["st"]  = static_cast<int>(m_elevator->getState());
     doc["cur"] = m_elevator->getCurrentAmps();
     
-    // Если есть свежий ИК-код — добавляем его в этот же пакет
+    // Если есть свежий ИК-код — добавляем его
     if (DeviceConfig::LAST_IR_CODE != 0) {
         char hexBuffer[12];
         snprintf(hexBuffer, sizeof(hexBuffer), "0x%08X", (unsigned int)DeviceConfig::LAST_IR_CODE);
@@ -158,49 +181,27 @@ void WebManager::broadcastStatus() {
 
     String jsonString;
     serializeJson(doc, jsonString);
-    m_ws.textAll(jsonString);
-}
 
-void WebManager::broadcastWs(const String& payload) {
-    if (m_ws.count() > 0) {
-        m_ws.textAll(payload);
+    // Безопасный обход клиентов по ссылке
+    for (auto& client : m_ws.getClients()) {
+        if (client.status() == WS_CONNECTED && !client.queueIsFull()) {
+            client.text(jsonString);
+        }
     }
 }
 
 void WebManager::startSTAMode() {
     m_wifiState = WifiState::CONNECTING_STA;
+    m_wifiConnectStartMs = millis(); // Запоминаем время старта
+
     WiFi.mode(WIFI_STA);
     WiFi.begin(m_ssid.c_str(), m_password.c_str());
 
     char logBuf[96];
-    snprintf(logBuf, sizeof(logBuf), "[WiFi] Подключение к: %s", m_ssid.c_str());
+    snprintf(logBuf, sizeof(logBuf), "[WiFi] Инициализация подключения к: %s", m_ssid.c_str());
     Logger::info(logBuf);
 
-    uint8_t attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 20) {
-        delay(500);
-        attempts++;
-    }
-
-    if (WiFi.status() == WL_CONNECTED) {
-        m_wifiState = WifiState::STA_MODE;
-
-        snprintf(logBuf, sizeof(logBuf), "[WiFi] Успешно подключено! IP: %s", WiFi.localIP().toString().c_str());
-        Logger::info(logBuf);
-
-        if (MDNS.begin(MDNS_HOSTNAME)) {
-            snprintf(logBuf, sizeof(logBuf), "[mDNS] Адрес: http://%s.local", MDNS_HOSTNAME);
-            Logger::info(logBuf);
-            MDNS.addService("http", "tcp", 80);
-        }
-
-        setupWebSocket();
-        setupRoutes();
-        m_server.begin();
-    } else {
-        Logger::info("[WiFi] Не удалось подключиться! Переход в AP режим...");
-        startAPMode();
-    }
+    // Больше никакого while() и delay()! Выходим мгновенно.
 }
 
 void WebManager::startAPMode() {
