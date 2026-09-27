@@ -269,7 +269,7 @@ void WebManager::setupCaptivePortalRoutes() {
 
             this->saveCredentials(newSsid, newPass);
 
-            request->send(200, "text/html", "<html><body><h2>Сохранено!</h2><p>Перезагрузка...</p></body></html>");
+            request->send(200, "text/html", "<html><body><h2>Congratulation! Settings save!</h2><p>System rebooting...</p></body></html>");
             scheduleReboot(1000); // Отложенная перезагрузка
         } else {
             request->send(400, "text/plain", "Bad Request");
@@ -280,16 +280,16 @@ void WebManager::setupCaptivePortalRoutes() {
         String html = R"rawliteral(
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><title>Настройка TV-Lift</title></head>
+<head><meta charset="UTF-8"><title>Setup TV-Lift</title></head>
 <body style="background:#121212;color:#fff;font-family:sans-serif;padding:20px;text-align:center;">
-    <h2>Настройка Wi-Fi TV-Lift</h2>
-    <form action="/save" method="POST" onsubmit="this.querySelector('button').innerText='Сохранение...'">
-        <select id="networks" name="ssid" style="width:280px;padding:10px;margin:10px 0;background:#222;color:#fff;border:1px solid #444;"><option>Поиск сетей...</option></select><br>
+    <h2>Settings Wi-Fi TV-Lift</h2>
+    <form action="/save" method="POST" onsubmit="this.querySelector('button').innerText='Save...'">
+        <select id="networks" name="ssid" style="width:280px;padding:10px;margin:10px 0;background:#222;color:#fff;border:1px solid #444;"><option>Scaning networks...</option></select><br>
         <div style="display:inline-block;width:280px;position:relative;margin:10px 0;">
-            <input type="password" id="p" name="pass" placeholder="Пароль от Wi-Fi" required style="width:100%;padding:10px;box-sizing:border-box;background:#222;color:#fff;border:1px solid #444;padding-right:35px;">
+            <input type="password" id="p" name="pass" placeholder="Wi-Fi password" required style="width:100%;padding:10px;box-sizing:border-box;background:#222;color:#fff;border:1px solid #444;padding-right:35px;">
             <span onclick="let t=document.getElementById('p');t.type=t.type==='password'?'text':'password';this.innerText=t.type==='password'?'👁':'👁‍🗨';" style="position:absolute;right:8px;top:10px;cursor:pointer;color:#888;">👁</span>
         </div><br>
-        <button type="submit" style="width:280px;padding:10px;background:#4CAF50;color:#fff;border:none;cursor:pointer;margin-top:10px;">Сохранить</button>
+        <button type="submit" style="width:280px;padding:10px;background:#4CAF50;color:#fff;border:none;cursor:pointer;margin-top:10px;">Save</button>
     </form>
     <script>
         fetch('/scan').then(r => r.json()).then(data => {
@@ -347,7 +347,8 @@ void WebManager::setupRoutes() {
 
     m_server.on("/api/config", HTTP_GET, [](AsyncWebServerRequest *request) {
         DynamicJsonDocument doc(1024);
-        
+
+        doc["VERSION"]                    = DeviceConfig::VERSION;
         doc["MOUNT_TYPE"]                 = DeviceConfig::MOUNT_TYPE;
         doc["IS_MASTER"]                  = DeviceConfig::IS_MASTER;
         doc["NODE_ID"]                    = DeviceConfig::NODE_ID;

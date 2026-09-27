@@ -200,6 +200,10 @@
     <!-- Панель отладки, статуса и ручного управления -->
     <div class="debug-panel">
         <div class="status-row">
+            <span>Current firmware version:</span>
+            <span id="version">Version 0.0.0</span>
+        </div>
+        <div class="status-row">
             <span>Link:</span>
             <span id="conn-status" class="status-badge">OFFLINE</span>
         </div>
@@ -412,6 +416,7 @@
             const res = await fetch('/api/config');
             const data = await res.json();
 
+            document.getElementById('version').innerText = data.VERSION ?? '';
             document.getElementById('mountType').value = data.MOUNT_TYPE ?? 0;
             document.getElementById('isMaster').value = (data.IS_MASTER ?? true) ? "true" : "false";
             document.getElementById('nodeId').value = data.NODE_ID ?? '';

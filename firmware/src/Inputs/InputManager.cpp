@@ -7,38 +7,13 @@
 
 void InputManager::init()
 {
-    pinMode(
-        BoardConfig::DRY_CONTACT_UP_PIN,
-        INPUT
-    );
+    pinMode(BoardConfig::DRY_CONTACT_UP_PIN,INPUT);
+    pinMode(BoardConfig::DRY_CONTACT_DOWN_PIN,INPUT);
+    pinMode(BoardConfig::LIMIT_SWITCH_UP_PIN,INPUT);
+    pinMode(BoardConfig::LIMIT_SWITCH_DOWN_PIN,INPUT);
 
-    pinMode(
-        BoardConfig::DRY_CONTACT_DOWN_PIN,
-        INPUT
-    );
-
-    pinMode(
-        BoardConfig::LIMIT_SWITCH_UP_PIN,
-        INPUT
-    );
-
-    pinMode(
-        BoardConfig::LIMIT_SWITCH_DOWN_PIN,
-        INPUT
-    );
-
-
-    m_forwardRawState =
-        digitalRead(
-            BoardConfig::DRY_CONTACT_UP_PIN
-        ) == LOW;
-
-
-    m_reverseRawState =
-        digitalRead(
-            BoardConfig::DRY_CONTACT_DOWN_PIN
-        ) == LOW;
-
+    m_forwardRawState = digitalRead(BoardConfig::DRY_CONTACT_UP_PIN) == LOW;
+    m_reverseRawState = digitalRead(BoardConfig::DRY_CONTACT_DOWN_PIN) == LOW;
 
     m_forwardState = m_forwardRawState;
     m_reverseState = m_reverseRawState;
@@ -49,6 +24,13 @@ void InputManager::init()
     m_previousConflictState =
         m_forwardState &&
         m_reverseState;
+
+    m_forwardLimitRawState = digitalRead(BoardConfig::LIMIT_SWITCH_UP_PIN) == HIGH;
+    m_reverseLimitRawState = digitalRead(BoardConfig::LIMIT_SWITCH_DOWN_PIN) == HIGH;
+
+    m_forwardLimit = m_forwardLimitRawState;
+    m_reverseLimit = m_reverseLimitRawState;
+    
 }
 
 void InputManager::update()
@@ -120,11 +102,6 @@ void InputManager::update()
     m_reverseTrigger = false;
     m_stopTrigger = false;
 
-
-    // -------------------------------------------------
-    // Определяем новые команды
-    // -------------------------------------------------
-
     // -------------------------------------------------
     // Определяем состояние конфликта ( одновременного нажатия FORWARD и REVERSE )
     // -------------------------------------------------
@@ -182,21 +159,57 @@ if (!conflict)
     m_previousConflictState =
     conflict;
 
-    // -------------------------------------------------
-    // Концевики
+        // -------------------------------------------------
+    // Концевики (Считывание физического состояния)
     // -------------------------------------------------
 
-    m_forwardLimit =
+    const bool forwardLimitRaw =
         digitalRead(
             BoardConfig::LIMIT_SWITCH_UP_PIN
         ) == HIGH;
 
-
-    m_reverseLimit =
+    const bool reverseLimitRaw =
         digitalRead(
             BoardConfig::LIMIT_SWITCH_DOWN_PIN
         ) == HIGH;
+
+    // -------------------------------------------------
+    // Концевик UP (FORWARD) debounce
+    // -------------------------------------------------
+
+    if (forwardLimitRaw != m_forwardLimitRawState)
+    {
+        m_forwardLimitRawState = forwardLimitRaw;
+        m_forwardLimitChangeTime = now;
+    }
+
+    if (
+        m_forwardLimitRawState != m_forwardLimit &&
+        (now - m_forwardLimitChangeTime) >= DEBOUNCE_TIME_MS
+    )
+    {
+        m_forwardLimit = m_forwardLimitRawState;
+    }
+
+    // -------------------------------------------------
+    // Концевик DOWN (REVERSE) debounce
+    // -------------------------------------------------
+
+    if (reverseLimitRaw != m_reverseLimitRawState)
+    {
+        m_reverseLimitRawState = reverseLimitRaw;
+        m_reverseLimitChangeTime = now;
+    }
+
+    if (
+        m_reverseLimitRawState != m_reverseLimit &&
+        (now - m_reverseLimitChangeTime) >= DEBOUNCE_TIME_MS
+    )
+    {
+        m_reverseLimit = m_reverseLimitRawState;
+    }
 }
+
 
 bool InputManager::forwardTriggered()
 {
