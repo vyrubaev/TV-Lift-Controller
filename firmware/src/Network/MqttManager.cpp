@@ -1,3 +1,5 @@
+/*
+
 #include "MqttManager.h"
 #include "Config/DeviceConfig.h"
 #include <WiFi.h>
@@ -184,3 +186,5 @@ void MqttManager::update() {
         publishCloudTelemetry();
     }
 }
+
+*/

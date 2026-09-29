@@ -1,14 +1,15 @@
 #include "OtaUpdater.h"
-
-
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
+#include <HTTPUpdate.h>
+#include <ArduinoJson.h>
+#include "Logger/Logger.h"
+#include "Config/BoardConfig.h" // Обязательно для прерываний пинов!
 
 static char logBuf[128];
-// Статическая переменная состояния
-static bool s_inOtaProcess = false;
 
 OtaUpdater::OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs)
     : m_checkUrl(checkUrl) {}
-
 
 void OtaUpdater::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
@@ -27,7 +28,7 @@ void OtaUpdater::forceCheck() {
 }
 
 bool OtaUpdater::isUpdating() {
-    return g_isUpdating; // или s_inOtaProcess;
+    return g_isUpdating;
 }
 
 void OtaUpdater::checkForUpdates() {
@@ -36,7 +37,7 @@ void OtaUpdater::checkForUpdates() {
         return;
     }
 
-    // Жесткая проверка: если лифт вообще существует и движется — сразу выход
+    // Защита: если лифт движется — откладываем
     if (m_elevator && m_elevator->isMoving()) {
         Logger::warning("OTA: Лифт в движении. Проверка обновлений отложена.");
         return;
@@ -69,7 +70,6 @@ void OtaUpdater::checkForUpdates() {
         http.end(); 
     }
 
-    // Финальная проверка перед самой записью во флеш
     if (needUpdate && targetBinUrl.length() > 0) {
         if (m_elevator && m_elevator->isMoving()) {
             Logger::error("OTA ОТМЕНЕНА: Лифт начал движение перед загрузкой!");
@@ -92,16 +92,36 @@ bool OtaUpdater::isNewerVersion(const char* serverVersion) {
 }
 
 void OtaUpdater::performOTA(const char* binUrl) {
-    g_isUpdating = true; // Устанавливаем флаг блокировки перед началом
+    if (m_elevator && m_elevator->isMoving()) {
+        Logger::warning("OTA: Отменено, лифт всё ещё находится в движении!");
+        return;
+    }
 
-    WiFiClient client;
-    client.setTimeout(60); 
-    
+    g_isUpdating = true; // Блокируем логику работы
+
+    // Отключаем обработчики прерываний, чтобы избежать Guru Meditation Error при перезаписи Flash
+    detachInterrupt(digitalPinToInterrupt(BoardConfig::ENC_A));
+    detachInterrupt(digitalPinToInterrupt(BoardConfig::ENC_B));
+    detachInterrupt(digitalPinToInterrupt(BoardConfig::MOTOR1_DIAG));
+
     snprintf(logBuf, sizeof(logBuf), "OTA: Начинаю загрузку с %s", binUrl);
     Logger::info(logBuf);
+    delay(100);
 
-    // Вызываем обновлятор ровно один раз
-    t_httpUpdate_return ret = httpUpdate.update(client, binUrl);
+    httpUpdate.rebootOnUpdate(false);
+    httpUpdate.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+
+    t_httpUpdate_return ret;
+
+    if (strncmp(binUrl, "https", 5) == 0) {
+        WiFiClientSecure clientSecure;
+        clientSecure.setInsecure(); // Экономия RAM при SSL
+        ret = httpUpdate.update(clientSecure, binUrl);
+    } else {
+        WiFiClient client;
+        client.setTimeout(30);
+        ret = httpUpdate.update(client, binUrl);
+    }
 
     switch (ret) {
         case HTTP_UPDATE_FAILED:
@@ -109,6 +129,10 @@ void OtaUpdater::performOTA(const char* binUrl) {
                      httpUpdate.getLastError(), 
                      httpUpdate.getLastErrorString().c_str());
             Logger::error(logBuf);
+            
+            // Восстановление через перезагрузку
+            delay(1000);
+            ESP.restart(); 
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
@@ -116,10 +140,11 @@ void OtaUpdater::performOTA(const char* binUrl) {
             break;
 
         case HTTP_UPDATE_OK:
-            Logger::info("OTA: Успешно обновлено! Перезагружаю систему...");
-            delay(200); // Даем время логеру вытолкнуть данные в Serial
-            ESP.restart(); // Жесткий системный рестарт ESP32
+            Logger::info("OTA: Успешно обновлено! Перезагрузка...");
+            delay(500); 
+            ESP.restart();
             break;
     }
-    g_isUpdating = false; // Снимаем флаг, если обновление не удалось
+
+    g_isUpdating = false;
 }

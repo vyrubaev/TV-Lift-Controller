@@ -1,3 +1,5 @@
+/*
+
 #ifndef MQTT_MANAGER_H
 #define MQTT_MANAGER_H
 
@@ -47,3 +49,5 @@ private:
 };
 
 #endif // MQTT_MANAGER_H
+
+*/
