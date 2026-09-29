@@ -269,7 +269,7 @@ void WebManager::setupCaptivePortalRoutes() {
 
             this->saveCredentials(newSsid, newPass);
 
-            request->send(200, "text/html", "<html><body><h2>Congratulation! Settings save!</h2><p>System rebooting...</p></body></html>");
+            request->send(200, "text/html", "<html><body><h1>Congratulation! Settings save!</h1><p>System rebooting...</p></body></html>");
             scheduleReboot(1000); // Отложенная перезагрузка
         } else {
             request->send(400, "text/plain", "Bad Request");

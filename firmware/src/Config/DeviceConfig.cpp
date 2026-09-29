@@ -65,7 +65,7 @@ void load() {
 
     String savedOta = prefs.getString("OTA_URL", otaUrl);
     snprintf(otaUrl, sizeof(otaUrl), "%s", savedOta.c_str());
-    otaUpdateIntervalMs = prefs.getULong("OTA_INT", otaUpdateIntervalMs);
+    // otaUpdateIntervalMs = prefs.getULong("OTA_INT", otaUpdateIntervalMs);
 
     otaUpdateIntervalMs = prefs.getULong("OTA_INT", Defaults::OTA_UPDATE_INTERVAL_MS);
     

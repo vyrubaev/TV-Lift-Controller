@@ -269,40 +269,48 @@ void Motor::registerStopClick() {
 }
 
 bool Motor::tryClearFault() {
+    // 1. Аппаратный заслон: если линия DIAG всё ещё в LOW, сброс запрещён
     if (digitalRead(BoardConfig::MOTOR1_DIAG) == LOW) {
         Logger::error("CLEAR REJECTED: Driver Hardware Fault line is still active (DIAG LOW)!");
         return false;
     }
-    
+
+    // Сбрасываем флаг аппаратной аварии
     s_hardwareFault.store(false, std::memory_order_relaxed);
 
+    // 2. Обработка программной аварии по перегрузке током (Overcurrent)
     if (m_isOvercurrentFault) {
         uint32_t now = millis();
 
+        // Сброс окна лимита (1 минута)
         if (m_firstOvercurrentMs == 0 || (now - m_firstOvercurrentMs > 60000)) {
             m_firstOvercurrentMs = now;
             m_overcurrentResetCount = 0;
         }
 
+        // Защита от частых сбросов (Hard Lockout)
         if (m_overcurrentResetCount >= 3) {
             Logger::error("HARD LOCK: Exceeded 3 Overcurrent resets in 1 minute! Reboot required.");
             return false;
         }
 
         m_overcurrentResetCount++;
-        m_isEmergency = false;
         m_isOvercurrentFault = false;
+        
+        // Гасим LED перегрузки (если переназначен на отдельный GPIO)
         setOvercurrentLED(false);
-
-        memset(m_stopClickTimes, 0, sizeof(m_stopClickTimes));
 
         char logBuf[128];
         snprintf(logBuf, sizeof(logBuf), "OVERCURRENT cleared by 3x STOP (%d/3 resets in 60s).", m_overcurrentResetCount);
         Logger::info(logBuf);
-        return true;
     }
 
-    return false;
+    // 3. Общий сброс аварийного состояния
+    m_isEmergency = false;
+    memset(m_stopClickTimes, 0, sizeof(m_stopClickTimes));
+
+    Logger::info("Fault status successfully cleared.");
+    return true; // Успешный сброс для ЛЮБОГО типа аварии
 }
 
 void IRAM_ATTR Motor::encoderISR() {
