@@ -1,9 +1,10 @@
+#include "Logger/Logger.h"
 #include "OtaUpdater.h"
-#include <WiFiClientSecure.h>
+#include <WiFiClientSecure.h> //dvddv
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
 #include <ArduinoJson.h>
-#include "Logger/Logger.h"
+
 #include "Config/BoardConfig.h" // Обязательно для прерываний пинов!
 
 static char logBuf[128];
@@ -13,7 +14,7 @@ OtaUpdater::OtaUpdater(const char* checkUrl, uint32_t checkIntervalMs)
 
 void OtaUpdater::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
-    Logger::info("OTA: Инициализация сервиса обновлений");
+    Logger::info("OTA: Initializing update service");
 }
 
 void OtaUpdater::update() {
