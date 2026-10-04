@@ -48,7 +48,22 @@ namespace Defaults {
 
     // Адрес для обновления прошивки OTA 
     const char OTA_URL[] = "http://192.168.88.33:3000/firmware/version.json"; // URL для проверки обновлений прошивки (можно указать локальный сервер или внешний URL)
-    constexpr uint32_t OTA_UPDATE_INTERVAL_MS = 60000; // Интервал проверки обновлений (мс) 
+    constexpr uint32_t OTA_UPDATE_INTERVAL_MS = 60000; // Интервал проверки обновлений (мс)
+
+    // --- НАСТРОЙКИ ЛОКАЛЬНОГО MQTT (Home Assistant) ---
+    constexpr bool LOCAL_MQTT_ENABLED = true;
+    const char LOCAL_MQTT_SERVER[] = "192.168.1.100";
+    constexpr uint16_t LOCAL_MQTT_PORT = 1883;
+    const char LOCAL_MQTT_USER[] = "";
+    const char LOCAL_MQTT_PASS[] = "";
+    constexpr bool LOCAL_MQTT_HA_DISCOVERY = true;
+
+    // --- НАСТРОЙКИ ОБЛАЧНОГО MQTT (VPS Telemetry) ---
+    constexpr bool CLOUD_MQTT_ENABLED = true;
+    const char CLOUD_MQTT_SERVER[] = "vps.yourdomain.com";
+    constexpr uint16_t CLOUD_MQTT_PORT = 1883;
+    const char CLOUD_MQTT_TOKEN[] = "SECRET_TOKEN";
+   
 }
 
 // Рабочие переменные (используются по всему коду как DeviceConfig::...)
@@ -74,12 +89,25 @@ inline uint32_t IR_CODE_UP = Defaults::IR_CODE_UP;
 inline uint32_t IR_CODE_DOWN = Defaults::IR_CODE_DOWN;
 inline uint32_t IR_CODE_STOP = Defaults::IR_CODE_STOP;
 inline uint32_t IR_CODE_REPEAT = Defaults::IR_CODE_REPEAT;
-inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
 inline uint32_t otaUpdateIntervalMs = Defaults::OTA_UPDATE_INTERVAL_MS;
 inline volatile uint32_t LAST_IR_CODE = 0; // Сюда будем сохранять последний полученный ИК код
 
+inline char otaUrl[128] = "http://192.168.88.33:3000/firmware/version.json";
+
+inline bool localMqttEnabled = Defaults::LOCAL_MQTT_ENABLED;
+inline char localMqttServer[64] = "192.168.1.100";
+inline uint16_t localMqttPort = Defaults::LOCAL_MQTT_PORT;
+inline char localMqttUser[32] = "";
+inline char localMqttPass[32] = "";
+inline bool localMqttHaDiscovery = Defaults::LOCAL_MQTT_HA_DISCOVERY;
+
+inline bool cloudMqttEnabled = Defaults::CLOUD_MQTT_ENABLED;
+inline char cloudMqttServer[64] = "vps.yourdomain.com";
+inline uint16_t cloudMqttPort = Defaults::CLOUD_MQTT_PORT;
+inline char cloudMqttToken[64] = "SECRET_TOKEN";
+
 // Прототипы функций
-void loadDefaults();
+void loadDefaults(); 
 void load();
 void save();
 

@@ -1,32 +1,31 @@
-
-
 #include "MqttManager.h"
 #include "Config/DeviceConfig.h"
 #include <WiFi.h>
-
-extern DeviceConfig g_config; // Глобальный объект конфига
+#include <ArduinoJson.h>
 
 MqttManager::MqttManager() {}
 
 void MqttManager::init(Elevator* elevatorPtr) {
     m_elevator = elevatorPtr;
 
-    if (g_config.local_mqtt.enabled) {
+    if (DeviceConfig::localMqttEnabled) {
         initLocalClient();
+        connectToLocal();
     }
     
-    if (g_config.cloud_mqtt.enabled) {
+    if (DeviceConfig::cloudMqttEnabled) {
         initCloudClient();
+        connectToCloud();
     }
 }
 
 // ============================================================================
-// 1. ИНИЦИАЛИЗАЦИЯ И ЛОГИКА ЛОКАЛЬНОГО КЛИЕНТА (Home Assistant)
+// 1. ЛОКАЛЬНЫЙ MQTT (Home Assistant)
 // ============================================================================
 void MqttManager::initLocalClient() {
-    m_localClient.setServer(g_config.local_mqtt.server, g_config.local_mqtt.port);
-    if (strlen(g_config.local_mqtt.user) > 0) {
-        m_localClient.setCredentials(g_config.local_mqtt.user, g_config.local_mqtt.password);
+    m_localClient.setServer(DeviceConfig::localMqttServer, DeviceConfig::localMqttPort);
+    if (strlen(DeviceConfig::localMqttUser) > 0) {
+        m_localClient.setCredentials(DeviceConfig::localMqttUser, DeviceConfig::localMqttPass);
     }
     m_localClient.setClientId("TV_Lift_Local");
     m_localClient.setWill("tv_lift/status", 1, true, "offline");
@@ -49,7 +48,7 @@ void MqttManager::onLocalConnect(bool sessionPresent) {
     m_localClient.publish("tv_lift/status", 1, true, "online");
     m_localClient.subscribe("tv_lift/cover/set", 1);
 
-    if (g_config.local_mqtt.ha_discovery) {
+    if (DeviceConfig::localMqttHaDiscovery) {
         sendHAHomeDiscovery();
     }
 }
@@ -61,17 +60,24 @@ void MqttManager::onLocalDisconnect(AsyncMqttClientDisconnectReason reason) {
 
 void MqttManager::onLocalMessage(char* topic, char* payload, size_t len) {
     char cmd[16] = {0};
-    if (len < sizeof(cmd)) memcpy(cmd, payload, len);
+    size_t copyLen = (len < sizeof(cmd) - 1) ? len : (sizeof(cmd) - 1);
+    memcpy(cmd, payload, copyLen);
+    cmd[copyLen] = '\0';
 
     if (strcmp(topic, "tv_lift/cover/set") == 0 && m_elevator) {
-        if (strcmp(cmd, "OPEN") == 0) m_elevator->postWebCommand(Elevator::PendingCommand::Type::UP);
-        else if (strcmp(cmd, "CLOSE") == 0) m_elevator->postWebCommand(Elevator::PendingCommand::Type::DOWN);
-        else if (strcmp(cmd, "STOP") == 0) m_elevator->postWebCommand(Elevator::PendingCommand::Type::STOP);
+        if (strcmp(cmd, "OPEN") == 0)        m_elevator->postWebCommand(Elevator::PendingCommand::Type::UP);
+        else if (strcmp(cmd, "CLOSE") == 0)   m_elevator->postWebCommand(Elevator::PendingCommand::Type::DOWN);
+        else if (strcmp(cmd, "STOP") == 0)    m_elevator->postWebCommand(Elevator::PendingCommand::Type::STOP);
     }
 }
 
 void MqttManager::sendHAHomeDiscovery() {
+#if ARDUINOJSON_VERSION_MAJOR >= 7
+    JsonDocument doc;
+#else
     DynamicJsonDocument doc(1024);
+#endif
+
     doc["name"]               = "TV Lift";
     doc["unique_id"]          = "tv_lift_esp32_c6";
     doc["device_class"]       = "tv";
@@ -81,21 +87,25 @@ void MqttManager::sendHAHomeDiscovery() {
     doc["payload_open"]       = "OPEN";
     doc["payload_close"]      = "CLOSE";
     doc["payload_stop"]       = "STOP";
+    doc["state_open"]         = "open";
+    doc["state_closed"]       = "closed";
+    doc["state_opening"]      = "opening";
+    doc["state_closing"]      = "closing";
 
     String output;
     serializeJson(doc, output);
-    m_localClient.publish("homeassistant/cover/tv_lift/config", 1, true, output.c_str());
+    m_localClient.publish("homeassistant/cover/tv_lift/config", 1, true, output.c_str(), output.length());
 }
 
 // ============================================================================
-// 2. ИНИЦИАЛИЗАЦИЯ И ЛОГИКА ОБЛАЧНОГО КЛИЕНТА (VPS Service Telemetry)
+// 2. ОБЛАЧНЫЙ MQTT (VPS Telemetry)
 // ============================================================================
 void MqttManager::initCloudClient() {
-    m_cloudClient.setServer(g_config.cloud_mqtt.server, g_config.cloud_mqtt.port);
-    m_cloudClient.setCredentials(g_config.cloud_mqtt.device_token, "X-Device-Token");
+    m_cloudClient.setServer(DeviceConfig::cloudMqttServer, DeviceConfig::cloudMqttPort);
+    m_cloudClient.setCredentials(DeviceConfig::cloudMqttToken, "X-Device-Token");
     
-    // Уникальный ID на базе MAC адреса
-    String cloudClientId = "TVLift_Cloud_" + WiFi.macAddress();
+    static String cloudClientId;
+    cloudClientId = "TVLift_Cloud_" + WiFi.macAddress();
     cloudClientId.replace(":", "");
     m_cloudClient.setClientId(cloudClientId.c_str());
 
@@ -116,14 +126,18 @@ void MqttManager::onCloudConnect(bool sessionPresent) {
 
 void MqttManager::onCloudDisconnect(AsyncMqttClientDisconnectReason reason) {
     m_cloudConnected = false;
-    // Безопасная фоновая попытка переподключения через 15 секунд
     m_cloudReconnectTimer.once(15, [this]() { this->connectToCloud(); });
 }
 
 void MqttManager::logToCloud(const char* level, const char* message) {
     if (!m_cloudConnected) return;
 
+#if ARDUINOJSON_VERSION_MAJOR >= 7
+    JsonDocument doc;
+#else
     DynamicJsonDocument doc(256);
+#endif
+
     doc["mac"]     = WiFi.macAddress();
     doc["level"]   = level;
     doc["msg"]     = message;
@@ -131,26 +145,30 @@ void MqttManager::logToCloud(const char* level, const char* message) {
 
     String payload;
     serializeJson(doc, payload);
-    m_cloudClient.publish("vps/telemetry/logs", 1, false, payload.c_str());
+    m_cloudClient.publish("vps/telemetry/logs", 1, false, payload.c_str(), payload.length());
 }
 
 void MqttManager::publishCloudTelemetry() {
     if (!m_cloudConnected || !m_elevator) return;
 
+#if ARDUINOJSON_VERSION_MAJOR >= 7
+    JsonDocument doc;
+#else
     DynamicJsonDocument doc(512);
+#endif
+
     doc["mac"]         = WiFi.macAddress();
     doc["state"]       = (int)m_elevator->getState();
     doc["current_a"]   = m_elevator->getCurrentAmps();
-    doc["position"]    = m_elevator->getEncoderTicks();
+    //doc["position"]    = m_elevator->getEncoderTicks();
     doc["uptime_sec"]  = millis() / 1000;
     doc["wifi_rssi"]   = WiFi.RSSI();
 
     String payload;
     serializeJson(doc, payload);
     
-    // Топик включает MAC адрес для быстрой маршрутизации в БД на VPS
     String topic = "vps/telemetry/data/" + WiFi.macAddress();
-    m_cloudClient.publish(topic.c_str(), 0, false, payload.c_str());
+    m_cloudClient.publish(topic.c_str(), 0, false, payload.c_str(), payload.length());
 }
 
 // ============================================================================
@@ -159,23 +177,25 @@ void MqttManager::publishCloudTelemetry() {
 void MqttManager::update() {
     if (WiFi.status() != WL_CONNECTED) return;
 
-    // Фоновая проверка подключений
-    if (g_config.local_mqtt.enabled && !m_localConnected && !m_localClient.connected()) {
-        connectToLocal();
-    }
-    
-    if (g_config.cloud_mqtt.enabled && !m_cloudConnected && !m_cloudClient.connected()) {
-        connectToCloud();
-    }
-
     uint32_t now = millis();
 
-    // Публикация состояния в локальный Home Assistant (раз в 1 сек)
+    // Публикация состояния в Home Assistant (раз в 1 сек)
     if (m_localConnected && (now - m_lastLocalPubMs >= 1000)) {
         m_lastLocalPubMs = now;
         if (m_elevator) {
-            const char* st = (m_elevator->getState() == ElevatorState::MOVING_UP) ? "opening" :
-                             (m_elevator->getState() == ElevatorState::MOVING_DOWN) ? "closing" : "closed";
+            ElevatorState state = m_elevator->getState();
+            const char* st = "closed";
+
+            if (state == ElevatorState::MOVING_UP) {
+                st = "opening";
+            } else if (state == ElevatorState::MOVING_DOWN) {
+                st = "closing";
+            } else if (state == ElevatorState::OPEN || state == ElevatorState::STOPPED) {
+                st = "open";
+            } else if (state == ElevatorState::CLOSED) {
+                st = "closed";
+            }
+
             m_localClient.publish("tv_lift/cover/state", 0, false, st);
         }
     }
@@ -186,4 +206,3 @@ void MqttManager::update() {
         publishCloudTelemetry();
     }
 }
-
