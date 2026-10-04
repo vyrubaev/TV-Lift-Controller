@@ -397,7 +397,7 @@
 <div id="toast" class="toast">Settings saved!</div>
 
 <script>
-    let ws;
+    let ws = null;
 
     const STATE_NAMES = {
         0: 'OPEN',
@@ -411,53 +411,74 @@
         8: 'UNKNOWN'
     };
 
+    // Безопасный парсер чисел из инпутов без ложных 0 при пустых строках
+    function getNumValue(id, isFloat = false) {
+        const el = document.getElementById(id);
+        if (!el || el.value.trim() === '') return 0;
+        const parsed = isFloat ? parseFloat(el.value) : parseInt(el.value, 10);
+        return isNaN(parsed) ? 0 : parsed;
+    }
+
     async function loadConfig() {
         try {
             const res = await fetch('/api/config');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
 
-            document.getElementById('version').innerText = data.VERSION ?? '';
+            document.getElementById('version').innerText = data.VERSION ?? '0.0.0';
             document.getElementById('mountType').value = data.MOUNT_TYPE ?? 0;
-            document.getElementById('isMaster').value = (data.IS_MASTER ?? true) ? "true" : "false";
-            document.getElementById('nodeId').value = data.NODE_ID ?? '';
-            document.getElementById('debugEnabled').value = (data.DEBUG_ENABLED ?? true) ? "true" : "false";
+            document.getElementById('isMaster').value = data.IS_MASTER ? "true" : "false";
+            document.getElementById('nodeId').value = data.NODE_ID ?? 1;
+            document.getElementById('debugEnabled').value = data.DEBUG_ENABLED ? "true" : "false";
 
-            document.getElementById('motorSpeed').value = data.MOTOR_SPEED ?? '';
-            document.getElementById('softStartMinPwm').value = data.SOFT_START_MIN_PWM ?? '';
-            document.getElementById('softStartStepMs').value = data.SOFT_START_STEP_MS ?? '';
-            document.getElementById('softStartStepPwm').value = data.SOFT_START_STEP_PWM ?? '';
+            document.getElementById('motorSpeed').value = data.MOTOR_SPEED ?? 180;
+            document.getElementById('softStartMinPwm').value = data.SOFT_START_MIN_PWM ?? 0;
+            document.getElementById('softStartStepMs').value = data.SOFT_START_STEP_MS ?? 10;
+            document.getElementById('softStartStepPwm').value = data.SOFT_START_STEP_PWM ?? 5;
 
-            document.getElementById('currentSensorSensitivity').value = data.CURRENT_SENSOR_SENSITIVITY ?? '';
-            document.getElementById('currentSensorOffsetV').value = data.CURRENT_SENSOR_OFFSET_V ?? '';
-            document.getElementById('startCurrentTimeoutMs').value = data.startCurrentTimeoutMs ?? '';
-            document.getElementById('maxMotorCurrentAmps').value = data.maxMotorCurrentAmps ?? '';
-            document.getElementById('overcurrentTimeoutMs').value = data.overcurrentTimeoutMs ?? '';
+            document.getElementById('currentSensorSensitivity').value = data.CURRENT_SENSOR_SENSITIVITY ?? 0.185;
+            document.getElementById('currentSensorOffsetV').value = data.CURRENT_SENSOR_OFFSET_V ?? 2.5;
+            document.getElementById('startCurrentTimeoutMs').value = data.startCurrentTimeoutMs ?? 500;
+            document.getElementById('maxMotorCurrentAmps').value = data.maxMotorCurrentAmps ?? 5.0;
+            document.getElementById('overcurrentTimeoutMs').value = data.overcurrentTimeoutMs ?? 300;
 
-            document.getElementById('maxForwardTimeMs').value = data.MAX_FORWARD_TIME_MS ?? '';
-            document.getElementById('maxReverseTimeMs').value = data.MAX_REVERSE_TIME_MS ?? '';
-            document.getElementById('forwardLimitRunOnMs').value = data.FORWARD_LIMIT_RUN_ON_MS ?? '';
-            document.getElementById('reverseLimitRunOnMs').value = data.REVERSE_LIMIT_RUN_ON_MS ?? '';
-            document.getElementById('maxLiftEncoderTicks').value = data.MAX_LIFT_ENCODER_TICKS ?? '';
+            document.getElementById('maxForwardTimeMs').value = data.MAX_FORWARD_TIME_MS ?? 30000;
+            document.getElementById('maxReverseTimeMs').value = data.MAX_REVERSE_TIME_MS ?? 30000;
+            document.getElementById('forwardLimitRunOnMs').value = data.FORWARD_LIMIT_RUN_ON_MS ?? 0;
+            document.getElementById('reverseLimitRunOnMs').value = data.REVERSE_LIMIT_RUN_ON_MS ?? 0;
+            document.getElementById('maxLiftEncoderTicks').value = data.MAX_LIFT_ENCODER_TICKS ?? 0;
 
             document.getElementById('irCodeUp').value = data.IR_CODE_UP ?? '';
             document.getElementById('irCodeDown').value = data.IR_CODE_DOWN ?? '';
             document.getElementById('irCodeStop').value = data.IR_CODE_STOP ?? '';
 
             document.getElementById('otaUrl').value = data.otaUrl ?? '';
-            document.getElementById('otaInt').value = data.otaUpdateIntervalMs ?? '';
+            document.getElementById('otaInt').value = data.otaUpdateIntervalMs ?? 60000;
         } catch (e) {
             console.error('Configuration loading error:', e);
+            showToast('Failed to load settings!');
         }
     }
 
     function initWebSocket() {
+        // Очищаем предыдущий сокет перед созданием нового
+        if (ws) {
+            ws.onopen = null;
+            ws.onmessage = null;
+            ws.onerror = null;
+            ws.onclose = null;
+            ws.close();
+        }
+
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
 
         ws.onopen = () => {
             const badge = document.getElementById('conn-status');
-            badge.innerText = 'ONLINE';
-            badge.className = 'status-badge online';
+            if (badge) {
+                badge.innerText = 'ONLINE';
+                badge.className = 'status-badge online';
+            }
         };
 
         ws.onmessage = (event) => {
@@ -466,12 +487,20 @@
                 
                 const statusCode = data.st !== undefined ? data.st : data.state;
                 if (statusCode !== undefined) {
-                    document.getElementById('state-val').innerText = STATE_NAMES[statusCode] || `CODE (${statusCode})`;
+                    const el = document.getElementById('state-val');
+                    if (el) el.innerText = STATE_NAMES[statusCode] || `CODE (${statusCode})`;
                 }
 
-                const currentVal = data.current !== undefined ? data.current : (data.cur !== undefined ? data.cur : null);
-                if (currentVal !== null && !isNaN(currentVal)) {
-                    document.getElementById('current-val').innerText = Number(currentVal).toFixed(2);
+                const currentVal = data.current ?? data.cur;
+                if (currentVal !== undefined && !isNaN(currentVal)) {
+                    const el = document.getElementById('current-val');
+                    if (el) el.innerText = Number(currentVal).toFixed(2);
+                }
+
+                // Явная проверка на наличие ключа, включая "0"
+                if (data.ir !== undefined && data.ir !== null) {
+                    const el = document.getElementById('ir-val');
+                    if (el) el.innerText = data.ir;
                 }
             } catch (e) {
                 console.error('WS Parse Error', e);
@@ -480,8 +509,10 @@
 
         ws.onclose = () => {
             const badge = document.getElementById('conn-status');
-            badge.innerText = 'OFFLINE';
-            badge.className = 'status-badge';
+            if (badge) {
+                badge.innerText = 'OFFLINE';
+                badge.className = 'status-badge';
+            }
             setTimeout(initWebSocket, 2000);
         };
     }
@@ -494,76 +525,11 @@
         }
     }
 
-    document.getElementById('configForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const payload = {
-            MOUNT_TYPE: parseInt(document.getElementById('mountType').value) || 0,
-            IS_MASTER: document.getElementById('isMaster').value === "true",
-            NODE_ID: parseInt(document.getElementById('nodeId').value) || 0,
-            DEBUG_ENABLED: document.getElementById('debugEnabled').value === "true",
-
-            MOTOR_SPEED: parseInt(document.getElementById('motorSpeed').value) || 0,
-            SOFT_START_MIN_PWM: parseInt(document.getElementById('softStartMinPwm').value) || 0,
-            SOFT_START_STEP_MS: parseInt(document.getElementById('softStartStepMs').value) || 0,
-            SOFT_START_STEP_PWM: parseInt(document.getElementById('softStartStepPwm').value) || 0,
-
-            CURRENT_SENSOR_SENSITIVITY: parseFloat(document.getElementById('currentSensorSensitivity').value) || 0,
-            CURRENT_SENSOR_OFFSET_V: parseFloat(document.getElementById('currentSensorOffsetV').value) || 0,
-            startCurrentTimeoutMs: parseInt(document.getElementById('startCurrentTimeoutMs').value) || 0,
-            maxMotorCurrentAmps: parseFloat(document.getElementById('maxMotorCurrentAmps').value) || 0,
-            overcurrentTimeoutMs: parseInt(document.getElementById('overcurrentTimeoutMs').value) || 0,
-
-            MAX_FORWARD_TIME_MS: parseInt(document.getElementById('maxForwardTimeMs').value) || 0,
-            MAX_REVERSE_TIME_MS: parseInt(document.getElementById('maxReverseTimeMs').value) || 0,
-            FORWARD_LIMIT_RUN_ON_MS: parseInt(document.getElementById('forwardLimitRunOnMs').value) || 0,
-            REVERSE_LIMIT_RUN_ON_MS: parseInt(document.getElementById('reverseLimitRunOnMs').value) || 0,
-            MAX_LIFT_ENCODER_TICKS: parseInt(document.getElementById('maxLiftEncoderTicks').value) || 0,
-
-            IR_CODE_UP: document.getElementById('irCodeUp').value,
-            IR_CODE_DOWN: document.getElementById('irCodeDown').value,
-            IR_CODE_STOP: document.getElementById('irCodeStop').value,
-
-            otaUrl: document.getElementById('otaUrl').value,
-            otaUpdateIntervalMs: parseInt(document.getElementById('otaInt').value) || 0
-        };
-
-        try {
-            const res = await fetch('/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                showToast('Settings saved! Restarting controller...');
-                document.querySelector('.container').style.opacity = '0.5';
-                setTimeout(() => { location.reload(); }, 3000);
-            } else {
-                alert('Saving error');
-            }
-        } catch (e) {
-            alert('Ошибка сети');
-        }
-    });
-
-    function showToast(text) {
-        const toast = document.getElementById('toast');
-        toast.innerText = text;
-        toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 2500);
-    }
-
-    window.addEventListener('load', () => {
-        loadConfig();
-        initWebSocket();
-    });
-
     async function rebootDevice() {
         if (confirm('Reboot controller?')) {
             try {
                 await fetch('/api/reboot', { method: 'POST' });
-                showToast('Reboot...');
+                showToast('Rebooting...');
                 setTimeout(() => { location.reload(); }, 4000);
             } catch (e) {
                 alert('Network error during reboot');
@@ -587,18 +553,73 @@
         }
     }
 
-    // Каждые 600 миллисекунд браузер автоматически запрашивает свежий ИК код у ESP32
-    setInterval(() => {
-        fetch('/get-ir')
-            .then(response => response.json())
-            .then(data => {
-                // Подставляем полученный от контроллера код в тег <span>
-                document.getElementById('ir-val').innerText = data.code;
-            })
-            .catch(() => {}); // Игнорируем сетевые ошибки, если плата на секунду занята
-    }, 600);
+    document.getElementById('configForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
+        const payload = {
+            MOUNT_TYPE: getNumValue('mountType'),
+            IS_MASTER: document.getElementById('isMaster').value === "true",
+            NODE_ID: getNumValue('nodeId'),
+            DEBUG_ENABLED: document.getElementById('debugEnabled').value === "true",
+
+            MOTOR_SPEED: getNumValue('motorSpeed'),
+            SOFT_START_MIN_PWM: getNumValue('softStartMinPwm'),
+            SOFT_START_STEP_MS: getNumValue('softStartStepMs'),
+            SOFT_START_STEP_PWM: getNumValue('softStartStepPwm'),
+
+            CURRENT_SENSOR_SENSITIVITY: getNumValue('currentSensorSensitivity', true),
+            CURRENT_SENSOR_OFFSET_V: getNumValue('currentSensorOffsetV', true),
+            startCurrentTimeoutMs: getNumValue('startCurrentTimeoutMs'),
+            maxMotorCurrentAmps: getNumValue('maxMotorCurrentAmps', true),
+            overcurrentTimeoutMs: getNumValue('overcurrentTimeoutMs'),
+
+            MAX_FORWARD_TIME_MS: getNumValue('maxForwardTimeMs'),
+            MAX_REVERSE_TIME_MS: getNumValue('maxReverseTimeMs'),
+            FORWARD_LIMIT_RUN_ON_MS: getNumValue('forwardLimitRunOnMs'),
+            REVERSE_LIMIT_RUN_ON_MS: getNumValue('reverseLimitRunOnMs'),
+            MAX_LIFT_ENCODER_TICKS: getNumValue('maxLiftEncoderTicks'),
+
+            IR_CODE_UP: document.getElementById('irCodeUp').value,
+            IR_CODE_DOWN: document.getElementById('irCodeDown').value,
+            IR_CODE_STOP: document.getElementById('irCodeStop').value,
+
+            otaUrl: document.getElementById('otaUrl').value,
+            otaUpdateIntervalMs: getNumValue('otaInt')
+        };
+
+        try {
+            const res = await fetch('/api/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                showToast('Settings saved! Restarting controller...');
+                const container = document.querySelector('.container');
+                if (container) container.style.opacity = '0.5';
+                setTimeout(() => { location.reload(); }, 3000);
+            } else {
+                alert('Saving error');
+            }
+        } catch (e) {
+            alert('Network error');
+        }
+    });
+
+    function showToast(text) {
+        const toast = document.getElementById('toast');
+        if (toast) {
+            toast.innerText = text;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2500);
+        }
+    }
+
+    window.addEventListener('load', () => {
+        loadConfig();
+        initWebSocket();
+    });
 </script>
-
 </body>
 </html>

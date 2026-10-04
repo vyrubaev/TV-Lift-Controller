@@ -1,4 +1,4 @@
-/*
+
 
 #include "MqttManager.h"
 #include "Config/DeviceConfig.h"
@@ -187,4 +187,3 @@ void MqttManager::update() {
     }
 }
 
-*/
